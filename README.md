@@ -10,6 +10,19 @@ A full-stack tour booking web application built with Node.js, Express, and Mongo
 
 *Try booking a tour with test payment functionality!*
 
+## 🧪 Test Accounts
+
+Use these pre-configured accounts to explore the application:
+
+| Role | Email | Password | Description |
+|------|-------|----------|-------------|
+| **User** | `rayray@mailsac.com` | `test1234` | User with booking history |
+| **User** | `max@example.com` | `test1234` | User without booking |
+| **Guide** | `leo@example.com` | `test1234` | Tour guide account |
+| **Admin** | `admin@tours.io` | `test1234` | Full admin access (API only) |
+
+> **Note**: User registration is not yet implemented in the frontend. Please use test accounts above.
+
 ## ✨ Key Features
 
 - **🔐 User Authentication** - Secure login with JWT
@@ -39,7 +52,6 @@ A full-stack tour booking web application built with Node.js, Express, and Mongo
 | **API Testing** | Postman | API documentation and testing |
 | **Deployment** | Railway + MongoDB Atlas | Cloud hosting and database |
 
-
 ## 🏗️ Architecture
 
 ```
@@ -58,28 +70,43 @@ A full-stack tour booking web application built with Node.js, Express, and Mongo
 
 ## 🚀 Version Roadmap
 
-### 🎯 Version 1.0 - Current 
+### 🎯 Version 1.0 - Current
 **Status**: ✅ **Deployed** | **Tech**: Server-Side Rendering
 
 - **Frontend**: Pug templates with vanilla JavaScript
 - **Backend**: Express.js API + SSR
+- **Authentication**: Login only (registration via API)
+- **Features**: Tour browsing, booking, payments, profile management
 - **Deployment**: Single Railway deployment
 - **Architecture**: Traditional monolithic web application
 
+### ⚛️ Version 2.0 - React Migration (In Progress)
+**Status**: 🚧 **In Development** | **Tech**: Frontend-Backend Separation
 
-### ⚛️ Version 2.0 - React Migration (Planned)
-**Status**: 🚧 **In Planning** | **Tech**: Frontend-Backend Separation
-
-| Component | v1.0 (Current) | v2.0 (Planned) |
-|-----------|----------------|----------------|
+| Component | v1.0 (Current) | v2.0 (Target) |
+|-----------|----------------|---------------|
 | **Frontend** | Pug + Vanilla JS | React + TypeScript |
-| **State Management** | Server-side | Redux Toolkit |
+| **User Registration** | API only | Complete signup flow |
+| **State Management** | Server-side | Context API / Zustand |
 | **Routing** | Express routes | React Router |
-| **Styling** | CSS + Pug | Styled Components / Tailwind |
+| **Styling** | CSS + Pug | Tailwind CSS |
 | **API Calls** | Form submissions | Axios + React Query |
 | **Deployment** | Railway (Monolith) | Vercel (Frontend) + Railway (API) |
 
-**Benefits**: Better UX, faster navigation, modern development experience
+**New Features**:
+- ✨ **User Registration** - Complete signup flow with email verification
+- 🎨 **Modern UI/UX** - Enhanced user interface and interactions
+- ⚡️ **SPA Experience** - Faster navigation without page reloads
+
+
+### 🔧 Version 3.0 - Feature Enhancement (Future)
+**New Features**:
+- 👨‍💼 **Admin Dashboard** - Tour & user management interface
+- ⭐ **Review System** - Users can add, edit, delete reviews
+- 📊 **Content Management** - Admin can manage tours, users, bookings
+- 🔍 **Advanced Search** - Filter tours by various criteria
+
+> **Note**: All admin APIs are already implemented in the backend!
 
 ---
 
@@ -100,11 +127,10 @@ cp config.env.example config.env
 npm run dev
 ```
 
+---
 
 ## 🤝 Contributing
 
 This project is part of a learning journey. Feel free to explore the code and suggest improvements!
-
----
 
 **Built with ❤️ for learning modern web development**
