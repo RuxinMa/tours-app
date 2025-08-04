@@ -1,123 +1,141 @@
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { clearError, loginUser } from '../store/slices/authSlice';
+import { loginUser, clearError } from '../store/slices/authSlice';
+
+import FormInput from '../components/common/FormInput';
+import Button from '../components/common/Button';
+import Alert from '../components/common/Alert';
 
 const LoginPage = () => {
-
-  /* State Management */
-  // 1️⃣ Local state for login form
+  // State Management
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // 2️⃣ Redux state for user authentication
+  // Redux state
   const dispatch = useAppDispatch();
-  const { isLoading, error, isAuthenticated } = useAppSelector((state) => state.auth);
+  const { user, isLoading, error, isAuthenticated } = useAppSelector((state) => state.auth);
 
-  /* Handlers */
-  // 1️⃣ Handle form submission
+  // Handlers
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-  if (!email || !password) {
+    if (!email || !password) {
       console.error('Email and password are required');
       return;
-  }
-    // Dispatch login action
+    }
+    
     await dispatch(loginUser({ email, password }));
   };
 
-  // 2️⃣ Handle input changes
   const handleInputChange = () => {
-    // Reset error state on input change
     if (error) {
-      dispatch(clearError()); // Clear error when user starts typing
+      dispatch(clearError());
     }
   };
 
-  // 3️⃣ Handle error messages
-  if (error) {
-    console.error('Login failed:', error);
-  }
+  // Success state
+  if (isAuthenticated && user) {
+    return (
+      <div className="page-background-success">
+        <div className="card-container-sm">
+          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 className="success-title">Welcome Back!</h2>
+          <p className="text-gray-600 mb-4">You have successfully logged in to Natours</p>
 
-  /* Effects */
-  // Redirect to home page if authenticated
-  if (isAuthenticated) {
-    // window.location.href = '/'; // Redirect to home page
-     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="bg-green-100 p-8 rounded-lg">
-          <h2 className="text-2xl font-bold text-green-800">Logged in!</h2>
+          {/* User Information */}
+          <div className="bg-gray-50 p-4 rounded text-left text-sm">
+            <div><strong>Name:</strong> {user.name}</div>
+            <div><strong>Email:</strong> {user.email}</div>
+            <div><strong>Role:</strong> {user.roles}</div>
+          </div>
+          
+          <Button 
+            onClick={() => window.location.reload()}
+            variant="secondary"
+            size="sm"
+            className="mt-4 max-w-xs mx-auto"
+          >
+            Go to Dashboard
+          </Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-red-500 text-white p-8 min-h-screen flex items-center justify-center">
-      <div className="max-w-md w-full space-y-8">
+    <div className="page-background-auth">
+      <div className="card-container">
+
         {/* Title */}
-        <h1 className="text-2xl font-bold text-center text-gray-900">
-          Log into your account
+        <h1 className="form-title">
+          Welcome to Tours App
         </h1>
 
+        {/* Error message*/}
+        {error && (
+          <Alert type="error">
+            {error}
+          </Alert>
+        )}
+
         {/* Login Form */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            {/* EMAIL */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  handleInputChange();
-                }}
-              />
-            </div>
-        
-            {/* PASSWORD */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  handleInputChange();
-                }}
-              />
-            </div>
-          </div>
-          {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading || !email || !password} // Disable if loading or fields are empty
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
-                isLoading || !email || !password
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-              }`}
-            >
-              {isLoading ? 'Loading...' : 'Login'}
-            </button>
-          </div>
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          
+          {/* Email Input*/}
+          <FormInput
+            id="email"
+            name="email"
+            type="email"
+            label="Email address"
+            placeholder="Enter your email address"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              handleInputChange();
+            }}
+            required
+          />
+
+          {/* Password Input */}
+          <FormInput
+            id="password"
+            name="password"
+            type="password"
+            label="Password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              handleInputChange();
+            }}
+            required
+          />
+
+          {/* Submit */}
+          <Button
+            type="submit"
+            loading={isLoading}
+            disabled={!email || !password}
+            variant="primary"
+            size="md"
+          >
+            Log in
+          </Button>
         </form>
+
+        {/* Registration section */}
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-500">
+            Don't have an account? 
+            <span className="text-blue-600 hover:text-blue-700 cursor-pointer font-semibold ml-1">
+              Sign up
+            </span>
+          </p>
+        </div>
       </div>
     </div>
   );
