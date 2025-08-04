@@ -10,6 +10,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 // Import sub-application routes
 const tourRouter = require('./routes/tourRoutes');
@@ -34,6 +35,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use(express.static(`${__dirname}/public`));
 
 // 3️⃣ GLOBAL MIDDLEWARES
+// Enable CORS (Cross-Origin Resource Sharing)
+if (process.env.NODE_ENV === 'development') {
+  app.use(
+    cors({
+      origin: 'http://localhost:8000',
+      credentials: true,
+    }),
+  );
+}
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(
+    cors({
+      origin: process.env.CLIENT_URL,
+      credentials: true,
+    }),
+  );
+}
+
 // Set security HTTP headers
 app.use(
   helmet({

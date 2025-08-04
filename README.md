@@ -87,11 +87,11 @@ Use these pre-configured accounts to explore the application:
 |-----------|----------------|---------------|
 | **Frontend** | Pug + Vanilla JS | React + TypeScript |
 | **User Registration** | API only | Complete signup flow |
-| **State Management** | Server-side | Context API / Zustand |
+| **State Management** | Server-side | Redux Toolkit |
 | **Routing** | Express routes | React Router |
 | **Styling** | CSS + Pug | Tailwind CSS |
-| **API Calls** | Form submissions | Axios + React Query |
-| **Deployment** | Railway (Monolith) | Vercel (Frontend) + Railway (API) |
+| **API Calls** | Form submissions | Axios + RTK Query |
+| **Deployment** | Railway (Monolith) | Vercel (Frontend) + Railway (Backend) |
 
 **New Features**:
 - ✨ **User Registration** - Complete signup flow with email verification
