@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { loginUser, clearError } from '../store/slices/authSlice';
 
@@ -100,6 +100,7 @@ const LoginPage = () => {
             disabled={!email || !password}
             variant="primary"
             size="md"
+            fullWidth={true}
           >
             Log in
           </Button>
@@ -109,9 +110,11 @@ const LoginPage = () => {
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-500">
             Don't have an account? 
-            <span className="text-blue-600 hover:text-blue-700 cursor-pointer font-semibold ml-1">
+            <Link 
+              to="/register"
+              className="text-blue-600 hover:text-blue-700 cursor-pointer font-semibold ml-1">
               Sign up
-            </span>
+            </Link>
           </p>
         </div>
       </div>

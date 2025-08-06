@@ -8,6 +8,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize;
   loading?: boolean;
   children: ReactNode;
+  fullWidth?: boolean // full width button
 }
 
 const Button = ({ 
@@ -17,10 +18,12 @@ const Button = ({
   disabled,
   className = '',
   children,
+  fullWidth,
   ...props 
 }: ButtonProps) => {
+  const widthClass = fullWidth ? 'w-full' : 'w-auto';
   
-  const baseClasses = 'w-full flex justify-center items-center rounded-xl font-semibold transition duration-300 transform focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const baseClasses = `${widthClass} px-6 flex justify-center items-center rounded-xl font-semibold transition duration-300 transform focus:outline-none focus:ring-2 focus:ring-offset-2`;
   
   const variantClasses = {
     primary: loading || disabled 

@@ -9,7 +9,20 @@ const FormInput = ({
   label, 
   error, 
   className = '', 
-  ...props 
+  ...props // Spread the rest of the props
+
+  // ✅ pass any valid input attributes here, such as:
+  // - onChange?: ChangeEventHandler<HTMLInputElement>
+  // - onBlur?: FocusEventHandler<HTMLInputElement>  
+  // - onFocus?: FocusEventHandler<HTMLInputElement>
+  // - value?: string
+  // - placeholder?: string
+  // - type?: string
+  // - disabled?: boolean
+  // - className?: string
+  // - id?: string
+  // - name?: string
+  // ...
 }: FormInputProps) => {
   return (
     <div className="space-y-2">
@@ -29,7 +42,7 @@ const FormInput = ({
             ${error ? 'border-red-300 focus:ring-red-500' : ''}
             ${className}
           `}
-          {...props}
+          {...props} // Spread the rest of the props
         />
       </div>
       {error && (

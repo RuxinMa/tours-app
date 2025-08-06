@@ -51,6 +51,44 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+// 4️⃣ 注册
+export const registerUser = createAsyncThunk(
+  'auth/register',
+  async ({ name, email, password }: { name: string; email: string; password: string }, { rejectWithValue }) => {
+    try {
+      // // 🧪 mock data for testing
+      // if (process.env.NODE_ENV === 'development') {
+      //   return {
+      //     id: 'mock-user-id',
+      //     name: name,
+      //     email: email,
+      //     photo: null,
+      //     roles: 'user' // Mock role
+      //   };
+      // }
+
+      // if (email === 'duplicate@test.com') {
+      //     throw {
+      //       response: {
+      //         data: {
+      //           error: { code: 11000 },
+      //           message: 'Duplicate key error'
+      //         }
+      //       }
+      //     };
+        // }
+      
+      const response = await api.post<ApiResponse<User>>('/users/signup', { name, email, password });
+      return response.data.data.doc;
+    } catch (error: any) {
+      if (error.response?.data?.error?.code === 11000) {
+        return rejectWithValue('Email already exists. Please use a different email.');
+      }
+      return rejectWithValue(error.response?.data?.message || 'Registration failed');
+    }
+  }
+);
+
 // Slice for authentication state management
 const authSlice = createSlice({
   name: 'auth',
@@ -120,7 +158,24 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
         state.error = null;
-      });
+      })
+      // 📝 Register User
+      .addCase(registerUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload;
+        state.isAuthenticated = true;
+        state.isInitialized = true;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.user = null;
+        state.isAuthenticated = false;
+        state.error = action.payload as string;
+      })
   },
 });
 
