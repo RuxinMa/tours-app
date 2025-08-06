@@ -83,7 +83,6 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
         state.isInitialized = true;
-        state.error = action.payload as string;
       })
       
       // 🔐 Login User

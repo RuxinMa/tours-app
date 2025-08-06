@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { loginUser, clearError } from '../store/slices/authSlice';
 
@@ -7,15 +8,19 @@ import Button from '../components/common/Button';
 import Alert from '../components/common/Alert';
 
 const LoginPage = () => {
-  // State Management
+  /* State Management */
+  // 1️⃣ Local state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // Redux state
+  // 2️⃣ Location state for redirect after login
+  const location = useLocation();
+
+  // 3️⃣ Redux state
   const dispatch = useAppDispatch();
   const { user, isLoading, error, isAuthenticated } = useAppSelector((state) => state.auth);
 
-  // Handlers
+  /* Handlers */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -23,47 +28,20 @@ const LoginPage = () => {
       console.error('Email and password are required');
       return;
     }
-    
-    await dispatch(loginUser({ email, password }));
+
+    await dispatch(loginUser({ email, password })); // Dispatch login action
   };
 
   const handleInputChange = () => {
     if (error) {
-      dispatch(clearError());
+      dispatch(clearError()); // Clear error when user starts typing
     }
   };
 
-  // Success state
+  /* Success State */
   if (isAuthenticated && user) {
-    return (
-      <div className="page-background-success">
-        <div className="card-container-sm">
-          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h2 className="success-title">Welcome Back!</h2>
-          <p className="text-gray-600 mb-4">You have successfully logged in to Natours</p>
-
-          {/* User Information */}
-          <div className="bg-gray-50 p-4 rounded text-left text-sm">
-            <div><strong>Name:</strong> {user.name}</div>
-            <div><strong>Email:</strong> {user.email}</div>
-            <div><strong>Role:</strong> {user.roles}</div>
-          </div>
-          
-          <Button 
-            onClick={() => window.location.reload()}
-            variant="secondary"
-            size="sm"
-            className="mt-4 max-w-xs mx-auto"
-          >
-            Go to Dashboard
-          </Button>
-        </div>
-      </div>
-    );
+    const redirectTo = location.state?.from?.pathname || '/';
+    return <Navigate to={redirectTo} replace />;
   }
 
   return (

@@ -16,8 +16,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </Provider>
   </React.StrictMode>,
 )
-/*   
-index.html
+
+/*   index.html
         ↓
 Get <div id="root"></div>
         ↓

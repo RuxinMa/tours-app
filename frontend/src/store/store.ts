@@ -5,6 +5,9 @@ import authReducer from './slices/authSlice';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    // tour: tourReducer,
+    // review: reviewReducer,
+    // booking: bookingReducer,
   },
   devTools: process.env.NODE_ENV !== 'production',
 });
