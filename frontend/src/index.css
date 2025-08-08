@@ -46,7 +46,7 @@
     @apply text-3xl font-bold text-gray-900 mb-2;
   } */
 
-  /* Navigation */
+  /* 🗺️ Navigation */
   .navigation {
     @apply flex justify-between items-center md:mx-16 mx-4;
   }
@@ -70,11 +70,16 @@
     @apply rounded-lg hover:scale-110 transition-colors;
   }
 
-  /* logo */
+  /* 😊 logo */
   .logo-small {
     @apply md:h-8 h-4;
   }
   .avatar {
     @apply md:h-10 h-6 rounded-full;
+  }
+
+  /* 🗺️ Button */
+  . {
+    @apply mt-4 w-1/3 h-12;
   }
 }

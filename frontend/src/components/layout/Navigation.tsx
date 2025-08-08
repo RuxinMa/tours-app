@@ -5,8 +5,8 @@ import { logoutUser } from '../../store/slices/authSlice';
 
 import logo from '../../assets/logo-white.png';
 import defaultImg from '../../assets/default.jpg';
-import Modal from './Modal';
-import Button from './Button';
+import Modal from '../common/Modal';
+import Button from '../common/Button';
 
 const Navigation = () => {
   /* State Management */
@@ -86,7 +86,7 @@ const Navigation = () => {
           <Button
             variant="danger"
             size="sm"
-            className="mt-4 w-1/3 h-12"
+            className="modal-btn"
             onClick={handleConfirmLogout} // Confirm logout
             loading={isLoading}
             disabled={isLoading} // Disable button while loading
@@ -97,7 +97,7 @@ const Navigation = () => {
           <Button
             variant="secondary"
             size="sm"
-            className="mt-4 w-1/3 h-12"
+            className="modal-btn"
             onClick={() => setShowLogoutModal(false)} // Close modal
             disabled={isLoading} // Disable button while loading
             fullWidth={false}
