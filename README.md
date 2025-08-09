@@ -4,9 +4,9 @@ A full-stack tour booking web application built with Node.js, Express, and Mongo
 
 ## 🌐 Live Demo
 
-**🚀 [Experience the App](toursapp-production.up.railway.app)**
+**🚀 [Experience the App](https://toursapp-production.up.railway.app/)**
 
-**📋 [API Documentation](documenter.getpostman.com/view/46845096/2sB3B8st5d)**
+**📋 [API Documentation](https://documenter.getpostman.com/view/46845096/2sB3B8st5d)**
 
 *Try booking a tour with test payment functionality!*
 
