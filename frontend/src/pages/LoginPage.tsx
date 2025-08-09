@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { loginUser, clearError } from '../store/slices/authSlice';
+import { useAuth } from '../hooks/useAuth';
 
 import FormInput from '../components/common/FormInput';
 import Button from '../components/common/Button';
@@ -16,9 +15,15 @@ const LoginPage = () => {
   // 2️⃣ Location state for redirect after login
   const location = useLocation();
 
-  // 3️⃣ Redux state
-  const dispatch = useAppDispatch();
-  const { user, isLoading, error, isAuthenticated } = useAppSelector((state) => state.auth);
+  // 3️⃣ Use custom hook for authentication logic
+  const { 
+  user, 
+  isLoading, 
+  error, 
+  isAuthenticated, 
+  login, 
+  clearError 
+} = useAuth();
 
   /* Handlers */
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,12 +34,12 @@ const LoginPage = () => {
       return;
     }
 
-    await dispatch(loginUser({ email, password })); // Dispatch login action
+    await login(email, password);
   };
 
   const handleInputChange = () => {
     if (error) {
-      dispatch(clearError()); // Clear error when user starts typing
+      clearError();
     }
   };
 

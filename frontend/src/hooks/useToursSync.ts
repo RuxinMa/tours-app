@@ -118,18 +118,30 @@ export const useToursSync = () => {
   // 4️⃣ Initialize: URL -> Redux
   useEffect(() => {
     if (!isInitialized) {
-      console.log('🔄 Syncing URL parameters with Redux state...');
+      // 🎯 初始化时，解析 URL 参数并更新 Redux 状态
+      console.log('🔄 Initial sync: URL → Redux');
       const urlParams = parseUrlParams(searchParams); // Parse the URL parameters
 
       // Update the Redux state with parsed filters
-      dispatch(updateFilters(urlParams)); 
-      
-      // Update the URL with the new filters
-      dispatch(fetchTours({
-        params: urlParams,
-        loadingType: 'initial'
-      }));
+      dispatch(updateFilters(urlParams));
+      dispatch(fetchTours({ params: urlParams, loadingType: 'initial' }));
+    } else {
+      // 🎯 处理 URL 直接变化（如浏览器前进后退）
+      const urlParams = parseUrlParams(searchParams);
+      const currentParams = {
+        page: pagination.currentPage,
+        limit: pagination.limit,
+        ...filters
+      };
+
+      if (JSON.stringify(currentParams) !== JSON.stringify(urlParams)) {
+        console.log('🔄 Browser navigation: URL → Redux');
+
+        dispatch(updateFilters(urlParams));
+        dispatch(fetchTours({ params: urlParams, loadingType: 'search' }));
+      }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInitialized, searchParams, dispatch]);
 
   // 📚 Handling User Search: Redux -> URL
@@ -140,15 +152,17 @@ export const useToursSync = () => {
     const updatedFilters = { ...filters, ...newFilters };
     dispatch(updateFilters(updatedFilters));
 
-    // 2) Update the URL with the new filters
+    // 2) Build the URL with the new filters
     const newUrlParams = buildUrlParams({ 
-      ...updatedFilters, 
+      ...updatedFilters,
       page: 1, 
       limit: pagination.limit || 12 
     });
-    setSearchParams(newUrlParams, { replace: true }); // Replace the current URL without adding to history
 
-    // 3) Fetch tours with the updated filters
+    // 3)  Replace the current URL without adding to history
+    setSearchParams(newUrlParams, { replace: true });
+
+    // 4) Fetch tours with the updated filters
     dispatch(fetchTours({
       params: { 
         ...updatedFilters, 
@@ -172,9 +186,11 @@ export const useToursSync = () => {
       page, 
       limit: pagination.limit || 12
     });
-    setSearchParams(newUrlParams, { replace: true }); // Replace the current URL without adding to history
 
-    // 3) Fetch tours with the updated filters
+    // 3) Replace the current URL without adding to history
+    setSearchParams(newUrlParams, { replace: true });
+
+    // 4) Fetch tours with the updated filters
     dispatch(fetchTours({
       params: { 
         ...filters, 
@@ -185,7 +201,7 @@ export const useToursSync = () => {
     }));
   };
 
-  // Return the handlers for search and pagination
+  // 5️⃣ Return the handlers for search and pagination
   return {
     handleSearch,
     handlePagination,

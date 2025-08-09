@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { logoutUser } from '../../store/slices/authSlice';
+import { useAuth } from '../../hooks/useAuth';
 
 import logo from '../../assets/logo-white.png';
 import defaultImg from '../../assets/default.jpg';
@@ -10,18 +9,8 @@ import Button from '../common/Button';
 
 const Navigation = () => {
   /* State Management */
-  // 1️⃣ Local state for modal visibility
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-
-  // 2️⃣ Redux state
-  const { 
-    user,  // User object
-    isLoading,  // Loading state
-    isAuthenticated  // Authentication status
-  } = useAppSelector((state) => state.auth);
-
-  // 3️⃣ Dispatch function
-  const dispatch = useAppDispatch(); 
+  const { user, isAuthenticated, isLoading, logout } = useAuth(); // Use custom hook for auth state
 
   // const isAuthenticated = true;  // ❇️ for testing
   const userName = user?.name || 'Guest';
@@ -34,14 +23,13 @@ const Navigation = () => {
   };
 
   const handleConfirmLogout = () => {
-    dispatch(logoutUser()); // Dispatch logout action
+    logout(); // Call logout function from custom hook
     setShowLogoutModal(false); // Close modal after logout
   };
 
   const handleGoHome = () => {
     navigate('/');
   };
-
 
   return (
     <div className="navigation-container">
@@ -82,10 +70,10 @@ const Navigation = () => {
         title="Confirm Logout"
       >
         <p className='text-center m-4'>Are you sure you want to logout?</p>
-        <div className="flex items-center justify-around mt-4">
+        <div className="flex items-center justify-around mt-10">
           <Button
             variant="danger"
-            size="sm"
+            size="md"
             className="modal-btn"
             onClick={handleConfirmLogout} // Confirm logout
             loading={isLoading}
@@ -96,7 +84,7 @@ const Navigation = () => {
           </Button>
           <Button
             variant="secondary"
-            size="sm"
+            size="md"
             className="modal-btn"
             onClick={() => setShowLogoutModal(false)} // Close modal
             disabled={isLoading} // Disable button while loading

@@ -35,5 +35,5 @@ export interface Tour {
   startDates: string[];
   slug: string;
   durationWeeks?: number;
-  createdAt: Date; 
+  createdAt: string; 
 }

@@ -1,24 +1,20 @@
 import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
-import { useAppSelector, useAppDispatch } from './hooks/redux';
-import { initializeAuth } from './store/slices/authSlice';
+import { useAuth } from './hooks/useAuth';
 import AppRoutes from './routes/AppRoutes';
 
 
 const AppContent = () => {
-  // 1）Dispatch to initialize auth state
-  const dispatch = useAppDispatch(); 
+  // 1）Get authentication state from the custom hook
+  const { initializeAuth, isInitialized } = useAuth();
 
-  // 2）Check if auth state is initialized
-  const { isInitialized } = useAppSelector(state => state.auth);
-
-  // 3）Initialize authentication status when the application starts
+  // 2） Check if the auth state is initialized
   useEffect(() => {
-    dispatch(initializeAuth());
-  }, [dispatch]);
+    initializeAuth();
+  }, [initializeAuth]);
 
-  // 4）If not initialized, show a loading state or empty div
+  // 3）If not initialized, show a loading state or empty div
   if (!isInitialized) {
     return <div className="min-h-screen bg-gray-50"></div>;
   }

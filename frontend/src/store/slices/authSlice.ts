@@ -1,6 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { User, AuthState, ApiResponse } from '../../types';
-import api from '../../services/api';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { User, AuthState } from '../../types';
 
 const initialState: AuthState = {
   user: null,
@@ -10,176 +9,68 @@ const initialState: AuthState = {
   isInitialized: false,
 };
 
-/* Async Thunks for Authentication */
- // 1️⃣ 被动检查 - 初始化认证状态
-export const initializeAuth = createAsyncThunk(
-  'auth/initialize', // Initialize authentication state
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await api.get<ApiResponse<User>>('/users/me');
-      return response.data.data.doc;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to initialize');
-    }
-  }
-);
-
-// 2️⃣ 主动登录
-export const loginUser = createAsyncThunk(
-  'auth/login',
-  async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
-    try {
-      const response = await api.post<ApiResponse<User>>('/users/login', { email, password });
-      return response.data.data.doc;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Login failed');
-    }
-  }
-);
-
-// 3️⃣ 主动登出
-export const logoutUser = createAsyncThunk(
-  'auth/logout',
-  async (_, { rejectWithValue }) => {
-    try {
-      await api.get('/users/logout');
-      return null;
-    } catch (error: any) {
-      // Even if backend logout fails, frontend should clear state
-      return null;
-    }
-  }
-);
-
-// 4️⃣ 注册
-export const registerUser = createAsyncThunk(
-  'auth/register',
-  async ({ name, email, password }: { name: string; email: string; password: string }, { rejectWithValue }) => {
-    try {
-      // // 🧪 mock data for testing
-      // if (process.env.NODE_ENV === 'development') {
-      //   return {
-      //     id: 'mock-user-id',
-      //     name: name,
-      //     email: email,
-      //     photo: null,
-      //     roles: 'user' // Mock role
-      //   };
-      // }
-
-      // if (email === 'duplicate@test.com') {
-      //     throw {
-      //       response: {
-      //         data: {
-      //           error: { code: 11000 },
-      //           message: 'Duplicate key error'
-      //         }
-      //       }
-      //     };
-        // }
-      
-      const response = await api.post<ApiResponse<User>>('/users/signup', { name, email, password });
-      return response.data.data.doc;
-    } catch (error: any) {
-      if (error.response?.data?.error?.code === 11000) {
-        return rejectWithValue('Email already exists. Please use a different email.');
-      }
-      return rejectWithValue(error.response?.data?.message || 'Registration failed');
-    }
-  }
-);
-
-// Slice for authentication state management
+// ONLY STATE MANAGEMENT - NO ASYNC LOGIC HERE
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // sync operations
+    // Set user information (after successful login/registration/check)
+    setUser: (state, action: PayloadAction<User>) => {
+      state.user = action.payload;
+      state.isAuthenticated = true;
+      state.error = null;
+      state.isInitialized = true;
+    },
+
+    // Clear user information (after logout or auth failure)
+    clearUser: (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      state.error = null;
+      state.isInitialized = true;
+    },
+
+    // Set loading state
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    },
+
+    // Set error message
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload;
+      state.isLoading = false; // Stop loading when error occurs
+    },
+
+    // Clear error message
     clearError: (state) => {
       state.error = null;
     },
-    updateUser: (state, action) => {
+
+    // Update user profile information
+    updateUser: (state, action: PayloadAction<Partial<User>>) => {
       if (state.user) {
         state.user = { ...state.user, ...action.payload };
       }
     },
+
+    // Set initialization status (used during app startup)
+    setInitialized: (state, action: PayloadAction<boolean>) => {
+      state.isInitialized = action.payload;
+    },
   },
-  extraReducers: (builder) => {
-    builder
-      // 🔄 Initialize Auth
-      .addCase(initializeAuth.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(initializeAuth.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.user = action.payload;
-        state.isAuthenticated = true;
-        state.isInitialized = true;
-      })
-      .addCase(initializeAuth.rejected, (state, action) => {
-        state.isLoading = false;
-        state.user = null;
-        state.isAuthenticated = false;
-        state.isInitialized = true;
-      })
-      
-      // 🔐 Login User
-      .addCase(loginUser.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.user = action.payload;
-        state.isAuthenticated = true;
-        state.error = null;
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.user = null;
-        state.isAuthenticated = false;
-        state.error = action.payload as string;
-      })
-      
-      // 🚪 Logout User
-      .addCase(logoutUser.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(logoutUser.fulfilled, (state) => {
-        state.isLoading = false;
-        state.user = null;
-        state.isAuthenticated = false;
-        state.error = null;
-      })
-      .addCase(logoutUser.rejected, (state) => {
-        // Even if logout fails, clear the state
-        state.isLoading = false;
-        state.user = null;
-        state.isAuthenticated = false;
-        state.error = null;
-      })
-      // 📝 Register User
-      .addCase(registerUser.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(registerUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.user = action.payload;
-        state.isAuthenticated = true;
-        state.isInitialized = true;
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.user = null;
-        state.isAuthenticated = false;
-        state.error = action.payload as string;
-      })
-  },
+  
+  // ✅ No more extraReducers - all async logic moved to service layer
 });
 
-export const { clearError, updateUser } = authSlice.actions;
+// Export actions for use in hooks
+export const {
+  setUser,
+  clearUser,
+  setLoading,
+  setError,
+  clearError,
+  updateUser,
+  setInitialized,
+} = authSlice.actions;
 
 export default authSlice.reducer;

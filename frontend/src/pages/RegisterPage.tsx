@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { registerUser, clearError } from '../store/slices/authSlice';
+import { useAuth } from '../hooks/useAuth';
 
 import FormInput from '../components/common/FormInput';
 import Button from '../components/common/Button';
@@ -19,9 +18,15 @@ const RegisterPage = () => {
   // 2️⃣ Location state for redirect after login
   const location = useLocation();
 
-  // 3️⃣ Redux state
-  const dispatch = useAppDispatch();
-  const { user, isLoading, error, isAuthenticated } = useAppSelector((state) => state.auth);
+  // 3️⃣ Use custom hook for authentication logic
+  const { 
+    user, 
+    isLoading, 
+    error, 
+    isAuthenticated, 
+    register, 
+    clearError 
+  } = useAuth();
 
   /* Handlers */
   const handlePasswordValidation = () => {
@@ -41,12 +46,12 @@ const RegisterPage = () => {
       console.error('Name, email, password, and confirm password are required');
       return;
     }
-    await dispatch(registerUser({ name, email, password })); // Dispatch register action
+    await register({ name, email, password }); // Dispatch register action
   };
 
   const handleInputChange = () => {
     if (error) {
-      dispatch(clearError()); // Clear error when user starts typing
+      clearError(); // Clear error when user starts typing
     }
   };
 

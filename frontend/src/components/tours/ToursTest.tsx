@@ -5,14 +5,12 @@ import { useToursSync } from '../../hooks/useToursSync';
 import type { Difficulty } from '../../types/tour.types';
 
 export const ToursTest: React.FC = () => {
-  const { tours, isLoading, error, pagination, filters } = useAppSelector(state => ({
-    tours: state.tours.data.tours,
-    isLoading: state.tours.ui.isLoading,
-    error: state.tours.ui.error,
-    pagination: state.tours.data.pagination,
-    filters: state.tours.data.filters,
-  }));
-  
+  const tours = useAppSelector(state => state.tours.data.tours);
+  const isLoading = useAppSelector(state => state.tours.ui.isLoading);
+  const error = useAppSelector(state => state.tours.ui.error);
+  const pagination = useAppSelector(state => state.tours.data.pagination);
+  const filters = useAppSelector(state => state.tours.data.filters);
+
   const { handleSearch, handlePagination } = useToursSync();
 
   const handleDifficultyChange = (difficulty: Difficulty) => {
@@ -27,7 +25,7 @@ export const ToursTest: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Tours 测试页面</h1>
+      <h1 className="text-2xl font-bold mb-4">Tours Testing</h1>
       
       {/* 调试信息 */}
       <div className="bg-gray-100 p-4 mb-4 rounded">
@@ -96,6 +94,17 @@ export const ToursTest: React.FC = () => {
               <p>时长：{tour.duration}天</p>
             </div>
           ))}
+        </div>
+      )}
+      {tours.length === 0 && !isLoading.initial && !isLoading.search && (
+        <div className="text-center py-8">
+          <p className="text-gray-500 text-lg">没有找到符合条件的tours</p>
+          <button 
+            onClick={() => handleSearch({})} 
+            className="mt-2 text-blue-500 underline"
+          >
+            清除筛选条件
+          </button>
         </div>
       )}
     </div>

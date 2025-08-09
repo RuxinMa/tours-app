@@ -5,7 +5,7 @@ export interface User {
     name: string;
     email: string;
     photo: string | null;
-    roles: UserRoles; // Union type for roles
+    role: UserRoles; // Union type for roles
 } 
 
 export interface AuthState {
