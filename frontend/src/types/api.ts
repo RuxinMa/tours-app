@@ -1,5 +1,6 @@
 export interface ApiResponse<T> {
-  success: boolean;
+  success: "success" | "fail" | "error";
+  results?: number;
   data: T;
   message?: string;
 }
@@ -7,4 +8,5 @@ export interface ApiResponse<T> {
 export interface ApiError {
   status: string;
   message: string;
+  code?: string;
 }

@@ -1,4 +1,4 @@
-// import axios from 'axios';
+import axios from 'axios';
 
 // // Create an Axios instance with a base URL
 // const api = axios.create({
@@ -34,9 +34,6 @@
 
 // export default api;
 
-// src/services/api.ts (临时修改用于测试)
-import axios from 'axios';
-
 const api = axios.create({
   baseURL: 'http://localhost:8000/api/v1',
   withCredentials: true,
@@ -44,15 +41,14 @@ const api = axios.create({
 
 // 临时拦截器 - 仅用于测试 fulfilled 状态
 api.interceptors.request.use((config) => {
-  // 检查是否是登录请求且使用测试凭据
   if (config.url === '/users/login' && config.data) {
     const { email, password } = config.data;
     
-    // 模拟成功登录的测试凭据
+    // 模拟登录请求
     if (email === 'admin@tours.io' && password === 'test1234') {
       console.log('🎭 拦截登录请求，返回模拟成功响应');
       
-      // 返回一个 Promise，模拟成功响应
+      // 模拟成功响应
       return Promise.reject({
         response: {
           status: 200,

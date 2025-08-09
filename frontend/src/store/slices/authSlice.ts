@@ -13,7 +13,7 @@ const initialState: AuthState = {
 /* Async Thunks for Authentication */
  // 1️⃣ 被动检查 - 初始化认证状态
 export const initializeAuth = createAsyncThunk(
-  'auth/initialize',
+  'auth/initialize', // Initialize authentication state
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get<ApiResponse<User>>('/users/me');
@@ -94,6 +94,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    // sync operations
     clearError: (state) => {
       state.error = null;
     },
