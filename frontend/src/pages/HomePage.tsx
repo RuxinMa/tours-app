@@ -3,9 +3,9 @@ import ToursList from '../components/tours/ToursList';
 
 const HomePage = () => {
   return (
-      <MainLayout >
-        <ToursList />
-      </MainLayout>
+    <MainLayout >
+      <ToursList />
+    </MainLayout>
   );
 };
 

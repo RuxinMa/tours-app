@@ -16,7 +16,7 @@ const mockToursCall = async (): Promise<Tour[]> => {
   await new Promise(resolve => setTimeout(resolve, 1000));
   
   console.log('🎭 Mock: Fetching all tours');
-  return generateMockTours();
+  return generateMockTours(); // Generate mock tours data
 };
 
 // 🚨 Simple tours-specific error handling
@@ -55,7 +55,6 @@ const transformToursError = (error: unknown): ToursError => {
 export const toursService = {
   /**
    * Fetch all tours (no filters, no pagination)
-   * Simple data fetching for MVP
    */
   async fetchAllTours(): Promise<Tour[]> {
     try {

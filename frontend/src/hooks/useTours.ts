@@ -1,8 +1,7 @@
-/* 🎯 Business logic layer for tours - Phase 1 MVP
+/* 🎯 Business logic layer for tours
   - Simple data fetching without complex filtering
   - Focus on core functionality: list + detail
 */
-
 import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from './redux';
 import { toursService, ToursError } from '../services/toursService';

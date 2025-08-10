@@ -1,9 +1,11 @@
 /* Basic Types for Tours */
 export interface Location {
+  id?: string;
   type: "Point";
   coordinates: [number, number]; // [longitude, latitude]
   description: string;
-  day?: number;
+  day?: number; // Optional day for multi-day tours
+  address?: string; // Optional address for startLocation
 }
 
 export interface Guide {
