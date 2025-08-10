@@ -51,7 +51,7 @@ const Navigation = () => {
               {/* User Info */}
               <button onClick={() => handleGoToProfile()} className="profile-button">
                 <img src={user?.photo || defaultImg} alt="Profile" className="avatar" />
-                <span>{userName}</span>
+                <span>{userName.split(' ')[0]}</span>
               </button>
             </>
            ):(

@@ -82,7 +82,7 @@ if (isMockEnabled()) {
             data: {
               doc: {
                 id: 'test-user-123',
-                name: 'User',
+                name: 'Test User',
                 email: 'admin@tours.io',
                 role: 'user'
               }
@@ -110,7 +110,7 @@ if (isMockEnabled()) {
               data: {
                 doc: {
                   id: 'test-user-123',
-                  name: 'User',
+                  name: 'Test User',
                   email: 'admin@tours.io',
                   role: 'user'
                 }

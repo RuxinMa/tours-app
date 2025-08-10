@@ -51,7 +51,7 @@ const LoginPage = () => {
 
   return (
     <div className="page-background-auth">
-      <div className="card-container">
+      <div className="auth-container">
 
         {/* Title */}
         <h1 className="form-title">
@@ -117,7 +117,7 @@ const LoginPage = () => {
             Don't have an account? 
             <Link 
               to="/register"
-              className="text-blue-600 hover:text-blue-700 cursor-pointer font-semibold ml-1">
+              className="text-green-500 hover:text-green-600 cursor-pointer font-semibold ml-1">
               Sign up
             </Link>
           </p>

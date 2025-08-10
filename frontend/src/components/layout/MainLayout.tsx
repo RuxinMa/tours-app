@@ -5,7 +5,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="page-background-main">
       <Navigation />
-      <div className="pt-8 md:pt-12">
+      <div className="pt-6 md:pt-10 mb-4">
         {children}
       </div>
     </div>

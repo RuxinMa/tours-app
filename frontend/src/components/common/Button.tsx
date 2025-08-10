@@ -28,10 +28,10 @@ const Button = ({
   const variantClasses = {
     primary: loading || disabled 
       ? 'bg-gray-400 cursor-not-allowed text-white' 
-      : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:scale-105 shadow-lg hover:shadow-xl text-white focus:ring-blue-500',
+      : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 hover:scale-105 shadow-lg hover:shadow-xl text-white focus:ring-cyan-500',
     secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-500',
     danger: 'bg-red-500 hover:bg-red-600 text-white focus:ring-red-500',
-    success: 'bg-green-500 hover:bg-green-600 text-white focus:ring-green-500'
+    success: 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500'
   };
   
   const sizeClasses = {

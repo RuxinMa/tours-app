@@ -39,7 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 if (process.env.NODE_ENV === 'development') {
   app.use(
     cors({
-      origin: 'http://localhost:8000',
+      origin: ['http://localhost:8000', 'http://localhost:5173'],
       credentials: true,
     }),
   );
@@ -48,7 +48,11 @@ if (process.env.NODE_ENV === 'development') {
 if (process.env.NODE_ENV === 'production') {
   app.use(
     cors({
-      origin: process.env.CLIENT_URL,
+      origin: [
+        process.env.CLIENT_URL,
+        'http://localhost:8000',
+        'http://localhost:5173',
+      ],
       credentials: true,
     }),
   );

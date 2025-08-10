@@ -1,264 +1,89 @@
-import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
-import type { ToursState, LoadingState, FetchToursThunkArg } from '../../types/tours-store';
-import type { ToursFilters, ToursQueryParams, FetchToursResponse } from '../../types/tours-api';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Tour } from '../../types/tour.types';
 
-// Initial state for the tours slice
+// 🎯 Tours State 
+interface ToursState {
+  // 📊 Data
+  tours: Tour[];                 // All tours from API
+  selectedTour: Tour | null;     // Currently viewed tour (for detail page)
+  
+  // 🎨 UI State
+  isLoading: boolean;            // Single loading state
+  error: string | null;          // Error message
+  isInitialized: boolean;        // Has data been loaded initially
+}
+
+// 🎯 Initial state
 const initialState: ToursState = {
-  data: {
-    tours: [],
-    pagination: {
-      currentPage: 1,
-      totalPages: 1,
-      limit: 12, // Default limit for pagination
-      totalDocs: 0,
-      hasNextPage: false,
-      hasPrevPage: false,
-    },
-    filters: {
-      difficulty: undefined,
-      price: { gte: undefined, lte: undefined },
-      duration: { gte: undefined, lte: undefined },
-      ratingsAverage: { gte: undefined },
-      sort: '-createdAt', // Default sort by creation date
-    },
-  },
-  ui: {
-    isLoading: {
-      initial: false,
-      search: false,
-      pagination: false,
-    },
-    error: null,
-    isInitialized: false,
-    syncSource: null,
-  },
+  tours: [],
+  selectedTour: null,
+  isLoading: false,
+  error: null,
+  isInitialized: false,
 };
 
-// Async Thunk for fetching tours
-export const fetchTours = createAsyncThunk <{
-    tours: Tour[];
-    pagination: {
-      currentPage: number;
-      totalPages: number;
-      limit: number;
-      totalDocs: number;
-      hasNextPage: boolean;
-      hasPrevPage: boolean;
-    };
-    loadingType: string;
-  }, // 📊 Thunk Only for data fetching, no UI state
-  FetchToursThunkArg,
-  {
-    rejectValue: string;
-  }
->(
-  'tours/fetchTours',
-   async ({ params, loadingType }, { rejectWithValue }) => {
-      try {
-        console.log('🚀 API Request:', { params, loadingType });
-        const response = await mockApiCall(params);
-
-        const transformedTours = response.data.docs;
-        console.log('🚀 API Response:', response);
-
-        return {
-          tours: transformedTours,
-          pagination: {
-            currentPage: response.data.page,
-            totalPages: response.data.totalPages,
-            limit: response.data.limit,
-            totalDocs: response.data.totalDocs,
-            hasNextPage: response.data.hasNextPage,
-            hasPrevPage: response.data.hasPrevPage,
-          },
-          loadingType, // 传递给 reducer，用于状态管理
-        };
-      } catch (error: unknown) {
-        console.error('🚨 Error fetching tours:', error);
-        const errorMessage = error instanceof Error 
-          ? error.message 
-          : 'Failed to fetch tours';
-
-        return rejectWithValue(errorMessage);
-      }
-    }
-);
-
-// Mock API call function for demonstration purposes
-const mockApiCall = async (params: ToursQueryParams): Promise<FetchToursResponse> => {
-  // Simulate an API call with a delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  return {
-    status: "success",
-    data: {
-        docs: [
-          {
-            id: '1',
-            name: 'The Sea Explorer',
-            duration: 5,
-            maxGroupSize: 10,
-            difficulty: 'easy',
-            price: 399,
-            summary: 'A great tour to explore the sea with friends.',
-            imageCover: 'sea-explorer.jpg',
-            startLocation: {
-              type: 'Point',
-              coordinates: [0, 0],
-              description: 'Start Location',
-            },
-            locations: [],
-            startDates: ['2023-01-01'],
-            slug: 'the-sea-explorer',
-            images: [],
-            createdAt: "2025-08-09T13:13:44.000Z",
-          },
-          {
-            id: '2',
-            name: 'The Hiking Adventure',
-            duration: 10,
-            maxGroupSize: 10,
-            difficulty: 'medium',
-            price: 999,
-            summary: 'A great tour to explore the sea with friends.',
-            imageCover: 'hiking-adventure.jpg',
-            startLocation: {
-              type: 'Point',
-              coordinates: [0, 0],
-              description: 'Start Location',
-            },
-            locations: [],
-            startDates: ['2023-01-01'],
-            slug: 'the-hiking-adventure',
-            images: [],
-            createdAt:"2025-08-09T13:13:44.000Z",
-          },
-          {
-            id: '3',
-            name: 'The Forest Retreat',
-            duration: 5,
-            maxGroupSize: 10,
-            difficulty: 'difficult',
-            price: 1299,
-            summary: 'A great tour to explore the forest with friends.',
-            imageCover: 'forest-retreat.jpg',
-            startLocation: {
-              type: 'Point',
-              coordinates: [0, 0],
-              description: 'Start Location',
-            },
-            locations: [],
-            startDates: ['2023-01-01'],
-            slug: 'the-forest-retreat',
-            images: [],
-            createdAt: "2025-08-09T13:13:44.000Z",
-          },
-        ],
-        page: 1,
-        totalPages: 1,
-        limit: 2,
-        totalDocs: 3,
-        hasNextPage: false,
-        hasPrevPage: false,
-      },
-    };
-};
-
-
-// Create the tours slice
-const tourSlice = createSlice({
+// 🏗️ Redux slice - pure state management
+const toursSlice = createSlice({
   name: 'tours',
   initialState,
   reducers: {
-    // 1️⃣ Update Filters
-    updateFilters: (state, action: PayloadAction<ToursFilters>) => {
-      // Merge new filters with existing ones
-      state.data.filters = { ...state.data.filters, ...action.payload };
+    // 🔄 Set all tours (after successful fetch)
+    setTours: (state, action: PayloadAction<Tour[]>) => {
+      state.tours = action.payload;
+      state.error = null;
+      state.isInitialized = true;
+    },
 
-      if (!('page' in action.payload)) {
-        // If page is updated, reset currentPage to 1
-        state.data.pagination.currentPage = 1;
+    // 🎯 Set selected tour (for detail page)
+    setSelectedTour: (state, action: PayloadAction<Tour>) => {
+      state.selectedTour = action.payload;
+      state.error = null;
+    },
+
+    // ⏳ Set loading state
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+      if (action.payload) {
+        state.error = null; // Clear error when starting to load
       }
     },
 
-    // 2️⃣ Clear Error 
+    // 🚨 Set error message
+    setError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+      state.isLoading = false; // Stop loading when error occurs
+    },
+
+    // ✨ Clear error message
     clearError: (state) => {
-      state.ui.error = null;
+      state.error = null;
     },
 
-    // 3️⃣ Reset Filters
-    resetFilters: (state) => {
-      state.data.filters = { sort: '-createdAt' }; // Reset to default sort
-      state.data.pagination.currentPage = 1; // Reset to first page
+    // 🧹 Clear all data (for logout or navigation)
+    clearTours: (state) => {
+      state.tours = [];
+      state.selectedTour = null;
+      state.isLoading = false;
+      state.error = null;
+      state.isInitialized = false;
     },
 
-    // 4️⃣ Manually Set Loading State
-    setLoadingState: (state, action: PayloadAction<LoadingState>) => {
-      state.ui.isLoading = { ...state.ui.isLoading, ...action.payload };
+    // 🧹 Clear selected tour (when leaving detail page)
+    clearSelectedTour: (state) => {
+      state.selectedTour = null;
     },
-  },
-  // 🧩 Reducers to handle async actions and update state accordingly
-  extraReducers: (builder) => {
-    // Handle async actions
-    builder
-      .addCase(fetchTours.pending, (state, action) => {
-        const { loadingType } = action.meta.arg;
-        console.log('🔄 Loading started:', loadingType); 
-
-        // 1️⃣ Reset all loading states
-        state.ui.isLoading = {
-          initial: false,
-          search: false,
-          pagination: false,
-        };
-        // 2️⃣ Set specific loading state based on action payload
-       state.ui.isLoading[loadingType as keyof LoadingState] = true; // Set specific loading state
-       state.ui.error = null; // Clear any previous errors
-
-        // 3️⃣ Clear tours data if loadingType is initial or search
-       if (loadingType === 'initial' || loadingType === 'search') {
-         state.data.tours = []; // Clear tours data for initial or search loading
-       } // Keep existing tours for pagination loading
-      })
-      .addCase(fetchTours.fulfilled, (state, action) => {
-        const { tours, pagination, loadingType } = action.payload;
-        console.log('✅ Loading completed:', loadingType);
-
-        // 1️⃣ Reset loading states
-        state.ui.isLoading = {
-          initial: false,
-          search: false,
-          pagination: false,
-        };
-        // 2️⃣ Update tours and pagination data
-        state.data.tours = tours;
-        state.data.pagination = pagination;
-        // 3️⃣ Update loading state
-        state.ui.isInitialized = true;
-        // 4️⃣ Clear error state
-        state.ui.error = null;
-      })
-      .addCase(fetchTours.rejected, (state, action) => {
-        console.log('❌ Loading failed');
-
-        // 1️⃣ Reset loading states
-        state.ui.isLoading = {
-          initial: false,
-          search: false,
-          pagination: false,
-        };
-        // 2️⃣ Set error message
-        state.ui.error = action.payload || 'Unknown error occurred'; 
-      });
   },
 });
 
+// Export actions
 export const {
-  updateFilters,
+  setTours,
+  setSelectedTour,
+  setLoading,
+  setError,
   clearError,
-  resetFilters,
-  setLoadingState,
-} = tourSlice.actions;
+  clearTours,
+  clearSelectedTour,
+} = toursSlice.actions;
 
-export default tourSlice.reducer;
+export default toursSlice.reducer;

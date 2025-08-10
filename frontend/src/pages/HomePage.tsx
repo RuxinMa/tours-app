@@ -1,13 +1,10 @@
 import MainLayout from '../components/layout/MainLayout';
-import { ToursTest } from '../components/tours/ToursTest';
+import ToursList from '../components/tours/ToursList';
 
 const HomePage = () => {
   return (
       <MainLayout >
-        <h1 className="text-center text-3xl font-bold">
-          Welcome to the Home Page
-        </h1>
-        <ToursTest />
+        <ToursList />
       </MainLayout>
   );
 };
