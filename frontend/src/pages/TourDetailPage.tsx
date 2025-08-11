@@ -4,6 +4,7 @@ import { useTours } from '../hooks/useTours';
 
 import MainLayout from "../components/layout/MainLayout";
 import TourHeader from "../components/tour/TourHeader";
+import TourOverview from "../components/tour/TourOverview";
 import TourDetailError from "../components/tour/TourDetailError";
 import TourDetailSkeleton from "../components/tour/TourDetailSkeleton";
 
@@ -33,17 +34,9 @@ const TourDetailPage = () => {
     };
   }, [slug, loadTourDetail, clearTourDetail]);
 
-  // Handle retry
-  const handleRetry = () => {
-    if (slug) {
-      clearError();
-      loadTourDetail(slug);
-    }
-  };
-
   // Handle go back
   const handleGoBack = () => {
-    clearError(); 
+    clearError(); // Clear any existing error state
     navigate('/');
   };
 
@@ -62,7 +55,6 @@ const TourDetailPage = () => {
       <MainLayout>
         <TourDetailError 
           error={error} 
-          onRetry={handleRetry}
           onGoBack={handleGoBack}
         />
       </MainLayout>
@@ -74,7 +66,6 @@ const TourDetailPage = () => {
     return (
       <TourDetailError 
         error="The tour you're looking for doesn't exist or has been removed."
-        onRetry={handleRetry}
         onGoBack={handleGoBack}
       />
     );
@@ -83,6 +74,8 @@ const TourDetailPage = () => {
   return (
     <MainLayout>
       <TourHeader tour={selectedTour} />
+      <TourOverview tour={selectedTour} />
+      {/* Additional components like TourReviews, TourBooking, etc. can be added here */}
     </MainLayout>
   );
 }

@@ -1,8 +1,4 @@
 import type { Tour } from '../types/tour.types';
-import Tour1 from '../../public/img/tours/tour-1-cover.jpg';
-import Tour2 from '../../public/img/tours/tour-2-cover.jpg';
-import Tour3 from '../../public/img/tours/tour-3-cover.jpg';
-import Tour9 from '../../public/img/tours/tour-9-cover.jpg';
 
 export const generateMockTours = (): Tour[] => [
   {
@@ -16,7 +12,7 @@ export const generateMockTours = (): Tour[] => [
     price: 397,
     summary: 'Breathtaking hike through the Canadian Banff National Park',
     description: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    imageCover: Tour1,
+    imageCover: '/img/tours/tour-1-cover.jpg',
     startLocation: {
       type: 'Point',
       coordinates: [-115.570154, 51.178456],
@@ -47,16 +43,34 @@ export const generateMockTours = (): Tour[] => [
       }
     ],
     startDates: [
-      '2021-04-25T09:00:00.000Z',
-      '2021-07-20T09:00:00.000Z',
-      '2021-10-05T09:00:00.000Z'
+      '2026-04-25T09:00:00.000Z',
+      '2026-07-20T09:00:00.000Z',
+      '2026-10-05T09:00:00.000Z'
     ],
     slug: 'the-forest-hiker',
     images: ['tour-1-1.jpg', 'tour-1-2.jpg', 'tour-1-3.jpg'],
     guides: [
-      '5c8a21d02f8fb814b56fa189',
-      '5c8a201e2f8fb814b56fa186',
-      '5c8a1f292f8fb814b56fa184'
+      {
+        id: '5c8a22c62f8fb814b56fa18b',
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        photo: '../../public/img/users/user-5.jpg',
+        role: 'lead-guide'
+      },
+      {
+        id: '5c8a23412f8fb814b56fa18c',
+        name: 'Jane Smith',
+        email: 'jane.smith@example.com',
+        photo: '../../public/img/users/user-2.jpg',
+        role: 'guide'
+      },
+      {
+        id: '5c8a1f4e2f8fb814b56fa185',
+        name: 'Emily Johnson',
+        email: 'emily.johnson@example.com',
+        photo: '../../public/img/users/user-3.jpg',
+        role: 'guide'
+      }
     ],
     createdAt: '2025-08-09T13:13:44.000Z',
   },
@@ -71,7 +85,7 @@ export const generateMockTours = (): Tour[] => [
     price: 497,
     summary: 'Exploring the jaw-dropping US east coast by foot and by boat',
     description: 'Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\nIrure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-    imageCover: Tour2,
+    imageCover: '/img/tours/tour-2-cover.jpg',
     startLocation: {
       type: 'Point',
       coordinates: [-80.185942, 25.774772],
@@ -109,13 +123,35 @@ export const generateMockTours = (): Tour[] => [
       }
     ],
     startDates: [
-      '2021-06-19T09:00:00.000Z',
-      '2021-07-20T09:00:00.000Z',
-      '2021-08-18T09:00:00.000Z'
+      '2025-06-19T09:00:00.000Z',
+      '2026-07-20T09:00:00.000Z',
+      '2026-08-18T09:00:00.000Z'
     ],
     slug: 'the-sea-explorer',
     images: ['tour-2-1.jpg', 'tour-2-2.jpg', 'tour-2-3.jpg'],
-    guides: ['5c8a22c62f8fb814b56fa18b', '5c8a1f4e2f8fb814b56fa185'],
+    guides: [
+      {
+        id: '5c8a22c62f8fb814b56fa18b',
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        photo: '../../public/img/users/user-5.jpg',
+        role: 'lead-guide'
+      },
+      {
+        id: '5c8a23412f8fb814b56fa18c',
+        name: 'Jane Smith',
+        email: 'jane.smith@example.com',
+        photo: '../../public/img/users/user-2.jpg',
+        role: 'guide'
+      },
+      {
+        id: '5c8a1f4e2f8fb814b56fa185',
+        name: 'Emily Johnson',
+        email: 'emily.johnson@example.com',
+        photo: '../../public/img/users/user-3.jpg',
+        role: 'guide'
+      }
+    ],
     createdAt: '2025-08-09T13:13:44.000Z',
   },
   {
@@ -129,7 +165,7 @@ export const generateMockTours = (): Tour[] => [
     price: 997,
     summary: 'Exciting adventure in the snow with snowboarding and skiing',
     description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum!\nDolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur, exercitation ullamco laboris nisi ut aliquip. Lorem ipsum dolor sit amet, consectetur adipisicing elit!',
-    imageCover: Tour3,
+    imageCover: '/img/tours/tour-8-cover.jpg', // Note: Ensure this image exists in your assets
     startLocation: {
       type: 'Point',
       coordinates: [-106.822318, 39.190872],
@@ -153,16 +189,34 @@ export const generateMockTours = (): Tour[] => [
       }
     ],
     startDates: [
-      '2022-01-05T10:00:00.000Z',
-      '2022-02-12T10:00:00.000Z',
-      '2023-01-06T10:00:00.000Z'
+      '2026-01-05T10:00:00.000Z',
+      '2026-02-12T10:00:00.000Z',
+      '2026-04-06T10:00:00.000Z'
     ],
     slug: 'the-snow-adventurer',
     images: ['tour-3-1.jpg', 'tour-3-2.jpg', 'tour-3-3.jpg'],
     guides: [
-      '5c8a21d02f8fb814b56fa189',
-      '5c8a23412f8fb814b56fa18c',
-      '5c8a1f4e2f8fb814b56fa185'
+      {
+        id: '5c8a22c62f8fb814b56fa18b',
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        photo: '../../public/img/users/user-5.jpg',
+        role: 'lead-guide'
+      },
+      {
+        id: '5c8a23412f8fb814b56fa18c',
+        name: 'Jane Smith',
+        email: 'jane.smith@example.com',
+        photo: '../../public/img/users/user-2.jpg',
+        role: 'guide'
+      },
+      {
+        id: '5c8a1f4e2f8fb814b56fa185',
+        name: 'Emily Johnson',
+        email: 'emily.johnson@example.com',
+        photo: '../../public/img/users/user-3.jpg',
+        role: 'guide'
+      }
     ],
     createdAt: '2025-08-09T13:13:44.000Z',
   },
@@ -177,7 +231,7 @@ export const generateMockTours = (): Tour[] => [
     price: 1497,
     summary: 'Enjoy the Northern Lights in one of the best places in the world',
     description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum!\nDolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur, exercitation ullamco laboris nisi ut aliquip. Lorem ipsum dolor sit amet, consectetur adipisicing elit!',
-    imageCover: Tour9,
+    imageCover: '/img/tours/tour-9-cover.jpg',
     startLocation: {
       type: 'Point',
       coordinates: [-114.406097, 62.439943],
@@ -194,16 +248,27 @@ export const generateMockTours = (): Tour[] => [
       }
     ],
     startDates: [
-      '2021-12-16T10:00:00.000Z',
-      '2022-01-16T10:00:00.000Z',
-      '2022-12-12T10:00:00.000Z'
+      '2025-12-16T10:00:00.000Z',
+      '2026-01-16T10:00:00.000Z',
+      '2026-12-12T10:00:00.000Z'
     ],
     slug: 'the-northern-lights',
     images: ['tour-9-1.jpg', 'tour-9-2.jpg', 'tour-9-3.jpg'],
     guides: [
-      '5c8a21f22f8fb814b56fa18a',
-      '5c8a201e2f8fb814b56fa186',
-      '5c8a23412f8fb814b56fa18c'
+      {
+        id: '5c8a22c62f8fb814b56fa18b',
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        photo: '../../public/img/users/user-5.jpg',
+        role: 'lead-guide'
+      },
+      {
+        id: '5c8a23412f8fb814b56fa18c',
+        name: 'Jane Smith',
+        email: 'jane.smith@example.com',
+        photo: '../../public/img/users/user-2.jpg',
+        role: 'guide'
+      },
     ],
     createdAt: '2025-08-09T13:13:44.000Z',
   },

@@ -14,6 +14,9 @@
 }
 
 @layer components {
+  .main-color{
+    @apply bg-gradient-to-r from-emerald-400 to-teal-400;
+  }
   /* Auth Background */
   .page-background-auth {
     @apply min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600;
@@ -34,7 +37,7 @@
 
   /* Form Title */
   .form-title {
-    @apply text-3xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent text-center mb-8;
+    @apply text-3xl font-bold main-color bg-clip-text text-transparent text-center mb-8;
   }
 
   /* 🗺️ Navigation */
@@ -93,5 +96,19 @@
 
   .text-details {
     @apply text-xs font-light sm:text-sm text-gray-500 ml-2;
+  }
+
+  /* Tour Detail Page */
+  .tour-facts {
+    @apply flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 md:text-base text-xs;
+  }
+  .tour-price {
+    @apply inline-flex items-baseline space-x-2 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 backdrop-blur-sm border border-emerald-400/30 rounded-2xl px-3 md:px-6 md:py-3 py-2;
+  }
+  .icon-color {
+    @apply w-6 h-6 text-green-500;
+  }
+  .tour-description {
+    @apply relative overflow-hidden bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 p-10 rounded-2xl text-white shadow-lg;
   }
 }
