@@ -72,6 +72,68 @@ export const generateMockTours = (): Tour[] => [
         role: 'guide'
       }
     ],
+    reviews: [
+      {
+        id: '1',
+        rating: 4,
+        review: 'Amazing experience! The Northern Lights were spectacular.',
+        createdAt: '2024-01-15',
+        user: {
+          name: 'Sarah Johnson',
+          photo: '../../public/img/users/user-6.jpg'
+        }
+      },
+      {
+        id: '2',
+        rating: 4.8,
+        review: 'Amazing experience! The Northern Lights were spectacular.',
+        createdAt: '2024-01-15',
+        user: {
+          name: 'John Doe',
+          photo: '../../public/img/users/user-2.jpg'
+        }
+      },
+      {
+        id: '3',
+        rating: 4.5,
+        review: 'Amazing experience! The Northern Lights were spectacular. I would highly recommend this tour to anyone looking for an unforgettable adventure.',
+        createdAt: '2024-01-15',
+        user: {
+          name: 'Emily Johnson',
+          photo: '../../public/img/users/user-7.jpg'
+        }
+      },
+      {
+        id: '4',
+        rating: 4.6,
+        review: 'Amazing experience! The Northern Lights were spectacular.',
+        createdAt: '2024-01-15',
+        user: {
+          name: 'Michael Brown',
+          photo: '../../public/img/users/user-8.jpg'
+        }
+      },
+      {
+        id: '5',
+        rating: 3,
+        review: 'The tour was good, but I expected more from the guides. They were knowledgeable but not very engaging.',
+        createdAt: '2024-01-15',
+        user: {
+          name: 'Lisa White',
+          photo: '../../public/img/users/user-7.jpg'
+        }
+      },
+      {
+        id: '6',
+        rating: 4.7,
+        review: 'The tour was well-organized and the guides were friendly, but I wish we had more time at each location.',
+        createdAt: '2024-01-15',
+        user: {
+          name: 'David Wilson',
+          photo: '../../public/img/users/user-9.jpg'
+        }
+      },
+    ],
     createdAt: '2025-08-09T13:13:44.000Z',
   },
   {
@@ -165,7 +227,7 @@ export const generateMockTours = (): Tour[] => [
     price: 997,
     summary: 'Exciting adventure in the snow with snowboarding and skiing',
     description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum!\nDolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur, exercitation ullamco laboris nisi ut aliquip. Lorem ipsum dolor sit amet, consectetur adipisicing elit!',
-    imageCover: '/img/tours/tour-8-cover.jpg', // Note: Ensure this image exists in your assets
+    imageCover: '/img/tours/tour-3-cover.jpg', // Note: Ensure this image exists in your assets
     startLocation: {
       type: 'Point',
       coordinates: [-106.822318, 39.190872],

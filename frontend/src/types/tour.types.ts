@@ -16,6 +16,18 @@ export interface Guide {
   role: "guide" | "lead-guide";
 }
 
+export interface Review {
+  id: string;
+  rating: number;
+  review: string;
+  createdAt: string;
+  user: {
+    name: string;
+    photo: string;
+  };
+}
+
+
 export type Difficulty = 'easy' | 'medium' | 'difficult';
 
 export interface Tour {
@@ -26,6 +38,7 @@ export interface Tour {
   difficulty: Difficulty;
   ratingsAverage?: number;
   ratingsQuantity?: number;
+  reviews?: Review[];
   price: number;
   summary: string;
   description?: string;
