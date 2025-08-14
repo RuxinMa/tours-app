@@ -6,8 +6,7 @@ const StarRating = ({ rating }: { rating: number }) => {
       {[1, 2, 3, 4, 5].map((star) => (
         <FiStar
           key={star}
-          size={18}
-          color={star <= rating ? '#FACC15' : '#D1D5DB'} // yellow-400 and gray-300 hex codes
+          className={`h-5 w-5 ${star <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
         />
       ))}
     </div>

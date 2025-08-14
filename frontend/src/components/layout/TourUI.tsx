@@ -16,7 +16,6 @@ export const QuickFact = ({
   );
 };
 
-
 export const BackgroundPattern = () => {
   return (
     <div className="absolute inset-0 opacity-10">

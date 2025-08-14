@@ -48,10 +48,10 @@ const TourBooking = ({ tour }: TourBookingProps) => {
               <div className="text-center">
                 <div className="mb-6">
                   <FiUser size={48} className="mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-1">
                     Sign in to book this tour
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-500">
                     Please log in to your account to proceed with booking
                   </p>
                 </div>
@@ -60,7 +60,7 @@ const TourBooking = ({ tour }: TourBookingProps) => {
                   onClick={handleLoginRedirect}
                   fullWidth={true}
                 >
-                  Log in to book tour
+                  Log in to book a tour
                 </Button>
               </div>
             ) : (

@@ -54,21 +54,21 @@ export const generateMockTours = (): Tour[] => [
         id: '5c8a22c62f8fb814b56fa18b',
         name: 'John Doe',
         email: 'john.doe@example.com',
-        photo: '../../public/img/users/user-5.jpg',
+        photo: '/img/users/user-5.jpg',
         role: 'lead-guide'
       },
       {
         id: '5c8a23412f8fb814b56fa18c',
         name: 'Jane Smith',
         email: 'jane.smith@example.com',
-        photo: '../../public/img/users/user-2.jpg',
+        photo: '/img/users/user-2.jpg',
         role: 'guide'
       },
       {
         id: '5c8a1f4e2f8fb814b56fa185',
         name: 'Emily Johnson',
         email: 'emily.johnson@example.com',
-        photo: '../../public/img/users/user-3.jpg',
+        photo: '/img/users/user-3.jpg',
         role: 'guide'
       }
     ],
@@ -80,7 +80,7 @@ export const generateMockTours = (): Tour[] => [
         createdAt: '2024-01-15',
         user: {
           name: 'Sarah Johnson',
-          photo: '../../public/img/users/user-6.jpg'
+          photo: '/img/users/user-6.jpg'
         }
       },
       {
@@ -90,7 +90,7 @@ export const generateMockTours = (): Tour[] => [
         createdAt: '2024-01-15',
         user: {
           name: 'John Doe',
-          photo: '../../public/img/users/user-2.jpg'
+          photo: '/img/users/user-10.jpg'
         }
       },
       {
@@ -100,7 +100,7 @@ export const generateMockTours = (): Tour[] => [
         createdAt: '2024-01-15',
         user: {
           name: 'Emily Johnson',
-          photo: '../../public/img/users/user-7.jpg'
+          photo: '/img/users/user-7.jpg'
         }
       },
       {
@@ -110,7 +110,7 @@ export const generateMockTours = (): Tour[] => [
         createdAt: '2024-01-15',
         user: {
           name: 'Michael Brown',
-          photo: '../../public/img/users/user-8.jpg'
+          photo: '/img/users/user-8.jpg'
         }
       },
       {
@@ -120,7 +120,7 @@ export const generateMockTours = (): Tour[] => [
         createdAt: '2024-01-15',
         user: {
           name: 'Lisa White',
-          photo: '../../public/img/users/user-7.jpg'
+          photo: '/img/users/user-7.jpg'
         }
       },
       {
@@ -130,7 +130,7 @@ export const generateMockTours = (): Tour[] => [
         createdAt: '2024-01-15',
         user: {
           name: 'David Wilson',
-          photo: '../../public/img/users/user-9.jpg'
+          photo: '/img/users/user-9.jpg'
         }
       },
     ],
@@ -196,21 +196,21 @@ export const generateMockTours = (): Tour[] => [
         id: '5c8a22c62f8fb814b56fa18b',
         name: 'John Doe',
         email: 'john.doe@example.com',
-        photo: '../../public/img/users/user-5.jpg',
+        photo: '/img/users/user-5.jpg',
         role: 'lead-guide'
       },
       {
         id: '5c8a23412f8fb814b56fa18c',
         name: 'Jane Smith',
         email: 'jane.smith@example.com',
-        photo: '../../public/img/users/user-2.jpg',
+        photo: '/img/users/user-2.jpg',
         role: 'guide'
       },
       {
         id: '5c8a1f4e2f8fb814b56fa185',
         name: 'Emily Johnson',
         email: 'emily.johnson@example.com',
-        photo: '../../public/img/users/user-3.jpg',
+        photo: '/img/users/user-3.jpg',
         role: 'guide'
       }
     ],
@@ -262,21 +262,21 @@ export const generateMockTours = (): Tour[] => [
         id: '5c8a22c62f8fb814b56fa18b',
         name: 'John Doe',
         email: 'john.doe@example.com',
-        photo: '../../public/img/users/user-5.jpg',
+        photo: '/img/users/user-5.jpg',
         role: 'lead-guide'
       },
       {
         id: '5c8a23412f8fb814b56fa18c',
         name: 'Jane Smith',
         email: 'jane.smith@example.com',
-        photo: '../../public/img/users/user-2.jpg',
+        photo: '/img/users/user-2.jpg',
         role: 'guide'
       },
       {
         id: '5c8a1f4e2f8fb814b56fa185',
         name: 'Emily Johnson',
         email: 'emily.johnson@example.com',
-        photo: '../../public/img/users/user-3.jpg',
+        photo: '/img/users/user-3.jpg',
         role: 'guide'
       }
     ],
@@ -321,14 +321,14 @@ export const generateMockTours = (): Tour[] => [
         id: '5c8a22c62f8fb814b56fa18b',
         name: 'John Doe',
         email: 'john.doe@example.com',
-        photo: '../../public/img/users/user-5.jpg',
+        photo: '/img/users/user-5.jpg',
         role: 'lead-guide'
       },
       {
         id: '5c8a23412f8fb814b56fa18c',
         name: 'Jane Smith',
         email: 'jane.smith@example.com',
-        photo: '../../public/img/users/user-2.jpg',
+        photo: '/img/users/user-2.jpg',
         role: 'guide'
       },
     ],

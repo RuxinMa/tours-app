@@ -37,23 +37,23 @@ const TourOverview = ({ tour }: TourOverviewProps) => {
           <div className="lg:ml-24 ml-6 mb-12">
             <h2 className="text-xl md:text-2xl font-bold mb-6">Quick Facts</h2>
             <QuickFact 
-              icon={<FiClock size={24} color="#22c55e" />} 
+              icon={<FiClock className='icon-color' />} 
               label="next date" 
               value={getNextDate()}
             />
             <QuickFact 
-              icon={<FiMapPin size={24} color="#22c55e" />} 
+              icon={<FiMapPin className='icon-color' />} 
               label="difficulty" 
               value={tour.difficulty.charAt(0).toUpperCase() + tour.difficulty.slice(1)} 
             />
             <QuickFact 
-              icon={<FiUsers size={24} color="#22c55e" />} 
+              icon={<FiUsers className='icon-color' />} 
               label="participants" 
               value={`${tour.maxGroupSize} people`}
             />
             {tour.ratingsAverage && (
               <QuickFact 
-                icon={<FiStar size={24} color="#22c55e" />} 
+                icon={<FiStar className='icon-color' />} 
                 label="rating" 
                 value={`${tour.ratingsAverage.toFixed(1)} (${tour.ratingsQuantity || 0})`} 
               />

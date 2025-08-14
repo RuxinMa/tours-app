@@ -84,7 +84,7 @@ if (isMockEnabled()) {
                 id: 'test-user-123',
                 name: 'Test User',
                 email: 'admin@tours.io',
-                role: 'user'
+                role: 'admin'
               }
             }
           }

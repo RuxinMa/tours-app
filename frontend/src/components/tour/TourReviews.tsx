@@ -5,7 +5,7 @@ interface TourReviewsProps {
   tour: Tour;
 }
 
-const TourReviews: React.FC<TourReviewsProps> = ({ tour }: TourReviewsProps) => {
+const TourReviews = ({ tour }: TourReviewsProps) => {
   return (
     <section className="tour-reviews">
       <div className="relative z-10 skew-y-3">
