@@ -10,12 +10,13 @@ export const mockBookings: Booking[] = [
       duration: 5,
       startLocation: {
         description: 'Miami, USA'
-      }
+      },
+      slug: 'the-forest-hiker',
     },
     startDate: '2024-12-15',
     price: 397,
     status: 'planned',
-    createdAt: '2024-01-10'
+    createdAt: '2024-01-10',
   },
   {
     id: 'booking-2', 
@@ -26,12 +27,13 @@ export const mockBookings: Booking[] = [
       duration: 7,
       startLocation: {
         description: 'Tromsø, Norway'
-      }
+      },
+      slug: 'the-northern-lights'
     },
     startDate: '2024-01-20',
     price: 1497,
     status: 'pending-review',
-    createdAt: '2023-12-01'
+    createdAt: '2023-12-01',
   },
   {
     id: 'booking-3',
@@ -42,7 +44,8 @@ export const mockBookings: Booking[] = [
       duration: 9,
       startLocation: {
         description: 'New York, USA'
-      }
+      },
+      slug: 'the-city-wanderer'
     },
     startDate: '2023-11-10',
     price: 2197,

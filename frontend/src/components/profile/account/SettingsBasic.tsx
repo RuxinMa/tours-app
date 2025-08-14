@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useRef } from 'react';
-import { useAppSelector } from '../../hooks/redux';
+import { useAppSelector } from '../../../hooks/redux';
 import { FiCamera, FiUser } from 'react-icons/fi';
-import { SettingsForm, FormTitle }  from '../layout/SettingsForm';
-import Button from '../common/Button';
+import { SettingsForm, FormTitle }  from '../../layout/SettingsForm';
+import Button from '../../common/Button';
 
 const SettingsBasic = () => {
   const { user } = useAppSelector((state) => state.auth);
@@ -151,13 +151,15 @@ const SettingsBasic = () => {
         )}
 
         {/* Save Button */}
-        <Button
-          variant='primary'
-          onClick={handleUpdateBasicInfo}
-          disabled={isUpdatingBasic}
-        >
-          {isUpdatingBasic ? 'Updating...' : 'Update Profile'}
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            variant='primary'
+            onClick={handleUpdateBasicInfo}
+            disabled={isUpdatingBasic}
+          >
+            {isUpdatingBasic ? 'Updating...' : 'Update Profile'}
+          </Button>
+        </div>
       </div>
     </div>
   )

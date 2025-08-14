@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { FiLock } from 'react-icons/fi';
-import { SettingsForm, FormTitle }from '../layout/SettingsForm';
-import Button from '../common/Button';
+import { SettingsForm, FormTitle }from '../../layout/SettingsForm';
+import Button from '../../common/Button';
 
 const SettingsPassword = () => {
   const [passwordForm, setPasswordForm] = useState({
@@ -121,13 +121,15 @@ const SettingsPassword = () => {
         )}
 
         {/* Save Button */}
-        <Button
+        <div className="flex justify-end">
+          <Button
           onClick={handleUpdatePassword}
           disabled={isUpdatingPassword}
           className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isUpdatingPassword ? 'Updating...' : 'Change Password'}
-        </Button>
+          >
+            {isUpdatingPassword ? 'Updating...' : 'Change Password'}
+          </Button>
+        </div>
       </div>
     </div>
   )

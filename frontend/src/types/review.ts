@@ -1,7 +1,11 @@
 export interface Review {
   id: string;
-  tourId: string; // Reference to the tour being reviewed
-  userId: string; // Reference to the user who wrote the review
+  tour: {
+    id: string; // Tour ID
+    name: string; // Tour name
+    imageCover: string; // URL of the cover image
+    slug: string; // Slug for the tour URL
+  };
   rating: number; // Rating given by the user (1-5)
   review: string; // Text of the review
   createdAt: string; // Date when the review was created

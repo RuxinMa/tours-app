@@ -10,6 +10,7 @@ export interface Booking {
     startLocation: {
       description: string;
     };
+    slug: string; // Slug for SEO-friendly URLs
   };
   startDate: string;
   price: number;

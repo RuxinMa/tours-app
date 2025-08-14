@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
-type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'success';
+type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'success' | 'edit' | 'delete';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -31,7 +31,9 @@ const Button = ({
       : 'bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 hover:scale-105 shadow-lg hover:shadow-xl text-white focus:ring-cyan-500',
     secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-500',
     danger: 'bg-red-500 hover:bg-red-600 text-white focus:ring-red-500',
-    success: 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500'
+    success: 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500',
+    edit: 'bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 hover:border-emerald-300 focus:ring-emerald-500',
+    delete: 'bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 hover:border-red-300 focus:ring-red-500'
   };
   
   const sizeClasses = {
