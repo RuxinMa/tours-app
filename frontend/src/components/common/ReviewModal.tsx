@@ -172,11 +172,19 @@ const ReviewModal = ({
         </div>
 
         {/* Button */}
-        <div className="flex justify-between space-x-3 md:pt-4">
-          <Button variant="secondary" onClick={onClose}>
+        <div className="flex justify-between md:space-x-16 space-x-4 md:pt-4 md:px-2">
+          <Button 
+            variant="secondary" 
+            onClick={onClose} 
+            className='md:text-base text-sm w-1/3 md:w-full'
+          >
             Cancel
           </Button>
-          <Button variant="primary" onClick={handleSubmit}>
+          <Button 
+            variant="primary" 
+            onClick={handleSubmit} 
+            className='md:text-base text-sm w-1/2 md:w-full'
+          >
             {mode === 'create' ? 'Submit Review' : 'Update Review'}
           </Button>
         </div>

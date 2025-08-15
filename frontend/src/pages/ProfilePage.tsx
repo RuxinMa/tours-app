@@ -8,6 +8,7 @@ import ProfileMenu from '../components/profile/ProfileMenu';
 import ProfileSettings from '../components/profile/account/ProfileSettings';
 import ProfileBookings from '../components/profile/bookings/ProfileBookings';
 import ProfileReviews from '../components/profile/reviews/ProfileReviews';
+import ProfileBilling from '../components/profile/billing/ProfileBilling';
 
 const ProfilePage = () => {
   const { user } = useAppSelector((state) => state.auth);
@@ -69,13 +70,13 @@ const ProfilePage = () => {
       case 'reviews':
         return <ProfileReviews />;
       case 'billing':
-        return <div className="p-6">Billing Component - Coming Soon</div>;
+        return <ProfileBilling />;
       case 'admin-tours':
       case 'admin-users':
       case 'admin-reviews':
       case 'admin-bookings':
         return (
-          <div className="p-6 text-center h-full flex flex-col justify-center items-center">
+          <div className="p-6 flex flex-col items-center justify-center min-h-[650px]">
             <h2 className="text-2xl font-bold text-gray-700 mb-4">🚧 Under Construction</h2>
             <p className="text-gray-600">This admin feature is coming soon!</p>
           </div>
@@ -89,8 +90,8 @@ const ProfilePage = () => {
     <MainLayout>
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-4 h-full">
-            <div className="lg:col-span-1 border-r border-gray-200 h-full">
+          <div className="md:grid md:grid-cols-4 min-h-[650px]">
+            <div className="md:col-span-1 md:border-r border-gray-200 h-full">
               <ProfileMenu
                 userMenuItems={userMenuItems}
                 adminMenuItems={isAdmin ? adminMenuItems : []}
@@ -99,7 +100,7 @@ const ProfilePage = () => {
                 user={user}
               />
             </div>
-            <div className="lg:col-span-3">
+            <div className="md:col-span-3 min-h-[650px]">
               {renderContent()}
             </div>
           </div>

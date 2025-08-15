@@ -70,7 +70,17 @@ const Navigation = () => {
         title="Confirm Logout"
       >
         <p className='text-center m-4'>Are you sure you want to logout?</p>
-        <div className="flex items-center justify-around mt-10">
+        <div className="flex justify-between w-full mt-6 space-x-16 px-4">
+          <Button
+            variant="secondary"
+            size="md"
+            className="modal-btn"
+            onClick={() => setShowLogoutModal(false)} // Close modal
+            disabled={isLoading} // Disable button while loading
+            fullWidth={true}
+          >
+            Cancel
+          </Button>
           <Button
             variant="danger"
             size="md"
@@ -78,19 +88,9 @@ const Navigation = () => {
             onClick={handleConfirmLogout} // Confirm logout
             loading={isLoading}
             disabled={isLoading} // Disable button while loading
-            fullWidth={false}
+            fullWidth={true}
           >
             {isLoading ? 'Logging out...' : 'Logout'}
-          </Button>
-          <Button
-            variant="secondary"
-            size="md"
-            className="modal-btn"
-            onClick={() => setShowLogoutModal(false)} // Close modal
-            disabled={isLoading} // Disable button while loading
-            fullWidth={false}
-          >
-            Cancel
           </Button>
         </div>
       </Modal>

@@ -38,7 +38,7 @@ const FormInput = ({
             block w-full pl-4 pr-3 py-3 
             border border-gray-300 rounded-xl 
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
-            transition duration-200 text-gray-900 placeholder-gray-500
+            transition duration-200 text-gray-900 placeholder-gray-400
             ${error ? 'border-red-300 focus:ring-red-500' : ''}
             ${className}
           `}

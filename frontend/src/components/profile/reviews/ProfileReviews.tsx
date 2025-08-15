@@ -137,9 +137,9 @@ const ProfileReviews = () => {
             <span className="font-bold italic text-emerald-500">{reviewToDelete?.tour.name}</span>.
             This action cannot be undone.
           </p>
-          <div className="flex justify-center space-x-8 mt-6">
-            <Button variant="danger" onClick={confirmDeleteReview}>Delete</Button>
-            <Button variant="secondary" onClick={cancelDeleteReview}> Cancel</Button>
+          <div className="flex justify-between w-full mt-6 space-x-16 px-4">
+            <Button variant="secondary" onClick={cancelDeleteReview} fullWidth={true}> Cancel</Button>
+            <Button variant="danger" onClick={confirmDeleteReview} fullWidth={true}>Delete</Button>
           </div>
         </div>
       </Modal>
