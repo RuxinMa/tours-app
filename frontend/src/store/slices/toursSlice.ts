@@ -1,11 +1,14 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Tour } from '../../types/tour.types';
+import type { ToursFilters } from '../../types/tours-store';
 
 // 🎯 Tours State 
 interface ToursState {
   // 📊 Data
-  tours: Tour[];                 // All tours from API
-  selectedTour: Tour | null;     // Currently viewed tour (for detail page)
+  allTours: Tour[];              // All tours from API
+  filteredTours: Tour[];         // Client-side filtered tours
+  filters: ToursFilters;         // Current filter criteria
+  selectedTour: Tour | null;     // Currently selected tour details
   
   // 🎨 UI State
   isLoading: boolean;            // Single loading state
@@ -15,7 +18,9 @@ interface ToursState {
 
 // 🎯 Initial state
 const initialState: ToursState = {
-  tours: [],
+  allTours: [],
+  filteredTours: [],
+  filters: {},
   selectedTour: null,
   isLoading: false,
   error: null,
@@ -29,7 +34,7 @@ const toursSlice = createSlice({
   reducers: {
     // 🔄 Set all tours (after successful fetch)
     setTours: (state, action: PayloadAction<Tour[]>) => {
-      state.tours = action.payload;
+      state.allTours = action.payload;
       state.error = null;
       state.isInitialized = true;
     },
@@ -61,7 +66,7 @@ const toursSlice = createSlice({
 
     // 🧹 Clear all data (for logout or navigation)
     clearTours: (state) => {
-      state.tours = [];
+      state.allTours = [];
       state.selectedTour = null;
       state.isLoading = false;
       state.error = null;
@@ -71,6 +76,18 @@ const toursSlice = createSlice({
     // 🧹 Clear selected tour (when leaving detail page)
     clearSelectedTour: (state) => {
       state.selectedTour = null;
+    },
+
+    setFilters: (state, action: PayloadAction<ToursFilters>) => {
+      state.filters = action.payload;
+    },
+
+    setFilteredTours: (state, action: PayloadAction<Tour[]>) => {
+      state.filteredTours = action.payload;
+    },
+
+    clearFilters: (state) => {
+      state.filters = {};
     },
   },
 });
@@ -84,6 +101,9 @@ export const {
   clearError,
   clearTours,
   clearSelectedTour,
+  setFilters,
+  setFilteredTours,
+  clearFilters,
 } = toursSlice.actions;
 
 export default toursSlice.reducer;

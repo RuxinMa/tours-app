@@ -1,25 +1,23 @@
-import type { Tour } from './tour.types';
-import type { ToursFilters } from './tours-api';
+import type { Tour, Difficulty }from './tour.types';
 
-/* 
-  🎯 Redux State
-*/
+// 🎯 Tours Filters
+export interface ToursFilters {
+  difficulty?: Difficulty;
+  price?: { min?: number; max?: number };
+  ratingsAverage?: { min?: number };
+  sort?: string; // '-price' | 'price' | '-ratingsAverage' | 'ratingsAverage' | '-createdAt'
+}
+
+// 🎯 Redux State
 export interface ToursState {
   // 📊 Data Layer
   allTours: Tour[];              // All tours from API
   filteredTours: Tour[];         // Client-side filtered tours
   filters: ToursFilters;         // Current filter criteria
-  
-  // 🎨 UI Layer
-  isLoading: boolean;            // Single loading state
-  error: string | null;          // Error message
-  isInitialized: boolean;        // Whether data has been loaded initially
-}
+  selectedTour: Tour | null;     // Currently selected tour details
 
-/* 
-  🎯 Service Layer Types
-*/
-export interface FetchAllToursResult {
-  tours: Tour[];
-  totalCount: number;
+  // 🎨 UI Layer
+  isLoading: boolean;
+  error: string | null;
+  isInitialized: boolean;
 }

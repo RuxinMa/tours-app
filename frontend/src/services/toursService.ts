@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from './api';
 import { isMockEnabled } from './utils/config';
 import { handleApiError, ApiError } from './utils/errorHandler';
-import { generateMockTours } from '../dev-data/mockTours';
 import type { FetchToursResponse } from '../types/tours-api';
 import type { Tour } from '../types/tour.types';
+import type { ToursFilters } from '../types/tours-store';
+import { filterTours } from './utils/toursFilters';
+import { generateMockTours } from '../dev-data/mockTours';
 
 // 🔄 Data transformer for API response
 const transformToursResponse = (apiResponse: FetchToursResponse) => {
@@ -113,6 +116,37 @@ export const toursService = {
     }
   },
   
-  // 🔮 Phase 2: Future filtering methods will be added here
-  // async fetchToursWithFilters(filters: ToursFilters): Promise<Tour[]> { ... }
+  /**
+   * Filter tours locally (for client-side filtering)
+   */
+  filterTours(tours: Tour[], filters: ToursFilters): Tour[] {
+    console.log('🔍 ToursService: Applying filters', filters);
+    const filtered = filterTours(tours, filters); // 💯 Pure function calculation
+    console.log(`✅ ToursService: Filtered ${tours.length} → ${filtered.length} tours`);
+    return filtered;
+  },
+
+  /**
+   * Get available filter options from tours data
+   */
+  getFilterOptions(tours: Tour[]) {
+    console.log('📊 ToursService: Calculating filter options');
+    
+    const difficulties = [...new Set(tours.map(tour => tour.difficulty))];
+    const priceRange = {
+      min: Math.min(...tours.map(tour => tour.price)),
+      max: Math.max(...tours.map(tour => tour.price))
+    };
+    const ratingsRange = {
+      min: Math.min(...tours.map(tour => tour.ratingsAverage || 0)),
+      max: Math.max(...tours.map(tour => tour.ratingsAverage || 5))
+    };
+
+    return {
+      difficulties,
+      priceRange,
+      ratingsRange
+    };
+  }
+
 };

@@ -3,7 +3,6 @@ import HomePage from '../pages/HomePage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import TourDetailPage from '../pages/TourDetailPage';
-import MyToursPage from '../pages/MyToursPage';
 import ProfilePage from '../pages/ProfilePage';
 import ErrorPage from '../pages/ErrorPage';
 import ProtectRoute from '../components/auth/ProtectRoute';
@@ -19,12 +18,6 @@ const AppRoutes = () => {
         <Route path='/tour/:slug' element={<TourDetailPage />} />
 
         {/* Protected routes */}
-        <Route path='/my-tours' element={
-          <ProtectRoute>
-            <MyToursPage />
-          </ProtectRoute>
-        }/>
-
         <Route path='/me' element={
           <ProtectRoute>
             <ProfilePage />
