@@ -1,19 +1,27 @@
 // 🎯 Error Component
+import toursError from '../../assets/tours-error.svg';
+import Button from '../common/Button';
+
 const ToursError = ({ error, onRetry }: { error: string; onRetry: () => void }) => {
   return (
-    <div className="text-center py-12">
-      <div className="max-w-md mx-auto">
-        <svg className="w-16 h-16 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
-        </svg>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Unable to load tours</h3>
-        <p className="text-gray-500 mb-4">{error}</p>
-        <button
+    <div className="text-center py-12 space-y-6">
+      <img 
+        src={toursError} 
+        alt="Error loading tours"
+        className="w-60 md:w-72 h-auto text-gray-400 mx-auto mb-6 md:mb-12" 
+      />
+      <h1 className="text-xl md:text-2xl font-medium text-gray-900 mb-4">
+        Unable to load tours
+      </h1>
+      <p className="text-gray-500 mb-4">{error}</p>
+      <div className="px-12 md:px-32">
+        <Button 
+          variant="primary"
           onClick={onRetry}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+          fullWidth={true}
         >
-          Try Again
-        </button>
+          Retry
+        </Button>
       </div>
     </div>
   );

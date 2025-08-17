@@ -88,7 +88,7 @@ const BookingHistoryCard = ({ bookings, onAddReview }: BookingHistoryCardProps) 
                       handleButtonClick(booking);
                     }}
                     className={`${getBookingStatusStyle(booking.status)}
-                      text-white px-4 py-3 font-semibold md:text-base rounded-lg text-sm transition-colors`}
+                      px-4 py-3 font-semibold md:text-base rounded-lg text-sm transition-colors`}
                   >
                     {getBookingStatusText(booking.status)}
                   </button>

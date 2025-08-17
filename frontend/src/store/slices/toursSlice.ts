@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Tour } from '../../types/tour.types';
 import type { ToursFilters } from '../../types/tours-store';
+import { filterTours } from '../../services/utils/toursFilters';
 
 // 🎯 Tours State 
 interface ToursState {
@@ -35,8 +36,14 @@ const toursSlice = createSlice({
     // 🔄 Set all tours (after successful fetch)
     setTours: (state, action: PayloadAction<Tour[]>) => {
       state.allTours = action.payload;
-      state.error = null;
-      state.isInitialized = true;
+    // 🔑 
+    if (Object.keys(state.filters).length === 0) {
+      state.filteredTours = action.payload; // No filters applied, show all tours
+    } else {
+      state.filteredTours = filterTours(action.payload, state.filters);
+    }
+    state.isInitialized = true;
+    state.error = null;
     },
 
     // 🎯 Set selected tour (for detail page)
@@ -77,15 +84,18 @@ const toursSlice = createSlice({
     clearSelectedTour: (state) => {
       state.selectedTour = null;
     },
-
+    
+    // 🔄 Set filters
     setFilters: (state, action: PayloadAction<ToursFilters>) => {
       state.filters = action.payload;
     },
-
+    
+    // 🔄 Set filtered tours (after applying filters)
     setFilteredTours: (state, action: PayloadAction<Tour[]>) => {
       state.filteredTours = action.payload;
     },
-
+    
+    // 🧹 Clear filters
     clearFilters: (state) => {
       state.filters = {};
     },

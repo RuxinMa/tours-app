@@ -15,8 +15,6 @@ interface ToursFilterProps {
   };
   onApplyFilters: (filters: ToursFilters) => void;
   onClearFilters: () => void;
-  resultsCount: number;
-  totalCount: number;
 }
 
 const ToursFilter = ({

@@ -1,5 +1,5 @@
 /* URL sync hook for tours filters */
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTours } from './useTours';
 import type { ToursFilters } from '../types/tours-store';
@@ -75,6 +75,7 @@ const filtersToUrlParams = (filters: ToursFilters): URLSearchParams => {
 export const useToursUrlSync = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { filters, applyFilters, isInitialized } = useTours();
+  const hasInitialized = useRef(false);
 
   // 📖 Initialize filters from URL on mount
   useEffect(() => {
@@ -83,16 +84,29 @@ export const useToursUrlSync = () => {
       
       // Only apply if URL has filters and they're different from current
       if (Object.keys(urlFilters).length > 0) {
-        const currentFiltersStr = JSON.stringify(filters);
-        const urlFiltersStr = JSON.stringify(urlFilters);
-        
-        if (currentFiltersStr !== urlFiltersStr) {
-          console.log('🔗 URL Sync: Applying filters from URL', urlFilters);
-          applyFilters(urlFilters);
-        }
+        applyFilters(urlFilters);
+      } else {
+        applyFilters({});
+      }
+      hasInitialized.current = true; // Mark as initialized
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isInitialized]); // Only depend on initialization
+
+  // 🔄 Handle browser navigation (back/forward)
+  useEffect(() => {
+    if (isInitialized && hasInitialized.current) {
+      const urlFilters = parseUrlToFilters(searchParams);
+      const currentFiltersStr = JSON.stringify(filters);
+      const urlFiltersStr = JSON.stringify(urlFilters);
+      
+      if (currentFiltersStr !== urlFiltersStr) {
+        console.log('🔗 URL Sync: Browser navigation detected, syncing filters');
+        applyFilters(urlFilters);
       }
     }
-  }, [isInitialized, searchParams, applyFilters, filters]); // Only depend on initialization, URL changes, filters, and applyFilters
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]); // Listen for changes in searchParams after initialization
 
   // 🔄 Update URL when filters change (but not during initialization)
   const updateUrlFromFilters = useCallback((newFilters: ToursFilters) => {
