@@ -5,12 +5,12 @@ import { useTours } from '../hooks/useTours';
 import MainLayout from "../components/layout/MainLayout";
 import TourHeader from "../components/tour/TourHeader";
 import TourOverview from "../components/tour/TourOverview";
-import TourGallery from "../components/tour/TourGallery";
+import TourGallery from "../components/tour/ui/TourGallery";
 import TourMap from "../components/tour/TourMap";
 import TourReviews from "../components/tour/TourReviews";
 import TourBooking from "../components/tour/TourBooking";
-import TourDetailError from "../components/tour/TourDetailError";
-import TourDetailSkeleton from "../components/tour/TourDetailSkeleton";
+import TourDetailError from "../components/tour/ui/TourDetailError";
+import TourDetailSkeleton from "../components/tour/ui/TourDetailSkeleton";
 
 const TourDetailPage = () => {
   const { slug } = useParams();

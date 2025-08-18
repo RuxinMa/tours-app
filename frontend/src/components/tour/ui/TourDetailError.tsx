@@ -1,6 +1,6 @@
 // 🚨 Error Component for Tour Detail
-import NotFound from '../../assets/not-found.svg';
-import Button from '../common/Button';
+import NotFound from '../../../assets/not-found.svg';
+import Button from '../../common/Button';
 
 const TourDetailError = ({ 
   error, 

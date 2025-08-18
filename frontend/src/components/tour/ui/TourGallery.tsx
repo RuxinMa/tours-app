@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { FiX } from 'react-icons/fi';
-import type { Tour } from '../../types/tour.types';
+import type { Tour } from '../../../types/tour.types';
 
 interface TourGalleryProps {
   tour: Tour;

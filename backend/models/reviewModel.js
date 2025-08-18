@@ -28,6 +28,10 @@ const reviewSchema = new mongoose.Schema(
       ref: 'User', // Reference to the User model
       required: [true, 'Review must belong to a user'],
     },
+    updatedAt: {
+      type: Date,
+      default: Date.now, // default value for updatedAt
+    },
   },
   {
     toJSON: { virtuals: true }, // include virtuals in the JSON output

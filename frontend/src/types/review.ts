@@ -1,17 +1,56 @@
 export interface Review {
   id: string;
-  tour: {
-    id: string; // Tour ID
-    name: string; // Tour name
-    imageCover: string; // URL of the cover image
-    slug: string; // Slug for the tour URL
-  };
-  rating: number; // Rating given by the user (1-5)
-  review: string; // Text of the review
-  createdAt: string; // Date when the review was created
-  updatedAt?: string; // Date when the review was last updated
-  user?: {
+  review: string;   
+  rating: number;
+  createdAt: string;
+  updatedAt?: string; // Optional, if not always returned
+  tour: string; // Tour ID
+  user: {
+    id: string;
     name: string;
-    photo?: string; // Optional user photo URL
-  }; // Optional user details for display purposes
+    photo: string;
+  };
 }
+
+export interface CreateReviewData {
+  review: string;
+  rating: number;
+  tour: string;  // Tour ID
+}
+
+export interface UpdateReviewData {
+  review?: string;
+  rating?: number;
+  updatedAt?: string; // Optional, if not always updated
+}
+
+// Extended Review interface for Tour Details Page
+export interface ReviewWithTourInfo extends Review {
+  tourInfo: {
+    id: string;
+    name: string;
+    slug: string;
+    imageCover: string;
+  };
+}
+
+// API Response Types
+export interface ApiResponse<T> {
+  status: "success" | "fail" | "error";
+  data: T;
+  message?: string;
+}
+
+export interface ReviewsApiData {
+  [x: string]: Review[];
+  reviews: Review[];  
+}
+
+export interface SingleReviewApiData {
+  [x: string]: Review;
+  review: Review;  
+}
+
+export type FetchReviewsResponse = ApiResponse<ReviewsApiData>;
+export type CreateReviewResponse = ApiResponse<SingleReviewApiData>;
+export type UpdateReviewResponse = ApiResponse<SingleReviewApiData>;
