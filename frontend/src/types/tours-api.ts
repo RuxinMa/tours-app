@@ -28,9 +28,3 @@ export interface ToursApiData {
  * Returns all tours for client-side filtering
  */
 export type FetchToursResponse = ApiResponse<ToursApiData>
-
-/* 
-  🎯 Client-side filtering function type
-  For filtering tours on the frontend
-*/
-export type TourFilterFunction = (tours: Tour[], filters: ToursFilters) => Tour[];;

@@ -33,24 +33,3 @@ export interface ReviewWithTourInfo extends Review {
     imageCover: string;
   };
 }
-
-// API Response Types
-export interface ApiResponse<T> {
-  status: "success" | "fail" | "error";
-  data: T;
-  message?: string;
-}
-
-export interface ReviewsApiData {
-  [x: string]: Review[];
-  reviews: Review[];  
-}
-
-export interface SingleReviewApiData {
-  [x: string]: Review;
-  review: Review;  
-}
-
-export type FetchReviewsResponse = ApiResponse<ReviewsApiData>;
-export type CreateReviewResponse = ApiResponse<SingleReviewApiData>;
-export type UpdateReviewResponse = ApiResponse<SingleReviewApiData>;

@@ -1,3 +1,5 @@
+import type { Review } from './review';
+
 /* Basic Types for Tours */
 export interface Location {
   id?: string;
@@ -15,18 +17,6 @@ export interface Guide {
   photo: string;
   role: "guide" | "lead-guide";
 }
-
-export interface Review {
-  id: string;
-  rating: number;
-  review: string;
-  createdAt: string;
-  user: {
-    name: string;
-    photo: string;
-  };
-}
-
 
 export type Difficulty = 'easy' | 'medium' | 'difficult';
 

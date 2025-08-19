@@ -1,16 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from './api';
-import type { User, ApiResponse } from '../types';
-
-// Data transformer for user data consistency
-const transformUser = (userData: any): User => {
-  return {
-    id: userData._id || userData.id,
-    name: userData.name,
-    email: userData.email,
-    photo: userData.photo,
-    role: userData.role, // Handle both 'role' and 'roles'
-  };
-};
+import type { User } from '../types';
+import { transformSingle } from './utils/apiTransformers';
+import type { SingleDocResponse } from './utils/apiTransformers';
 
 // AuthService - handles API calls related to authentication
 export const authService = {
@@ -20,9 +12,8 @@ export const authService = {
    */
   async checkAuthStatus(): Promise<User> {
     try {
-      const response = await api.get<ApiResponse<User>>('/users/me');
-      const user = transformUser(response.data.data.doc);
-      return user;
+      const response = await api.get<SingleDocResponse<User>>('/users/me');
+      return transformSingle(response.data);
     } catch (error) {
       console.warn('🔐 AuthService: No authenticated user found');
       throw error; // Let the calling code handle the error
@@ -34,13 +25,12 @@ export const authService = {
    */
   async login(email: string, password: string): Promise<User> {
     try {
-      const response = await api.post<ApiResponse<User>>('/users/login', { 
+      const response = await api.post<SingleDocResponse<User>>('/users/login', { 
         email, 
         password 
       });
     
-      const user = transformUser(response.data.data.doc);
-      return user;
+      return transformSingle(response.data);
     } catch (error) {
       console.error('🔐 AuthService: Login failed for:', email);
       throw error; // Re-throw to let calling code handle
@@ -51,7 +41,7 @@ export const authService = {
   async logout(): Promise<void> {
     try {
       await api.get('/users/logout');
-    } catch (error) {
+    } catch {
       console.warn('🔐 AuthService: Logout API call failed, but continuing...');
       // Don't throw error for logout - we want to clear frontend state regardless
     }
@@ -66,9 +56,8 @@ export const authService = {
     password: string;
   }): Promise<User> {
     try {
-      const response = await api.post<ApiResponse<User>>('/users/signup', userData);
-      const user = transformUser(response.data.data.doc);
-      return user;
+      const response = await api.post<SingleDocResponse<User>>('/users/signup', userData);
+      return transformSingle(response.data);
     } catch (error: any) {
       console.error('🔐 AuthService: Registration failed for:', userData.email);
       
@@ -87,9 +76,8 @@ export const authService = {
    */
   async updateProfile(userData: Partial<User>): Promise<User> {
     try {
-      const response = await api.patch<ApiResponse<User>>('/users/updateMe', userData);
-      const user = transformUser(response.data.data.doc);
-      return user;
+      const response = await api.patch<SingleDocResponse<User>>('/users/updateMe', userData);
+      return transformSingle(response.data);
     } catch (error) {
       console.error('🔐 AuthService: Profile update failed');
       throw error;

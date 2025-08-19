@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Tour } from '../../types/tour.types';
 import type { User } from '../../types/user';
 import { FiCalendar, FiCreditCard, FiShield } from 'react-icons/fi';
+import { useBookings } from '../../hooks/useBookings';
 import Button from '../common/Button';
 
 interface BookingCardProps {
@@ -22,11 +23,16 @@ const PricingSummary =({
       <span className="font-medium">${value}</span>
     </div>
   );
-}; // PricingSummary component to display pricing details
+};
 
 const BookingCard = ({ tour, user }: BookingCardProps) => {
   const [selectedDate, setSelectedDate] = useState<string>('');
-  const [isBooking, setIsBooking] = useState(false);
+  const { 
+    createCheckoutSession, 
+    isSubmitting, 
+    error: bookingError,
+    clearError: clearBookingError,
+  } = useBookings();
 
   const getAvailableDates = () => {
     if (!tour.startDates) return [];
@@ -41,35 +47,57 @@ const BookingCard = ({ tour, user }: BookingCardProps) => {
 
   const availableDates = getAvailableDates(); // Get available dates for the tour
 
-  // 💢 Handle booking (simulate Stripe integration)
+  // 🔄 Handle booking with useBookings hook
   const handleBooking = async () => {
+    // Clear any previous errors
+    if (bookingError) {
+      clearBookingError();
+    }
+
+    // Validation
     if (!selectedDate) {
       alert('Please select a date first!');
       return;
     }
-    setIsBooking(true);
-    // Simulate API call and Stripe processing
+
     try {
-      console.log('Processing booking...', {
-        tourId: tour.id,
-        userId: user?.id,
-        date: selectedDate,
-        amount: tour.price
-      });
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      alert(`Booking successful! You've booked ${tour.name} for ${selectedDate}`);
-    } catch (error) {
-      console.error('Booking failed:', error);
-      alert('Booking failed. Please try again.');
-    } finally {
-      setIsBooking(false);
+      const result = await createCheckoutSession(tour.id);
+      
+      if (result.success) {
+        console.log('✅ BookingCard: Checkout session created successfully');
+        // The hook will automatically redirect to Stripe checkout
+      } else {
+        alert(result.error || 'Failed to create checkout session. Please try again.');
+      }
+    } catch {
+      alert('Something went wrong. Please try again.');
     }
   };
 
-  const isReadyToBook = !selectedDate || isBooking || availableDates.length === 0;
+  const isButtonDisabled = !selectedDate || isSubmitting || availableDates.length === 0;
+
+  const getButtonText = () => {
+    if (isSubmitting) return 'Creating Checkout...';
+    if (availableDates.length === 0) return 'No Dates Available';
+    return 'Book Tour Now';
+  };
+
 
   return (
     <div>
+      {/* 🔄 Show booking error if exists */}
+      {bookingError && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-600 text-sm">{bookingError}</p>
+          <button 
+            onClick={clearBookingError}
+            className="text-red-500 text-xs underline mt-1"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       <div className="grid md:grid-cols-2 md:gap-8">
         {/* Left Side: Booking Information */}
         <div>
@@ -146,16 +174,14 @@ const BookingCard = ({ tour, user }: BookingCardProps) => {
 
           {/* Booking Button */}
           <Button
-            variant={isReadyToBook ? 'secondary' : 'primary'}
+            variant={isButtonDisabled ? 'secondary' : 'primary'}
             onClick={handleBooking}
-            disabled={isReadyToBook}
+            disabled={isButtonDisabled}
             fullWidth={true}
           >
             <div className="flex items-center justify-center space-x-3">
               <FiCreditCard />
-              <span>
-                {isBooking ? 'Processing...' : 'Book Tour Now'}
-              </span>
+              <span>{getButtonText()}</span>
             </div>
           </Button>
         </div>

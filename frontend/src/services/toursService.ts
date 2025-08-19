@@ -8,9 +8,12 @@ import type { ToursFilters } from '../types/tours-store';
 import { filterTours } from './utils/toursFilters';
 import { generateMockTours } from '../dev-data/mockTours';
 
+import { transformSingle, transformMultiple } from './utils/apiTransformers';
+import type { SingleDocResponse, MultiDocsResponse } from './utils/apiTransformers'
+
 // 🔄 Data transformer for API response
-const transformToursResponse = (apiResponse: FetchToursResponse) => {
-  return apiResponse.data.docs; // Simply return the tours array
+const transformToursResponse = (apiResponse: MultiDocsResponse<Tour>) => {
+  return transformMultiple(apiResponse);
 };
 
 // 🎭 Mock API call for development
@@ -105,17 +108,48 @@ export const toursService = {
       }
       
       // Real API call
-      const response = await api.get<{ status: string; data: { doc: Tour } }>(`/tours/${id}`);
+      const response = await api.get<SingleDocResponse<Tour>>(`/tours/${id}`);
       
       console.log('✅ ToursService: Successfully fetched tour detail');
-      return response.data.data.doc;
+      return transformSingle(response.data);
       
     } catch (error) {
       console.error(`🚨 ToursService: Failed to fetch tour ${id}`);
       throw transformToursError(error);
     }
   },
-  
+
+  /**
+   * Fetch single tour by slug (for detail page with slug→id mapping)
+   */
+  async fetchTourBySlug(slug: string): Promise<Tour> {
+    try {
+      console.log(`🚀 ToursService: Fetching tour by slug: ${slug}...`);
+      
+      if (isMockEnabled()) {
+        console.log('🎭 ToursService: Using mock data for tour detail');
+        const allTours = await mockToursCall();
+        const tour = allTours.find(t => t.slug === slug);
+        
+        if (!tour) {
+          throw new ToursError('Tour not found', 404);
+        }
+        
+        return tour;
+      }
+      
+      // Real API call using slug endpoint
+      const response = await api.get<SingleDocResponse<Tour>>(`/tours/slug/${slug}`);
+      
+      console.log('✅ ToursService: Successfully fetched tour detail by slug');
+      return transformSingle(response.data);
+
+    } catch (error) {
+      console.error(`🚨 ToursService: Failed to fetch tour by slug ${slug}`);
+      throw transformToursError(error);
+    }
+  },
+
   /**
    * Filter tours locally (for client-side filtering)
    */

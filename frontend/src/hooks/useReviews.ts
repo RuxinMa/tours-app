@@ -15,6 +15,7 @@ import {
   clearCurrentReview,
   clearTourReviews,
 } from '../store/slices/reviewsSlice';
+import { updateUserBookingStatus } from '../store/slices/bookingsSlice';
 import type { CreateReviewData, UpdateReviewData, Review, ReviewWithTourInfo } from '../types/review';
 
 export const useReviews = () => {
@@ -23,6 +24,12 @@ export const useReviews = () => {
   // Select state from Redux
   const reviewsState = useAppSelector((state) => state.reviews);
   const toursState = useAppSelector((state) => state.tours);
+  const bookingsState = useAppSelector((state) => state.bookings); // 🔄 Add bookings state
+
+  // 🔄 Helper function to find booking by tour ID
+  const findBookingByTourId = useCallback((tourId: string) => {
+    return bookingsState.userBookings.find(booking => booking.tourId === tourId);
+  }, [bookingsState.userBookings]);
 
   // 📖 Load reviews for a specific tour (Tour Detail Page)
   const loadTourReviews = useCallback(async (tourId: string) => {
@@ -96,29 +103,53 @@ export const useReviews = () => {
     }
   }, [dispatch, reviewsState.userReviews.length]);
 
-  // ✍️ Create a new review
+  // ✏️ Create a new review (WITH BOOKING COORDINATION)
   const createReview = useCallback(async (reviewData: CreateReviewData) => {
     dispatch(setSubmitting(true));
     dispatch(clearError());
 
     try {
-      console.log('✍️ useReviews: Creating new review...', reviewData);
+      console.log('✏️ useReviews: Creating new review...', reviewData);
       
+      // 1️⃣ Create the review
       const newReview = await reviewsService.createReview(reviewData);
       
-      // Add to user reviews
+      // 2️⃣ Update local review state
       dispatch(addUserReview(newReview));
       
-      // If tour reviews are loaded, refresh them to show the new review
+      // 3️⃣ 🔄 Cross-domain coordination: Update booking status to 'reviewed'
+      const booking = findBookingByTourId(reviewData.tour);
+      if (booking && booking.status === 'pending-review') {
+        console.log(`🔄 useReviews: Updating booking ${booking.id} status to 'reviewed'`);
+        dispatch(updateUserBookingStatus({ 
+          bookingId: booking.id, 
+          status: 'reviewed' 
+        }));
+        
+        // 🔄 Also update backend booking status
+        try {
+          // Import bookingsService if needed or call the API directly
+          const { bookingsService } = await import('../services/bookingsService');
+          await bookingsService.updateBookingStatus(booking.id, 'reviewed');
+          console.log('✅ useReviews: Successfully updated booking status in backend');
+        } catch (bookingError) {
+          console.warn('⚠️ useReviews: Failed to update booking status in backend:', bookingError);
+          // Don't fail the whole operation, just log the warning
+        }
+      } else {
+        console.log(`ℹ️ useReviews: No booking found or booking not in pending-review status for tour ${reviewData.tour}`);
+      }
+      
+      // 4️⃣ If tour reviews are loaded, refresh them to show the new review
       if (reviewsState.tourReviews[reviewData.tour]) {
-        console.log('🔄 Refreshing tour reviews to include new review');
+        console.log('📄 Refreshing tour reviews to include new review');
         dispatch(clearTourReviews(reviewData.tour));
         await loadTourReviews(reviewData.tour);
       }
       
       dispatch(setSubmitting(false));
       
-      console.log('✅ useReviews: Successfully created review');
+      console.log('✅ useReviews: Successfully created review and updated booking status');
       return { success: true, review: newReview };
       
     } catch (error) {
@@ -133,7 +164,7 @@ export const useReviews = () => {
       
       return { success: false, error: errorMessage };
     }
-  }, [dispatch, reviewsState.tourReviews, loadTourReviews]);
+  }, [dispatch, reviewsState.tourReviews, loadTourReviews, findBookingByTourId]);
 
   // 📝 Update an existing review
   const updateReview = useCallback(async (reviewId: string, updateData: UpdateReviewData) => {
@@ -155,7 +186,7 @@ export const useReviews = () => {
       
       // Refresh tour reviews if they're loaded
       if (reviewsState.tourReviews[updatedReview.tour]) {
-        console.log('🔄 Refreshing tour reviews after update');
+        console.log('📄 Refreshing tour reviews after update');
         dispatch(clearTourReviews(updatedReview.tour));
         await loadTourReviews(updatedReview.tour);
       }
@@ -179,7 +210,7 @@ export const useReviews = () => {
     }
   }, [dispatch, reviewsState.currentReview, reviewsState.tourReviews, loadTourReviews]);
 
-  // 🗑️ Delete a review
+  // 🗑️ Delete a review (WITH BOOKING COORDINATION)
   const deleteReview = useCallback(async (reviewId: string) => {
     dispatch(setSubmitting(true));
     dispatch(clearError());
@@ -187,29 +218,56 @@ export const useReviews = () => {
     try {
       console.log(`🗑️ useReviews: Deleting review ${reviewId}...`);
       
-      // Find the review to get tour ID before deletion
+      // 1️⃣ Find the review to get tour ID before deletion
       const reviewToDelete = reviewsState.userReviews.find(r => r.id === reviewId);
       
+      if (!reviewToDelete) {
+        throw new ReviewsError('Review not found in local state');
+      }
+      
+      // 2️⃣ Delete the review
       await reviewsService.deleteReview(reviewId);
       
-      // Remove from user reviews
+      // 3️⃣ Remove from user reviews
       dispatch(removeUserReview(reviewId));
       
-      // Clear current review if it's the same one
+      // 4️⃣ 🔄 Cross-domain coordination: Update booking status back to 'pending-review'
+      const booking = findBookingByTourId(reviewToDelete.tour);
+      if (booking && booking.status === 'reviewed') {
+        console.log(`🔄 useReviews: Updating booking ${booking.id} status back to 'pending-review'`);
+        dispatch(updateUserBookingStatus({ 
+          bookingId: booking.id, 
+          status: 'pending-review' 
+        }));
+        
+        // 🔄 Also update backend booking status
+        try {
+          const { bookingsService } = await import('../services/bookingsService');
+          await bookingsService.updateBookingStatus(booking.id, 'pending-review');
+          console.log('✅ useReviews: Successfully updated booking status in backend');
+        } catch (bookingError) {
+          console.warn('⚠️ useReviews: Failed to update booking status in backend:', bookingError);
+          // Don't fail the whole operation, just log the warning
+        }
+      } else {
+        console.log(`ℹ️ useReviews: No booking found or booking not in reviewed status for tour ${reviewToDelete.tour}`);
+      }
+      
+      // 5️⃣ Clear current review if it's the same one
       if (reviewsState.currentReview?.id === reviewId) {
         dispatch(clearCurrentReview());
       }
       
-      // Refresh tour reviews if they're loaded
-      if (reviewToDelete && reviewsState.tourReviews[reviewToDelete.tour]) {
-        console.log('🔄 Refreshing tour reviews after deletion');
+      // 6️⃣ Refresh tour reviews if they're loaded
+      if (reviewsState.tourReviews[reviewToDelete.tour]) {
+        console.log('📄 Refreshing tour reviews after deletion');
         dispatch(clearTourReviews(reviewToDelete.tour));
         await loadTourReviews(reviewToDelete.tour);
       }
       
       dispatch(setSubmitting(false));
       
-      console.log('✅ useReviews: Successfully deleted review');
+      console.log('✅ useReviews: Successfully deleted review and updated booking status');
       return { success: true };
       
     } catch (error) {
@@ -224,7 +282,7 @@ export const useReviews = () => {
       
       return { success: false, error: errorMessage };
     }
-  }, [dispatch, reviewsState.userReviews, reviewsState.currentReview, reviewsState.tourReviews, loadTourReviews]);
+  }, [dispatch, reviewsState.userReviews, reviewsState.currentReview, reviewsState.tourReviews, loadTourReviews, findBookingByTourId]);
 
   // 🔄 Refresh operations
   const refreshTourReviews = useCallback(async (tourId: string) => {
@@ -306,10 +364,10 @@ export const useReviews = () => {
     refreshTourReviews,
     refreshUserReviews,
     
-    // ✍️ CRUD Operations  
-    createReview,
+    // ✏️ CRUD Operations (🔄 WITH BOOKING COORDINATION)
+    createReview,             // Also updates booking status to 'reviewed'
     updateReview,
-    deleteReview,
+    deleteReview,             // Also updates booking status to 'pending-review'
     
     // 🎯 Data Getters
     getTourReviews,           // 获取 tour 的 reviews

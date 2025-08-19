@@ -102,38 +102,15 @@ export const useTours = () => {
     dispatch(clearError());
 
     try {
-      console.log(`🔄 useTours: Loading tour detail for slug: ${slug}`);
+      console.log(`📄 useTours: Loading tour detail for slug: ${slug}`);
       
-      // First try to find tour in already loaded tours (optimization)
-      const existingTour = toursState.allTours.find(tour => tour.slug === slug);
-
-      if (existingTour) {
-        console.log('✅ useTours: Found tour in existing data cache');
-        dispatch(setSelectedTour(existingTour));
-        dispatch(setLoading(false));
-        return { success: true, tour: existingTour };
-      }
+      const tour = await toursService.fetchTourBySlug(slug);
       
-      // If not in cache, we need to fetch all tours first to get the slug→id mapping
-      console.log('🔄 useTours: Tour not in cache, checking if we need to load all tours...');
+      dispatch(setSelectedTour(tour));
+      dispatch(setLoading(false));
       
-      // If tours not loaded yet, load them first
-      if (!toursState.isInitialized || toursState.allTours.length === 0) {
-        console.log('🔄 useTours: Loading all tours to find slug mapping...');
-        const allTours = await toursService.fetchAllTours();
-        dispatch(setTours(allTours));
-        
-        // Now try to find the tour by slug
-        const foundTour = allTours.find(tour => tour.slug === slug);
-        if (foundTour) {
-          dispatch(setSelectedTour(foundTour));
-          dispatch(setLoading(false));
-          return { success: true, tour: foundTour };
-        }
-      }
-      
-      // If still not found, the slug doesn't exist
-      throw new ToursError('Tour not found', 404);
+      console.log('✅ useTours: Successfully loaded tour detail');
+      return { success: true, tour };
       
     } catch (error) {
       console.error(`🚨 useTours: Failed to load tour detail for ${slug}:`, error);
@@ -151,7 +128,7 @@ export const useTours = () => {
       
       return { success: false, error: errorMessage };
     }
-  }, [dispatch, toursState.allTours, toursState.isInitialized]);
+  }, [dispatch]);
 
   // 🔄 Refresh tours data
   const refreshTours = useCallback(async () => {

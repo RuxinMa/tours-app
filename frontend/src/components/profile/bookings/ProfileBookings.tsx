@@ -1,64 +1,128 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiCalendar } from 'react-icons/fi';
 import Empty from '../../../assets/profile-empty.svg';
-import type { Booking } from '../../../types/booking';
+import type { BookingDisplayData } from '../../../types/booking';
 import type { ReviewSubmitData } from '../../common/ReviewModal';
-import { mockBookings } from '../../../dev-data/mockBookings';
+import { useBookings } from '../../../hooks/useBookings';
+import { useReviews } from '../../../hooks/useReviews';
 
 // Components
 import { FormTitle } from '../../layout/SettingsForm';
 import Button from '../../common/Button';
+import Alert from '../../common/Alert';
 import BookingHistoryCard from './BookingHistoryCard';
 import ReviewModal from '../../common/ReviewModal';
 
 const ProfileBookings = () => {
   const navigate = useNavigate();
-  const [bookings, setBookings] = useState<Booking[]>(mockBookings);
+
+  const { 
+    userBookings, 
+    isLoading, 
+    error: bookingError,
+    loadUserBookings,
+    clearError: clearBookingError,
+  } = useBookings();
+
+  const {
+    createReview,
+    isSubmitting: isReviewSubmitting,
+    error: reviewError,
+    clearError: clearReviewError,
+  } = useReviews();
 
   // State for adding review modal
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [selectedBooking, setSelectedBooking] = useState<BookingDisplayData | null>(null);
 
-  const handleAddReview = (booking: Booking) => {
+  // 🔄 Load bookings when component mounts
+  useEffect(() => {
+    loadUserBookings();
+  }, [loadUserBookings]);
+
+  // 🔄 Handle add review - opens modal
+  const handleAddReview = (booking: BookingDisplayData) => {
     setSelectedBooking(booking);
     setIsReviewModalOpen(true);
-  };
-
-  const handleReviewSubmit = (data: ReviewSubmitData) => {
-    if (selectedBooking) {
-      // Update booking status to reviewed
-      setBookings(prevBookings => 
-        prevBookings.map(booking => 
-          booking.id === selectedBooking.id 
-            ? {
-                ...booking,
-                status: 'reviewed' as const,
-                review: {
-                  id: `review-${Date.now()}`, // Unique ID for the review
-                  rating: data.rating,
-                  review: data.review
-                }
-              }
-            : booking
-        )
-      );
-      
-      setIsReviewModalOpen(false);
-      setSelectedBooking(null);
+    
+    // Clear any previous review errors
+    if (reviewError) {
+      clearReviewError();
     }
   };
 
+  // 🔄 Handle review submission
+  const handleReviewSubmit = async (data: ReviewSubmitData) => {
+    if (!selectedBooking) {
+      console.error('❌ ProfileBookings: No booking selected for review');
+      return;
+    }
+
+    try {
+      // 🔄 Create review using hook (this will also update booking status)
+      const result = await createReview({
+        tour: selectedBooking.tourId,
+        rating: data.rating,
+        review: data.review
+      });
+
+      if (result.success) {
+        // Close modal
+        setIsReviewModalOpen(false);
+        setSelectedBooking(null);
+        
+        // Refresh bookings to show updated status
+        await loadUserBookings();
+        
+        // Show success message
+        alert('Review added successfully!');
+      } else {
+        alert(result.error || 'Failed to add review. Please try again.');
+      }
+    } catch {
+      alert('Something went wrong. Please try again.');
+    }
+  };
+
+  // Handle review modal close
   const handleReviewCancel = () => {
     setIsReviewModalOpen(false);
     setSelectedBooking(null);
+    
+    // Clear review errors when closing
+    if (reviewError) {
+      clearReviewError();
+    }
   };
+
+  // 🔄 Loading state
+  if (isLoading && userBookings.length === 0) {
+    return (
+      <div className="container p-6 md:p-8">
+        <FormTitle title="My Bookings" icon={<FiCalendar />} />
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+          <span className="ml-3 text-gray-600">Loading your bookings...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container p-6 md:p-8">
       <FormTitle title="My Bookings" icon={<FiCalendar />} />
 
-      {bookings.length === 0 ? (
+      {/* Error Alert */}
+      {bookingError && (
+        <Alert
+          type="error"
+          message={bookingError}
+          onClose={clearBookingError}
+        />
+      )}
+
+      {userBookings.length === 0 ? (
         <div className="text-center p-10">
           <div className="text-gray-400 mb-4 flex flex-col justify-center items-center gap-2">
             <img 
@@ -78,7 +142,7 @@ const ProfileBookings = () => {
           </div>
         </div>
       ) : (
-        <BookingHistoryCard bookings={bookings} onAddReview={handleAddReview} />
+        <BookingHistoryCard bookings={userBookings} onAddReview={handleAddReview} />
       )}
 
       {/* Add Review Modal */}
@@ -87,11 +151,12 @@ const ProfileBookings = () => {
         onClose={handleReviewCancel}
         mode="create"
         tourInfo={{
-          id: selectedBooking?.tour.id || '',
-          name: selectedBooking?.tour.name || '',
-          slug: selectedBooking?.tour.slug
+          id: selectedBooking?.tourId || '',
+          name: selectedBooking?.tourName || '',
+          slug: selectedBooking?.tourSlug || '',
         }}
         onSubmit={handleReviewSubmit}
+        isLoading={isReviewSubmitting}
       />
     </div>
   );

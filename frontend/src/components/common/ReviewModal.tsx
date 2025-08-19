@@ -24,6 +24,7 @@ interface ReviewModalProps {
     review: string;
   };
   onSubmit: (data: ReviewSubmitData) => void;
+  isLoading?: boolean;
 }
 
 const ReviewModal = ({
@@ -32,7 +33,8 @@ const ReviewModal = ({
   mode,
   tourInfo,
   existingReview,
-  onSubmit
+  onSubmit,
+  isLoading = false
 }: ReviewModalProps) => {
   // State Management
   const [rating, setRating] = useState(0);
@@ -55,14 +57,16 @@ const ReviewModal = ({
 
   // Star click handler
   const handleStarClick = (starValue: number) => {
+    if (isLoading) return;
     setRating(starValue);
     setErrors(prev => ({ ...prev, rating: '' }));
   };
 
   // Content change handler
   const handleReviewChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-     const newValue = e.target.value;
-    if (newValue.length <= 300) {  // Limit to 200 characters
+    if (isLoading) return; 
+    const newValue = e.target.value;
+    if (newValue.length <= 300) {  // Limit to 300 characters
       setReviewText(newValue);
       setErrors(prev => ({ ...prev, review: '' }));
     }
@@ -83,6 +87,8 @@ const ReviewModal = ({
 
   // Submit handler
   const handleSubmit = () => {
+    if (isLoading) return;
+
     if (validateForm()) {
       const submitData: ReviewSubmitData = {
         rating,
@@ -92,8 +98,12 @@ const ReviewModal = ({
         submitData.reviewId = existingReview.id;
       }
       onSubmit(submitData);
-      onClose();
     }
+  };
+
+  const handleClose = () => {
+    if (isLoading) return;
+    onClose();
   };
 
   // Render stars
@@ -105,6 +115,7 @@ const ReviewModal = ({
             key={star}
             type="button"
             onClick={() => handleStarClick(star)}
+            disabled={isLoading} 
             className="focus:outline-none hover:scale-110 transition-transform"
           >
             <FiStar
@@ -123,7 +134,7 @@ const ReviewModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title={mode === 'create' ? 'Write a Review' : 'Edit Review'}
       size="lg"
     >
@@ -154,6 +165,7 @@ const ReviewModal = ({
           <textarea
             value={reviewText}
             onChange={handleReviewChange}
+            disabled={isLoading}
             onPaste={(e) => {e.stopPropagation();}} 
             onCopy={(e) => {e.stopPropagation();}}
             onCut={(e) => {e.stopPropagation();}} // Prevent copy/cut/paste
@@ -176,6 +188,7 @@ const ReviewModal = ({
           <Button 
             variant="secondary" 
             onClick={onClose} 
+            disabled={isLoading}
             className='md:text-base text-sm w-1/3 md:w-full'
           >
             Cancel
@@ -183,9 +196,10 @@ const ReviewModal = ({
           <Button 
             variant="primary" 
             onClick={handleSubmit} 
+            disabled={isLoading}
             className='md:text-base text-sm w-1/2 md:w-full'
           >
-            {mode === 'create' ? 'Submit Review' : 'Update Review'}
+            {isLoading ? 'Submitting...' : mode === 'create' ? 'Submit Review' : 'Update Review'}
           </Button>
         </div>
       </div>

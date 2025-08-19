@@ -23,6 +23,11 @@ const bookingSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  status: {
+    type: String,
+    enum: ['planned', 'pending-review', 'reviewed', 'cancelled'],
+    default: 'planned',
+  },
 });
 
 // Query Middleware

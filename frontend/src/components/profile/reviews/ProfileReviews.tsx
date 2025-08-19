@@ -5,6 +5,7 @@ import Empty from '../../../assets/profile-empty.svg';
 import type { Review } from '../../../types/review';
 import type { ReviewSubmitData } from '../../common/ReviewModal';
 import { useReviews } from '../../../hooks/useReviews'; 
+import { useBookings } from '../../../hooks/useBookings'; 
 
 // Components
 import ReviewCard from './ReviewHistoryCard';
@@ -16,6 +17,7 @@ import ReviewModal from '../../common/ReviewModal';
 
 const ProfileReviews = () => {
   const navigate = useNavigate();
+
   // 🎣 Use reviews hook
   const {
     getUserReviewsWithTourInfo,
@@ -29,6 +31,12 @@ const ProfileReviews = () => {
     clearSelectedReview,
     currentReview
   } = useReviews();
+  
+  // 🔄 Use bookings hook for cross-domain coordination
+  const {
+    markBookingAsPendingReview,
+    loadUserBookings
+  } = useBookings();
 
   // Get reviews with tour info for display
   const reviews = getUserReviewsWithTourInfo();
@@ -105,13 +113,28 @@ const ProfileReviews = () => {
     clearSelectedReview();
   };
 
+  // 🔄 Enhanced delete with cross-domain coordination
   const confirmDeleteReview = async () => {
-     if (currentReview) {
-      const result = await deleteReview(currentReview.id);
-      
-      if (result.success) {
-        setIsDeleteModalOpen(false);
-        clearSelectedReview();
+    if (currentReview) {
+      try {
+        // 1️⃣ Delete the review (this will also handle booking status update in useReviews)
+        const deleteResult = await deleteReview(currentReview.id);
+        
+        if (deleteResult.success) {
+          // 2️⃣ Refresh bookings to show updated status
+          await loadUserBookings();
+
+          // 3️⃣ Mark booking as pending review
+          await markBookingAsPendingReview(currentReview.tour);
+
+          // 4️⃣ Close modal and clear selection
+          setIsDeleteModalOpen(false);
+          clearSelectedReview();
+        } else {
+          alert(deleteResult.error || 'Failed to delete review. Please try again.');
+        }
+      } catch{
+        alert('Something went wrong. Please try again.');
       }
     }
   };

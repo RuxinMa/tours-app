@@ -2,13 +2,12 @@
 import api from './api';
 import { isMockEnabled } from './utils/config';
 import { handleApiError, ApiError } from './utils/errorHandler';
+import { transformSingle, transformMultiple } from './utils/apiTransformers';
+import type { SingleDocResponse, MultiDocsResponse } from './utils/apiTransformers';
 import type { 
   Review, 
   CreateReviewData, 
   UpdateReviewData,
-  FetchReviewsResponse,
-  CreateReviewResponse,
-  UpdateReviewResponse
 } from '../types/review';
 
 // 🎭 Mock data
@@ -67,23 +66,6 @@ export class ReviewsError extends ApiError {
   originalError?: unknown;
 }
 
-// 🔄 Data transformer: Convert MongoDB format to frontend format
-const transformReview = (review: any): Review => {
-  return {
-    id: review._id || review.id,
-    review: review.review,
-    rating: review.rating,
-    createdAt: review.createdAt,
-    updatedAt: review.updatedAt,
-    tour: review.tour._id || review.tour, // Ensure tour ID is in correct format
-    user: {
-      id: review.user._id || review.user.id,
-      name: review.user.name,
-      photo: review.user.photo
-    }
-  };
-};
-
 // 🔧 Error transformer
 const transformReviewsError = (error: unknown): ReviewsError => {
   console.error('🚨 ReviewsService: Error occurred:', error);
@@ -113,9 +95,8 @@ export const reviewsService = {
         return generateMockReviews(tourId);
       }
       
-      const response = await api.get<FetchReviewsResponse>(`/tours/${tourId}/reviews`);
-      const reviewsData = response.data.data?.reviews || response.data.data?.docs || [];
-      const reviews = reviewsData.map(transformReview);
+      const response = await api.get<MultiDocsResponse<Review>>(`/tours/${tourId}/reviews`);
+      const reviews = transformMultiple(response.data);
       
       console.log(`✅ ReviewsService: Successfully fetched ${reviews.length} reviews for tour ${tourId}`);
       return reviews;
@@ -144,10 +125,9 @@ export const reviewsService = {
         ];
       }
       
-      const response = await api.get<FetchReviewsResponse>('/reviews/my-reviews');
-      const reviewsData = response.data.data?.reviews || response.data.data?.docs || [];
-      const reviews = reviewsData.map(transformReview);
-      
+      const response = await api.get<MultiDocsResponse<Review>>('/reviews/my-reviews');
+      const reviews = transformMultiple(response.data);
+
       console.log(`✅ ReviewsService: Successfully fetched ${reviews.length} user reviews`);
       return reviews;
       
@@ -185,14 +165,12 @@ export const reviewsService = {
         return newReview;
       }
       
-      const response = await api.post<CreateReviewResponse>(`/tours/${reviewData.tour}/reviews`, {
+      const response = await api.post<SingleDocResponse<Review>>(`/tours/${reviewData.tour}/reviews`, {
         review: reviewData.review,
         rating: reviewData.rating
       });
-      
-      const review = transformReview(response.data.data.review || response.data.data.doc);
-      console.log('✅ ReviewsService: Successfully created review');
-      return review;
+
+      return transformSingle(response.data);
       
     } catch (error) {
       console.error('🚨 ReviewsService: Failed to create review');
@@ -225,8 +203,8 @@ export const reviewsService = {
         };
       }
       
-      const response = await api.patch<UpdateReviewResponse>(`/reviews/${reviewId}`, updateData);
-      const review = transformReview(response.data.data.review || response.data.data.doc);
+      const response = await api.patch<SingleDocResponse<Review>>(`/reviews/${reviewId}`, updateData);
+      const review = transformSingle(response.data);
       
       console.log('✅ ReviewsService: Successfully updated review');
       return review;

@@ -1,8 +1,8 @@
-// src/store/index.ts
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
 import toursReducer from './slices/toursSlice';
 import reviewsReducer from './slices/reviewsSlice';
+import bookingsReducer from './slices/bookingsSlice';
 
 declare global {
   interface Window {
@@ -15,7 +15,7 @@ export const store = configureStore({
     auth: authReducer,
     tours: toursReducer,
     reviews: reviewsReducer,
-    // booking: bookingReducer,
+    bookings: bookingsReducer,
   },
   devTools: process.env.NODE_ENV !== 'production',
 });

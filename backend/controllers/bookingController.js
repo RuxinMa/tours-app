@@ -69,6 +69,41 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   }
 });
 
+// Get all bookings for the current user
+exports.getMyBookings = catchAsync(async (req, res, next) => {
+  const bookings = await Booking.find({ user: req.user.id }).populate({
+    path: 'tour',
+    select: 'name imageCover startLocation startDates duration price',
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      bookings,
+    },
+  });
+});
+
+// Update booking status (e.g., confirm, cancel)
+exports.updateBookingStatus = catchAsync(async (req, res, next) => {
+  const booking = await Booking.findByIdAndUpdate(
+    req.params.id,
+    { status: req.body.status },
+    { new: true, runValidators: true },
+  );
+
+  if (!booking) {
+    return next(new AppError('Booking not found', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      booking,
+    },
+  });
+});
+
 exports.getAllBookings = factory.getAll(Booking);
 exports.getBooking = factory.getOne(Booking);
 exports.createBooking = factory.createOne(Booking);
