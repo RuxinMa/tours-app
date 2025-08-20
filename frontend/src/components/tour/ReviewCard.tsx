@@ -1,4 +1,5 @@
 import { FiStar } from 'react-icons/fi';
+import { getUserImageUrl } from '../../services/utils/imageUtils';
 
 const StarRating = ({ rating }: { rating: number }) => {
   return (
@@ -22,7 +23,7 @@ const ReviewCard = ({ review }: { review: any }) => {
         <div className="flex items-center mb-2 gap-4">
           {review.user.photo && (
             <img 
-              src={review.user.photo} 
+              src={getUserImageUrl(review.user.photo)} 
               alt={`${review.user.name}'s photo`} 
               className="avatar" 
             />

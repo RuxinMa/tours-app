@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/redux';
 import { FiUser } from 'react-icons/fi';
 import type { Tour } from '../../types/tour.types';
+import { getTourImageUrl } from '../../services/utils/imageUtils';
 
 import BookingCard from './BookingCard';
 import Button from '../common/Button';
@@ -25,7 +26,7 @@ const TourBooking = ({ tour }: TourBookingProps) => {
           {/* Image Cover */}
           <div className="relative h-48 md:h-64">
             <img
-              src={tour.imageCover}
+              src={getTourImageUrl(tour.imageCover)}
               alt={`${tour.name} booking`}
               className="w-full h-full object-cover"
             />

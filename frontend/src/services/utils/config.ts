@@ -1,14 +1,16 @@
 // Simple function to get API base URL from environment
 export const getApiBaseURL = (): string => {
+  console.log('🔧 API URL ');
+  return '/api/v1';
   // Use environment variable if available, otherwise fallback to defaults
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
+  // if (import.meta.env.VITE_API_URL) {
+  //   return import.meta.env.VITE_API_URL;
+  // }
   
-  // Environment-based fallbacks only when env var is not set
-  return import.meta.env.MODE === 'production' 
-    ? 'https://toursapp-production.up.railway.app/api/v1'
-    : 'http://localhost:8000/api/v1';
+  // // Environment-based fallbacks only when env var is not set
+  // return import.meta.env.MODE === 'production' 
+  //   ? 'https://toursapp-production.up.railway.app/api/v1'
+  //   : 'http://localhost:8000/api/v1';
 };
 
 // Get timeout from environment or use default

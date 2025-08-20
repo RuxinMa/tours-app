@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { getUserImageUrl } from '../../services/utils/imageUtils';
 
 import logo from '../../assets/logo-white.png';
-import defaultImg from '../../assets/default.jpg';
 import Modal from '../common/Modal';
 import Button from '../common/Button';
 
@@ -50,7 +50,7 @@ const Navigation = () => {
               </button>
               {/* User Info */}
               <button onClick={() => handleGoToProfile()} className="profile-button">
-                <img src={user?.photo || defaultImg} alt="Profile" className="avatar" />
+                <img src={getUserImageUrl(user?.photo || '/img/users/default.jpg')} alt="Profile" className="avatar" />
                 <span>{userName.split(' ')[0]}</span>
               </button>
             </>

@@ -56,14 +56,21 @@ export const useAuth = () => {
       console.log('🔐 useAuth: Starting login process...');
       
       const user = await authService.login(email, password);
+      console.log('🔐 useAuth: authService returned user:', user); 
+      console.log('🔐 useAuth: user type:', typeof user, 'user keys:', user ? Object.keys(user) : 'null'); 
+      
+      if (!user) {
+        throw new Error('Login service returned null user');
+      }
+      
       dispatch(setUser(user));
+      console.log('🔐 useAuth: dispatched setUser action'); 
       
       console.log('🔐 useAuth: Login completed successfully');
       return { success: true };
     } catch (error: any) {
       console.error('🔐 useAuth: Login failed:', error.message);
       
-      // Extract user-friendly error message
       const errorMessage = error.message || 'Login failed. Please try again.';
       dispatch(setError(errorMessage));
       
@@ -73,7 +80,7 @@ export const useAuth = () => {
     }
   }, [dispatch]);
 
-  // Logout current user
+  //   Logout current user
   const logout = useCallback(async () => {
     dispatch(setLoading(true));
     dispatch(clearError());
@@ -137,19 +144,25 @@ export const useAuth = () => {
       console.log('🔐 useAuth: Updating user profile...');
       
       const updatedUser = await authService.updateProfile(userData);
+
+      // Update user information in Redux store
       dispatch(updateUser(updatedUser));
-      
+      dispatch(setLoading(false));
+
       console.log('🔐 useAuth: Profile updated successfully');
-      return { success: true };
+      return { success: true, user: updatedUser };
+
     } catch (error: any) {
       console.error('🔐 useAuth: Profile update failed:', error.message);
       
-      const errorMessage = error.message || 'Failed to update profile.';
-      dispatch(setError(errorMessage));
+      const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'Failed to update profile. Please try again.';
       
-      return { success: false, error: errorMessage };
-    } finally {
+      dispatch(setError(errorMessage));
       dispatch(setLoading(false));
+
+      return { success: false, error: errorMessage };
     }
   }, [dispatch]);
 

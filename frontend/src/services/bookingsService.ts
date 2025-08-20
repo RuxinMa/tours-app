@@ -75,8 +75,8 @@ export class BookingsError extends ApiError {
 const transformToDisplayFormat = (booking: any): BookingDisplayData => {
   const tourData = booking.tour;
   return {
-    id: booking.id, // 使用统一转换器处理后的 id
-    tourId: tourData.id, // 使用统一转换器处理后的 id
+    id: booking.id,
+    tourId: tourData.id,
     tourName: tourData.name,
     tourSlug: tourData.slug,
     imageCover: tourData.imageCover,

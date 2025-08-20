@@ -1,6 +1,7 @@
 import type { Tour } from '../../types/tour.types';
 import { Link } from 'react-router-dom';
 import { FiClock, FiUsers, FiMapPin, FiCalendar } from 'react-icons/fi';
+import { getTourImageUrl } from '../../services/utils/imageUtils';
 import Button from '../common/Button';
 
 // Format the start date to a more readable format
@@ -19,7 +20,7 @@ const TourCard = ({ tour }: { tour: Tour }) => {
       {/* Tour Image */}
       <div className="relative h-48 overflow-hidden">
         <img
-          src={tour.imageCover}
+          src={getTourImageUrl(tour.imageCover)}
           alt={tour.name}
           className="tour-image-cover"
         />

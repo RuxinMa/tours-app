@@ -1,17 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAppSelector } from '../../../hooks/redux';
+import { useAuth } from '../../../hooks/useAuth';
+import { getUserImageUrl } from '../../../services/utils/imageUtils';
+
 import { FiCamera, FiUser } from 'react-icons/fi';
 import { SettingsForm, FormTitle }  from '../../layout/SettingsForm';
 import Button from '../../common/Button';
 
 const SettingsBasic = () => {
   const { user } = useAppSelector((state) => state.auth);
+  const { updateProfile } = useAuth();
 
-  const [basicInfo, setBasicInfo] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
-    photo: user?.photo || null
+  const [basicInfo, setBasicInfo] = useState<{
+    name: string;
+    email: string;
+    photo: string | null;
+  }>({
+    name: '',
+    email: '',
+    photo: null
   });
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -19,6 +27,25 @@ const SettingsBasic = () => {
 
   const [isUpdatingBasic, setIsUpdatingBasic] = useState(false);
   const [basicError, setBasicError] = useState('');
+  
+  // Load user data when component mounts
+  useEffect(() => {
+    if (user) {
+      setBasicInfo({
+        name: user.name || '',
+        email: user.email || '',
+        photo: user.photo || null
+      });
+    }
+  }, [user]);
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-gray-500">Loading user information...</div>
+      </div>
+    );
+  }
 
   // Handle avatar click to open file input
   const handleAvatarClick = () => {
@@ -53,33 +80,19 @@ const SettingsBasic = () => {
       }
 
       // Prepare form data
-      const formData = new FormData();
-      formData.append('name', basicInfo.name.trim());
-      formData.append('email', basicInfo.email.trim());
-      
-      if (selectedFile) {
-        formData.append('photo', selectedFile);
-      }
-
-      // Call API to update basic information
-      const response = await fetch('/api/v1/users/updateMe', {
-        method: 'PATCH',
-        credentials: 'include', // 包含 cookies
-        body: formData, // 不设置 Content-Type，让浏览器自动设置
+      const result = await updateProfile({
+        name: basicInfo.name.trim(),
+        email: basicInfo.email.trim(),
+        photo: selectedFile ? URL.createObjectURL(selectedFile) : basicInfo.photo
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to update profile');
+      if (result.success) {
+        alert('Profile updated successfully!');
+        setSelectedFile(null);
+      } else {
+        setBasicError(result.error || 'Update failed');
       }
 
-      // Update successful
-      alert('Profile updated successfully!');
-      setSelectedFile(null); // Clear file selection
-      // ⭕️ TODO: Update user information in Redux store
-      // dispatch(updateUserProfile(data.data.user));
-      
     } catch (error: any) {
       setBasicError(error.message);
     } finally {
@@ -99,7 +112,7 @@ const SettingsBasic = () => {
         <div className="flex items-center md:space-x-8 space-x-4">
           <div className="relative cursor-pointer" onClick={handleAvatarClick}>
             <img
-              src={basicInfo.photo || '/img/users/default.jpg'}
+              src={getUserImageUrl(basicInfo.photo || '/img/users/default.jpg')}
               alt="Profile"
               className="w-16 md:w-24 md:h-24 rounded-full object-cover shadow-lg"
             />

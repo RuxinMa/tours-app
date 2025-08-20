@@ -9,6 +9,8 @@ const router = express.Router();
 // 🧡 Nested routes (=middleware) for reviews
 router.use('/:tourId/reviews', reviewRouter);
 
+router.route('/slug/:slug').get(tourController.getTourBySlug); // GET tour by slug
+
 router
   .route('/top-5-cheap')
   .get(tourController.aliasTopTours, tourController.getAllTours); // Middleware for top 5 cheap tours

@@ -1,5 +1,6 @@
 import type { Tour } from '../../types/tour.types';
 import { FiClock, FiMapPin, FiArrowDown } from 'react-icons/fi';
+import { getTourImageUrl } from '../../services/utils/imageUtils';
 
 interface TourHeaderProps {
   tour: Tour;
@@ -12,7 +13,7 @@ const TourHeader = ({ tour }: TourHeaderProps) => {
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src={tour.imageCover}
+          src={getTourImageUrl(tour.imageCover)}
           alt={`${tour.name} tour`}
           className="w-full h-full object-cover"
         />

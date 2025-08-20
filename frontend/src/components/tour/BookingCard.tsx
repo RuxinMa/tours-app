@@ -20,7 +20,7 @@ const PricingSummary =({
   return (
     <div className='flex justify-between md:text-base text-sm'>
       <span className="text-gray-600">{subtitle}</span>
-      <span className="font-medium">${value}</span>
+      <span className="font-medium">{value}</span>
     </div>
   );
 };
@@ -81,7 +81,6 @@ const BookingCard = ({ tour, user }: BookingCardProps) => {
     if (availableDates.length === 0) return 'No Dates Available';
     return 'Book Tour Now';
   };
-
 
   return (
     <div>

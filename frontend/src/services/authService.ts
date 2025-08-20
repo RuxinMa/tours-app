@@ -3,6 +3,20 @@ import api from './api';
 import type { User } from '../types';
 import { transformSingle } from './utils/apiTransformers';
 import type { SingleDocResponse } from './utils/apiTransformers';
+import { transformErrorMessage } from './utils/errorHandler';
+
+// 🔐 Transform authentication response to User type
+const transformAuthResponse = (authResponse: any): User => {
+  const userData = authResponse.data.user;
+  
+  return {
+    id: userData._id || userData.id,
+    name: userData.name,
+    email: userData.email,
+    photo: userData.photo,
+    role: userData.role
+  };
+};
 
 // AuthService - handles API calls related to authentication
 export const authService = {
@@ -25,15 +39,19 @@ export const authService = {
    */
   async login(email: string, password: string): Promise<User> {
     try {
-      const response = await api.post<SingleDocResponse<User>>('/users/login', { 
-        email, 
-        password 
-      });
-    
-      return transformSingle(response.data);
-    } catch (error) {
-      console.error('🔐 AuthService: Login failed for:', email);
-      throw error; // Re-throw to let calling code handle
+      const response = await api.post('/users/login', { email, password });
+      return transformAuthResponse(response.data);
+    } catch (error: any) {
+
+      if (error instanceof Error && error.message) {
+        throw new Error(transformErrorMessage(error.message));
+      }
+      
+      if (error.response?.data?.message) {
+        throw new Error(transformErrorMessage(error.response.data.message));
+      }
+      
+      throw new Error('Login failed. Please try again.');
     }
   },
 
@@ -56,28 +74,39 @@ export const authService = {
     password: string;
   }): Promise<User> {
     try {
-      const response = await api.post<SingleDocResponse<User>>('/users/signup', userData);
-      return transformSingle(response.data);
-    } catch (error: any) {
-      console.error('🔐 AuthService: Registration failed for:', userData.email);
+      const requestData = {
+        ...userData,
+        passwordConfirm: userData.password
+      };
       
-      // Handle specific registration errors
-      if (error.response?.data?.error?.code === 11000) {
-        throw new Error('Email already exists. Please use a different email.');
+      const response = await api.post('/users/signup', requestData);
+      return transformAuthResponse(response.data);
+    } catch (error: any) {
+
+      if (error instanceof Error && error.message) {
+        throw new Error(transformErrorMessage(error.message));
       }
       
-      // Re-throw other errors
-      throw error;
+      if (error.response?.data?.message) {
+        throw new Error(transformErrorMessage(error.response.data.message));
+      }
+      
+      throw new Error('Registration failed. Please try again.');
     }
   },
 
   /**
-   * Update user profile (bonus feature for later)
+   * Update user profile
    */
   async updateProfile(userData: Partial<User>): Promise<User> {
     try {
+      console.log('🔐 AuthService: Updating profile...', userData);
+      
       const response = await api.patch<SingleDocResponse<User>>('/users/updateMe', userData);
-      return transformSingle(response.data);
+      const updatedUser = transformSingle(response.data);
+      
+      console.log('🔐 AuthService: Profile updated successfully:', updatedUser);
+      return updatedUser;
     } catch (error) {
       console.error('🔐 AuthService: Profile update failed');
       throw error;

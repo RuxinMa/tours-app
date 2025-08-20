@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Navigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 import FormInput from '../components/common/FormInput';
@@ -13,14 +13,15 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
 
   // 2️⃣ Location state for redirect after login
+  const navigate = useNavigate();
   const location = useLocation();
 
   // 3️⃣ Use custom hook for authentication logic
   const { 
-  user, 
+  // user, 
   isLoading, 
   error, 
-  isAuthenticated, 
+  // isAuthenticated, 
   login, 
   clearError 
 } = useAuth();
@@ -34,7 +35,14 @@ const LoginPage = () => {
       return;
     }
 
-    await login(email, password);
+    console.log('🔐 Attempting login...');
+    const result = await login(email, password);
+    
+    if (result.success) {
+      console.log('🔐 Login successful, immediate redirect');
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
+    }
   };
 
   const handleInputChange = () => {
@@ -43,11 +51,6 @@ const LoginPage = () => {
     }
   };
 
-  /* Success State */
-  if (isAuthenticated && user) {
-    const redirectTo = location.state?.from?.pathname || '/';
-    return <Navigate to={redirectTo} replace />;
-  }
 
   return (
     <div className="page-background-auth">

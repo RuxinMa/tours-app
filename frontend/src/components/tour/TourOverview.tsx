@@ -1,6 +1,7 @@
 import type { Tour } from '../../types/tour.types';
 import { FiClock, FiMapPin, FiUsers, FiStar } from 'react-icons/fi';
 import { QuickFact, BackgroundPattern, DecorativeElement } from '../layout/TourUI';
+import { getUserImageUrl } from '../../services/utils/imageUtils';
 
 interface TourOverviewProps {
   tour: Tour;
@@ -66,7 +67,7 @@ const TourOverview = ({ tour }: TourOverviewProps) => {
               {tour.guides?.map((guide) => (
                 <div key={guide.id} className="flex items-center gap-4 text-sm md:text-base">
                   <img 
-                    src={guide.photo} 
+                    src={getUserImageUrl(guide.photo)} 
                     alt={guide.name} 
                     className="w-10 h-10 rounded-full object-cover"
                   />
