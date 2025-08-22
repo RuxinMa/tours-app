@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Tour } from '../../types/tour.types';
 import type { User } from '../../types/user';
 import { FiCalendar, FiCreditCard, FiShield } from 'react-icons/fi';
-import { useBookings } from '../../hooks/useBookings';
+import { bookingsService } from '../../services/bookingsService';
 import Button from '../common/Button';
 
 interface BookingCardProps {
@@ -27,12 +27,8 @@ const PricingSummary =({
 
 const BookingCard = ({ tour, user }: BookingCardProps) => {
   const [selectedDate, setSelectedDate] = useState<string>('');
-  const { 
-    createCheckoutSession, 
-    isSubmitting, 
-    error: bookingError,
-    clearError: clearBookingError,
-  } = useBookings();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getAvailableDates = () => {
     if (!tour.startDates) return [];
@@ -47,12 +43,10 @@ const BookingCard = ({ tour, user }: BookingCardProps) => {
 
   const availableDates = getAvailableDates(); // Get available dates for the tour
 
-  // 🔄 Handle booking with useBookings hook
+  // 📄 Handle booking with direct service call
   const handleBooking = async () => {
     // Clear any previous errors
-    if (bookingError) {
-      clearBookingError();
-    }
+    setError(null);
 
     // Validation
     if (!selectedDate) {
@@ -60,18 +54,28 @@ const BookingCard = ({ tour, user }: BookingCardProps) => {
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
-      const result = await createCheckoutSession(tour.id);
+      console.log(`🚀 BookingCard: Creating checkout session for tour ${tour.id}...`);
       
-      if (result.success) {
-        console.log('✅ BookingCard: Checkout session created successfully');
-        // The hook will automatically redirect to Stripe checkout
-      } else {
-        alert(result.error || 'Failed to create checkout session. Please try again.');
-      }
-    } catch {
-      alert('Something went wrong. Please try again.');
+      const { sessionId, url } = await bookingsService.getCheckoutSession(tour.id);
+      
+      console.log('✅ BookingCard: Checkout session created successfully');
+      
+      // Redirect to Stripe checkout
+      window.location.href = url;
+      
+    } catch (error: any) {
+      console.error('🚨 BookingCard: Failed to create checkout session:', error);
+      setError(error.message || 'Failed to create checkout session. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  const clearError = () => {
+    setError(null);
   };
 
   const isButtonDisabled = !selectedDate || isSubmitting || availableDates.length === 0;
@@ -84,12 +88,12 @@ const BookingCard = ({ tour, user }: BookingCardProps) => {
 
   return (
     <div>
-      {/* 🔄 Show booking error if exists */}
-      {bookingError && (
+      {/* 📄 Show booking error if exists */}
+      {error && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-600 text-sm">{bookingError}</p>
+          <p className="text-red-600 text-sm">{error}</p>
           <button 
-            onClick={clearBookingError}
+            onClick={clearError}
             className="text-red-500 text-xs underline mt-1"
           >
             Dismiss
@@ -127,6 +131,7 @@ const BookingCard = ({ tour, user }: BookingCardProps) => {
                         checked={selectedDate === dateString}
                         onChange={(e) => setSelectedDate(e.target.value)}
                         className="mr-3 text-green-500 focus:ring-green-500"
+                        disabled={isSubmitting}
                       />
                       <span className="text-gray-700">{dateString}</span>
                     </label>
@@ -151,7 +156,7 @@ const BookingCard = ({ tour, user }: BookingCardProps) => {
           <div className="bg-green-50 rounded-lg p-6 mb-4">
             <h4 className="font-semibold text-gray-900 mb-4">Pricing Summary</h4>
             <div className="space-y-2">
-              <PricingSummary subtitle={tour.name} value={tour.price} />
+              <PricingSummary subtitle={tour.name} value={`$${tour.price}`} />
               <PricingSummary subtitle="Duration" value={`${tour.duration} days`} />
               <PricingSummary subtitle="Group Size" value={`Max ${tour.maxGroupSize} people`} />
               <hr className="my-3" />

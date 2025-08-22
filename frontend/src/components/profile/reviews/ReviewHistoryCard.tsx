@@ -12,6 +12,12 @@ interface ReviewCardProps {
 
 const ReviewCard = ({ reviews, onEdit, onDelete }: ReviewCardProps) => {
   const navigate = useNavigate();
+  // Filter out reviews without tour information
+  const validReviews = reviews.filter(review => 
+    review.tour && 
+    review.tour.name && 
+    review.tour.slug
+  );
 
   const renderStars = (rating: number) => {
     return (
@@ -39,9 +45,24 @@ const ReviewCard = ({ reviews, onEdit, onDelete }: ReviewCardProps) => {
     });
   };
 
+  const handleTourClick = (tour: any) => {
+    if (tour?.slug) {
+      navigate(`/tour/${tour.slug}`);
+    }
+  };
+
+  // 如果没有有效的 reviews，显示空状态
+  if (validReviews.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-gray-500">No reviews available for active tours.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-6">
-      {reviews.map((review) => (
+      {validReviews.map((review) => (
         <div
           key={review.id}
           className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
@@ -50,10 +71,14 @@ const ReviewCard = ({ reviews, onEdit, onDelete }: ReviewCardProps) => {
             {/* Tour Image */}
             <div className="md:w-48 h-48 md:h-auto flex-shrink-0">
               <img
-                src={review.tour.imageCover}
+                src={`/img/tours/${review.tour.imageCover}`}
                 alt={review.tour.name}
                 className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
-                onClick={() => navigate(`/tour/${review.tour.slug}`)}
+                onClick={() => handleTourClick(review.tour)}
+                onError={(e) => {
+                  // If image fails to load, use default image
+                  (e.target as HTMLImageElement).src = '/img/tours/default-tour.jpg';
+                }}
               />
             </div>
 
@@ -64,7 +89,7 @@ const ReviewCard = ({ reviews, onEdit, onDelete }: ReviewCardProps) => {
                   {/* Tour Name - Clickable */}
                   <h3 
                     className="text-lg font-semibold text-gray-900 mb-2 cursor-pointer hover:text-emerald-600 transition-colors"
-                    onClick={() => navigate(`/tour/${review.tour.slug}`)}
+                    onClick={() => handleTourClick(review.tour)}
                   >
                     {review.tour.name}
                   </h3>

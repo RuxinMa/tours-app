@@ -4,11 +4,16 @@ const authController = require('../controllers/authController');
 
 const router = express.Router();
 
+// ===== PROTECTED ROUTES =====
 router.use(authController.protect);
 
+// ===== USER ROUTES =====
+router.get('/user/me', bookingController.getMyBookings);
+
+// 获取 checkout session (创建支付会话)
 router.get('/checkout-session/:tourId', bookingController.getCheckoutSession);
 
-// Protect all routes after this middleware
+// ===== ADMIN/LEAD-GUIDE ROUTES =====
 router.use(authController.restrictTo('admin', 'lead-guide'));
 
 router

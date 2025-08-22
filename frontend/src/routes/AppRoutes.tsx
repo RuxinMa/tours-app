@@ -5,6 +5,7 @@ import RegisterPage from '../pages/RegisterPage';
 import TourDetailPage from '../pages/TourDetailPage';
 import ProfilePage from '../pages/ProfilePage';
 import ErrorPage from '../pages/ErrorPage';
+import BookingSuccessPage from '../pages/BookingSuccessPage';
 import ProtectRoute from '../components/auth/ProtectRoute';
 
 const AppRoutes = () => {
@@ -16,6 +17,7 @@ const AppRoutes = () => {
         <Route path='/register' element={<RegisterPage />}/>
         <Route path='/' element={<HomePage />}/>
         <Route path='/tour/:slug' element={<TourDetailPage />} />
+        <Route path='/booking-success' element={<BookingSuccessPage />} />
 
         {/* Protected routes */}
         <Route path='/me' element={

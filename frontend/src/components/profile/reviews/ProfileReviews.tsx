@@ -32,7 +32,7 @@ const ProfileReviews = () => {
     currentReview
   } = useReviews();
   
-  // 🔄 Use bookings hook for cross-domain coordination
+  // 📄 Use bookings hook for cross-domain coordination
   const {
     markBookingAsPendingReview,
     loadUserBookings
@@ -43,6 +43,7 @@ const ProfileReviews = () => {
 
   // ✏️ State for editing review
   const [isEditingModalOpen, setIsEditingModalOpen] = useState(false);
+  const [selectedReviewForModal, setSelectedReviewForModal] = useState<Review | null>(null);
 
   // 🗑️ State for delete confirmation modal
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -61,33 +62,17 @@ const ProfileReviews = () => {
   }, [clearError, clearSelectedReview]);
 
   const handleEditReview = (review: Review) => {
-    // Convert ReviewWithTourInfo back to Review for selection
-    const reviewForEdit = {
-      id: review.id,
-      review: review.review,
-      rating: review.rating,
-      createdAt: review.createdAt,
-      updatedAt: review.updatedAt,
-      tour: review.tour, // This should be the tour ID string
-      user: review.user
-    };
+    setSelectedReviewForModal(review);
     
-    selectReview(reviewForEdit);
+    selectReview(review);
     setIsEditingModalOpen(true);
   };
 
   const handleDeleteReview = (reviewId: string) => {
     const review = reviews.find(r => r.id === reviewId);
     if (review) {
-      selectReview({
-        id: review.id,
-        review: review.review,
-        rating: review.rating,
-        createdAt: review.createdAt,
-        updatedAt: review.updatedAt,
-        tour: review.tour,
-        user: review.user
-      });
+      setSelectedReviewForModal(review);
+      selectReview(review);
       setIsDeleteModalOpen(true);
     }
   };
@@ -103,6 +88,7 @@ const ProfileReviews = () => {
       
       if (result.success) {
         setIsEditingModalOpen(false);
+        setSelectedReviewForModal(null);
         clearSelectedReview();
       }
     }
@@ -110,10 +96,11 @@ const ProfileReviews = () => {
 
   const handleEditCancel = () => {
     setIsEditingModalOpen(false);
+    setSelectedReviewForModal(null);
     clearSelectedReview();
   };
 
-  // 🔄 Enhanced delete with cross-domain coordination
+  // 📄 Enhanced delete with cross-domain coordination
   const confirmDeleteReview = async () => {
     if (currentReview) {
       try {
@@ -125,15 +112,20 @@ const ProfileReviews = () => {
           await loadUserBookings();
 
           // 3️⃣ Mark booking as pending review
-          await markBookingAsPendingReview(currentReview.tour);
+          if (typeof currentReview.tour === 'string') {
+            await markBookingAsPendingReview(currentReview.tour);
+          } else if (currentReview.tour && 'id' in currentReview.tour) {
+            await markBookingAsPendingReview((currentReview.tour as any).id);
+          }
 
           // 4️⃣ Close modal and clear selection
           setIsDeleteModalOpen(false);
+          setSelectedReviewForModal(null);
           clearSelectedReview();
         } else {
           alert(deleteResult.error || 'Failed to delete review. Please try again.');
         }
-      } catch{
+      } catch {
         alert('Something went wrong. Please try again.');
       }
     }
@@ -141,10 +133,11 @@ const ProfileReviews = () => {
 
   const cancelDeleteReview = () => {
     setIsDeleteModalOpen(false);
+    setSelectedReviewForModal(null);
     clearSelectedReview();
   };
 
-  // 🔄 Loading state
+  // 📄 Loading state
   if (isLoading) {
     return (
       <div className="container p-6 md:p-8">
@@ -156,6 +149,22 @@ const ProfileReviews = () => {
       </div>
     );
   }
+
+  const getTourInfo = (review: Review | null) => {
+    if (!review || !review.tour) {
+      return { id: '', name: 'Unknown Tour', slug: '' };
+    }
+
+    if (typeof review.tour === 'string') {
+      return { id: review.tour, name: 'Unknown Tour', slug: '' };
+    }
+
+    return {
+      id: review.tour.id || '',
+      name: review.tour.name || 'Unknown Tour',
+      slug: review.tour.slug || ''
+    };
+  };
 
   return (
     <div className="container p-6 md:p-8">
@@ -190,24 +199,17 @@ const ProfileReviews = () => {
           onDelete={handleDeleteReview}
         />
       )}
+      
       {/* Edit Review Modal */}
       <ReviewModal
         isOpen={isEditingModalOpen}
         onClose={handleEditCancel}
         mode="edit"
-        tourInfo={currentReview ? {
-          id: typeof currentReview.tour === 'string' 
-            ? currentReview.tour 
-            : (currentReview.tour && 'id' in currentReview.tour 
-                ? (currentReview.tour as { id: string }).id 
-                : ''),
-          name: reviews.find(r => r.id === currentReview.id)?.tourInfo?.name || 'Unknown Tour',
-          slug: reviews.find(r => r.id === currentReview.id)?.tourInfo?.slug
-        } : { id: '', name: '', slug: '' }}
-        existingReview={currentReview ? {
-          id: currentReview.id,
-          rating: currentReview.rating,
-          review: currentReview.review
+        tourInfo={getTourInfo(selectedReviewForModal)}
+        existingReview={selectedReviewForModal ? {
+          id: selectedReviewForModal.id,
+          rating: selectedReviewForModal.rating,
+          review: selectedReviewForModal.review
         } : undefined}
         onSubmit={handleEditSubmit}
       />
@@ -225,11 +227,13 @@ const ProfileReviews = () => {
           </h3>
           <p className="text-gray-600 text-base">
             You are about to delete your review for{' '}
-            <span className="font-bold italic text-emerald-500">{currentReview ? reviews.find(r => r.id === currentReview.id)?.tourInfo?.name : ''}</span>.
+            <span className="font-bold italic text-emerald-500">
+              {getTourInfo(selectedReviewForModal).name}
+            </span>.
             This action cannot be undone.
           </p>
           <div className="flex justify-between w-full mt-6 space-x-16 px-4">
-            <Button variant="secondary" onClick={cancelDeleteReview} fullWidth={true}> Cancel</Button>
+            <Button variant="secondary" onClick={cancelDeleteReview} fullWidth={true}>Cancel</Button>
             <Button variant="danger" onClick={confirmDeleteReview} fullWidth={true}>Delete</Button>
           </div>
         </div>

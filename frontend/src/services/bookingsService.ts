@@ -2,8 +2,8 @@
 import api from './api';
 import { isMockEnabled } from './utils/config';
 import { handleApiError, ApiError } from './utils/errorHandler';
-import { transformSingle, transformMultiple } from './utils/apiTransformers';
-import type { SingleDocResponse, MultiDocsResponse } from './utils/apiTransformers';
+import { type SingleDocResponse, transformSingleDoc } from './utils/apiTransformers';
+import { getTourImageUrl } from './utils/imageUtils';
 import type { 
   Booking,
   BookingDisplayData,
@@ -74,20 +74,38 @@ export class BookingsError extends ApiError {
 // Transform booking with populated tour data for display
 const transformToDisplayFormat = (booking: any): BookingDisplayData => {
   const tourData = booking.tour;
+  
+  // Handle startLocation - it might be a string or an object
+  let startLocationText = 'Location TBD';
+  if (tourData.startLocation) {
+    if (typeof tourData.startLocation === 'string') {
+      startLocationText = tourData.startLocation;
+    } else if (tourData.startLocation.description) {
+      startLocationText = tourData.startLocation.description;
+    }
+  }
+  
+  // Get the first start date from startDates array
+  let startDate = '';
+  if (tourData.startDates && tourData.startDates.length > 0) {
+    startDate = tourData.startDates[0];
+  }
+  
   return {
-    id: booking.id,
-    tourId: tourData.id,
+    id: booking._id || booking.id,
+    tourId: tourData._id || tourData.id,
     tourName: tourData.name,
     tourSlug: tourData.slug,
-    imageCover: tourData.imageCover,
-    startLocation: tourData.startLocation?.description || 'Location TBD',
-    startDate: tourData.startDates?.[0] || '',
+    imageCover: getTourImageUrl(tourData.imageCover),
+    startLocation: startLocationText,
+    startDate: startDate,
     duration: tourData.duration,
-    price: booking.price,
+    price: booking.price || tourData.price, // Use booking price first, fallback to tour price
     status: booking.status || 'planned',
     createdAt: booking.createdAt
   };
 };
+
 
 // 🔧 Error transformer
 const transformBookingsError = (error: unknown): BookingsError => {
@@ -159,13 +177,14 @@ export const bookingsService = {
       }
       
       // Note: This endpoint should return bookings populated with tour data
-      const response = await api.get<MultiDocsResponse<any>>('/bookings/my-bookings');
-      const bookingsWithTourData = transformMultiple(response.data);
-      const bookings = bookingsWithTourData.map(transformToDisplayFormat);
-      
-      console.log(`✅ BookingsService: Successfully fetched ${bookings.length} user bookings`);
-      return bookings;
-      
+      const response = await api.get('/bookings/user/me');
+      const bookings = response.data?.data?.bookings || [];
+
+      const transformedBookings = bookings.map((booking: any) => 
+      transformToDisplayFormat(booking)
+    );
+      console.log(`✅ BookingsService: Successfully fetched ${transformedBookings.length} bookings`);
+      return transformedBookings;
     } catch (error) {
       console.error('🚨 BookingsService: Failed to fetch user bookings');
       throw transformBookingsError(error);
@@ -197,11 +216,11 @@ export const bookingsService = {
       
       const updateData: UpdateBookingStatusRequest = { status };
       const response = await api.patch<SingleDocResponse<Booking>>(`/bookings/${bookingId}/status`, updateData);
-      const booking = transformSingle(response.data);
+      const booking = (response.data);
       
       console.log('✅ BookingsService: Successfully updated booking status');
-      return booking;
-      
+      return transformSingleDoc(booking);
+
     } catch (error) {
       console.error(`🚨 BookingsService: Failed to update booking ${bookingId} status`);
       throw transformBookingsError(error);
@@ -234,7 +253,7 @@ export const bookingsService = {
       }
       
       const response = await api.post<SingleDocResponse<Booking>>('/bookings', bookingData);
-      const booking = transformSingle(response.data);
+      const booking = transformSingleDoc(response.data);
       
       console.log('✅ BookingsService: Successfully created booking');
       return booking;

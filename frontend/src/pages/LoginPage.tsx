@@ -35,11 +35,8 @@ const LoginPage = () => {
       return;
     }
 
-    console.log('🔐 Attempting login...');
     const result = await login(email, password);
-    
     if (result.success) {
-      console.log('🔐 Login successful, immediate redirect');
       const from = location.state?.from?.pathname || '/';
       navigate(from, { replace: true });
     }
@@ -50,7 +47,6 @@ const LoginPage = () => {
       clearError();
     }
   };
-
 
   return (
     <div className="page-background-auth">

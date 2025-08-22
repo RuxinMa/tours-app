@@ -13,18 +13,25 @@ const router = express.Router({ mergeParams: true }); // Merge params from paren
 // GET /reviews
 // DELETE /reviews/:id
 
-// 🔐 Protect all routes after this middleware
+// ===== PUBLIC ROUTES =====
+router.get('/', reviewController.getAllReviews);
+
+// ===== 🔐 PROTECTED ROUTES =====
+// Protect all routes after this middleware
 router.use(authController.protect);
 
-// 🎯 Get all reviews for the authenticated user
-router.get('/my-reviews', reviewController.getMyReviews);
+// GET /reviews/user/me
+router.get('/user/me', reviewController.getMyReviews);
 
-router.route('/').get(reviewController.getAllReviews).post(
+// POST /tours/:tourId/reviews
+router.post(
+  '/',
   authController.restrictTo('user'),
-  reviewController.setTourUSerIds, // Middleware to set tour and user IDs
+  reviewController.setTourUserIds, // Middleware to set tour and user IDs
   reviewController.createReview,
-); // Create a new review for a tour
+);
 
+// ===== 🎯 ID-BASED ROUTES =====
 router
   .route('/:id')
   .get(reviewController.getReview) // Get a review by ID

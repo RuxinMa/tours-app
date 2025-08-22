@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/redux';
 import { FiUser } from 'react-icons/fi';
 import type { Tour } from '../../types/tour.types';
@@ -13,10 +13,14 @@ interface TourBookingProps {
 
 const TourBooking = ({ tour }: TourBookingProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
 
   const handleLoginRedirect = () => {
-    navigate('/login');
+    navigate('/login', {
+      state: { from: location },
+    });
   };
 
   return (

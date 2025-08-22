@@ -125,8 +125,8 @@ export const reviewsService = {
         ];
       }
       
-      const response = await api.get<MultiDocsResponse<Review>>('/reviews/my-reviews');
-      const reviews = transformMultiple(response.data);
+      const response = await api.get('/reviews/user/me');
+      const reviews = response.data?.data?.reviews || [];
 
       console.log(`✅ ReviewsService: Successfully fetched ${reviews.length} user reviews`);
       return reviews;
