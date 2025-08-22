@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import { useTours } from '../hooks/useTours';
-
+// Components
 import MainLayout from "../components/layout/MainLayout";
 import TourHeader from "../components/tour/TourHeader";
 import TourOverview from "../components/tour/TourOverview";

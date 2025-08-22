@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Navigation from "./Navigation";
+import Footer from "../common/Footer";
 
 const MainLayout = ({ children }: { children: ReactNode }) => {
   return (
@@ -8,6 +9,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
       <div className="mb-4">
         {children}
       </div>
+      <Footer />
     </div>
   );
 };

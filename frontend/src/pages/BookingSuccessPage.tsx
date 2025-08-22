@@ -7,7 +7,7 @@ const BookingSuccessPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [, setSessionId] = useState<string | null>(null);
 
   useEffect(() => {
     const sessionIdFromUrl = searchParams.get('session_id');
@@ -22,7 +22,7 @@ const BookingSuccessPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="page-background-main flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-500 mx-auto mb-4"></div>
           <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -35,7 +35,7 @@ const BookingSuccessPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
+    <div className="page-background-main flex items-center justify-center py-12">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
         {/* Success Icon */}
         <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">

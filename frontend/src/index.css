@@ -46,7 +46,7 @@
   }
 
   .navigation-container {
-    @apply md:p-6 p-4 bg-neutral-800 shadow-md;
+    @apply md:p-6 p-4 bg-neutral-800 text-gray-300 shadow-md;
   }
 
   .left-section {
@@ -93,6 +93,7 @@
   .tour-details {
     @apply flex items-center space-x-2;
   }
+
   .text-details {
     @apply text-xs font-light sm:text-sm text-gray-500 ml-2;
   }
@@ -133,4 +134,10 @@
   .tour-reviews {
     @apply relative -skew-y-3 overflow-hidden bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 md:p-10 p-6;
   }
+
+  /* Footer */
+  .footer-container {
+    @apply bg-neutral-800 text-gray-300 border-t border-gray-800 p-4;
+  }
+
 }

@@ -1,128 +1,37 @@
-import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-
-import FormInput from '../components/common/FormInput';
-import Button from '../components/common/Button';
-import Alert from '../components/common/Alert';
+import LoginForm from '../components/auth/LoginForm';
 
 const LoginPage = () => {
-  /* State Management */
-  // 1️⃣ Local state
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  // 2️⃣ Location state for redirect after login
+  /* Navigation */
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 3️⃣ Use custom hook for authentication logic
+  /* Authentication Hook */
   const { 
-  // user, 
-  isLoading, 
-  error, 
-  // isAuthenticated, 
-  login, 
-  clearError 
-} = useAuth();
+    isLoading, 
+    error, 
+    login, 
+    clearError 
+  } = useAuth();
 
   /* Handlers */
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email || !password) {
-      console.error('Email and password are required');
-      return;
-    }
-
+  const handleLogin = async (email: string, password: string) => {
     const result = await login(email, password);
+    
     if (result.success) {
       const from = location.state?.from?.pathname || '/';
       navigate(from, { replace: true });
     }
   };
 
-  const handleInputChange = () => {
-    if (error) {
-      clearError();
-    }
-  };
-
   return (
-    <div className="page-background-auth">
-      <div className="auth-container">
-
-        {/* Title */}
-        <h1 className="form-title">
-          Welcome to Tours App
-        </h1>
-
-        {/* Error message*/}
-        {error && (
-          <Alert type="error">
-            {error}
-          </Alert>
-        )}
-
-        {/* Login Form */}
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          
-          {/* Email Input*/}
-          <FormInput
-            id="email"
-            name="email"
-            type="email"
-            label="Email address"
-            placeholder="Enter your email address"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              handleInputChange();
-            }}
-            required
-          />
-
-          {/* Password Input */}
-          <FormInput
-            id="password"
-            name="password"
-            type="password"
-            label="Password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              handleInputChange();
-            }}
-            required
-          />
-
-          {/* Submit */}
-          <Button
-            type="submit"
-            loading={isLoading}
-            disabled={!email || !password}
-            variant="primary"
-            size="md"
-            fullWidth={true}
-          >
-            Log in
-          </Button>
-        </form>
-
-        {/* Registration section */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            Don't have an account? 
-            <Link 
-              to="/register"
-              className="text-green-500 hover:text-green-600 cursor-pointer font-semibold ml-1">
-              Sign up
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+    <LoginForm
+      onSubmit={handleLogin}
+      isLoading={isLoading}
+      error={error}
+      onClearError={clearError}
+    />
   );
 };
 
