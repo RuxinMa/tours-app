@@ -98,12 +98,12 @@ export const authService = {
   /**
    * Update user profile
    */
-  async updateProfile(userData: Partial<User>): Promise<User> {
+  async updateProfile(userData: Partial<User> | FormData): Promise<User> {
     try {
       console.log('🔐 AuthService: Updating profile...', userData);
       
-      const response = await api.patch<SingleDocResponse<User>>('/users/updateMe', userData);
-      const updatedUser = transformSingle(response.data);
+      const response = await api.patch('/users/updateMe', userData);
+      const updatedUser = response.data.data.user ;
       
       console.log('🔐 AuthService: Profile updated successfully:', updatedUser);
       return updatedUser;

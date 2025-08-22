@@ -139,20 +139,42 @@ export const useAuth = () => {
   }, [dispatch]);
 
   /**
-   * Update user profile
+   * 🖼️ Update user profile
    */
   const updateProfile = useCallback(async (userData: Partial<any>) => {
-    dispatch(setLoading(true));
+    // dispatch(setLoading(true));
     dispatch(clearError());
 
     try {
       console.log('🔐 useAuth: Updating user profile...');
+      console.log('🔍 Current user before update:', authState.user);
+
+      // 📁 File Upload Handling
+      const hasFile = userData.photo instanceof File;
       
-      const updatedUser = await authService.updateProfile(userData);
+      let processedData;
+      
+      if (hasFile) {
+        console.log('📁 File detected, using FormData...');
+        const formData = new FormData();
+        
+        Object.keys(userData).forEach(key => {
+          if (userData[key] !== undefined && userData[key] !== null) {
+            formData.append(key, userData[key]);
+          }
+        });
+        processedData = formData;
+      } else {
+        processedData = userData;
+      }
+
+      const updatedUser = await authService.updateProfile(processedData);
+      console.log('🔍 Updated user from server:', updatedUser);
+      console.log('🔍 Updated user type:', typeof updatedUser);
 
       // Update user information in Redux store
       dispatch(updateUser(updatedUser));
-      dispatch(setLoading(false));
+      // dispatch(setLoading(false));
 
       console.log('🔐 useAuth: Profile updated successfully');
       return { success: true, user: updatedUser };
@@ -165,11 +187,11 @@ export const useAuth = () => {
       : 'Failed to update profile. Please try again.';
       
       dispatch(setError(errorMessage));
-      dispatch(setLoading(false));
+      // dispatch(setLoading(false));
 
       return { success: false, error: errorMessage };
     }
-  }, [dispatch]);
+  }, [dispatch, authState.user]);
 
   /**
    * Clear error message

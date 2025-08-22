@@ -23,6 +23,7 @@ const SettingsBasic = () => {
   });
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isUpdatingBasic, setIsUpdatingBasic] = useState(false);
@@ -38,6 +39,15 @@ const SettingsBasic = () => {
       });
     }
   }, [user]);
+
+  // Cleanup preview URL on unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   if (!user) {
     return (
@@ -56,10 +66,23 @@ const SettingsBasic = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      
       setSelectedFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setBasicInfo({...basicInfo, photo: previewUrl});
+      const newPreviewUrl = URL.createObjectURL(file);
+      setPreviewUrl(newPreviewUrl);
+      
+      console.log('📸 New image selected for preview:', file.name);
     }
+  };
+
+  const getDisplayAvatarUrl = () => {
+    if (previewUrl) {
+      return previewUrl;
+    }
+    return getUserImageUrl(basicInfo.photo || '/img/users/default.jpg');
   };
 
   // Basic information update function
@@ -79,16 +102,27 @@ const SettingsBasic = () => {
         throw new Error('Name cannot be empty');
       }
 
-      // Prepare form data
-      const result = await updateProfile({
+      // Prepare update data
+      const updateData = {
         name: basicInfo.name.trim(),
         email: basicInfo.email.trim(),
-        photo: selectedFile ? URL.createObjectURL(selectedFile) : basicInfo.photo
-      });
+        ...(selectedFile && { photo: selectedFile })
+      };
+
+      const result = await updateProfile(updateData);
 
       if (result.success) {
-        alert('Profile updated successfully!');
+        // Reset form state
         setSelectedFile(null);
+        if (previewUrl) {
+          URL.revokeObjectURL(previewUrl);
+          setPreviewUrl(null);
+        }
+
+        // Redux store update handled by useAuth hook
+        
+        alert('Profile updated successfully!');
+        console.log('✅ Profile updated successfully');
       } else {
         setBasicError(result.error || 'Update failed');
       }
@@ -112,7 +146,7 @@ const SettingsBasic = () => {
         <div className="flex items-center md:space-x-8 space-x-4">
           <div className="relative cursor-pointer" onClick={handleAvatarClick}>
             <img
-              src={getUserImageUrl(basicInfo.photo || '/img/users/default.jpg')}
+              src={getDisplayAvatarUrl()}
               alt="Profile"
               className="w-16 md:w-24 md:h-24 rounded-full object-cover shadow-lg"
             />
@@ -127,13 +161,15 @@ const SettingsBasic = () => {
               className="hidden"
             />
           </div>
-          <div>
+          <div className="flex-1">
             <h3 className="font-medium text-gray-900 mb-1 md:text-base text-sm">{user?.name}</h3>
             <p className="text-gray-400 md:text-sm text-xs">Click the camera icon to update your photo</p>
             {selectedFile && (
-              <p className="text-emerald-400 md:text-sm text-xs mt-1">
-                ✓ New photo selected: {selectedFile.name}
-              </p>
+              <div className="mt-2 space-y-1">
+                <p className="text-emerald-500 md:text-sm text-xs">
+                  ✓ New photo selected, click "Update Profile" to save
+                </p>
+              </div>
             )}
           </div>
         </div>

@@ -47,10 +47,8 @@ const authSlice = createSlice({
     },
 
     // Update user profile information
-    updateUser: (state, action: PayloadAction<Partial<User>>) => {
-      if (state.user) {
-        state.user = { ...state.user, ...action.payload };
-      }
+    updateUser: (state, action: PayloadAction<User>) => {
+      state.user = action.payload;
     },
 
     // Set initialization status (used during app startup)

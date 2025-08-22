@@ -39,7 +39,7 @@ export const getUserImageUrl = (imageName: string): string => {
   }
   
   // 如果已经是完整 URL，直接返回
-  if (imageName.startsWith('http')) {
+  if (imageName.startsWith('http') || imageName.startsWith('/img/')) {
     return imageName;
   }
   
