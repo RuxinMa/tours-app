@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Review } from '../../types/review';
+import type { clearUser } from './authSlice';
 
 interface ReviewState {
   // Data Layer
@@ -100,6 +101,12 @@ const reviewsSlice = createSlice({
       state.currentReview = null;
       state.error = null;
     },
+
+    // 🧹 Clear User Reviews
+    clearUserReviews: (state) => {
+      state.userReviews = [];
+      state.error = null;
+    },
   },
 });
 
@@ -121,7 +128,8 @@ export const {
   // 📝 Current Review Management
   setCurrentReview,
   clearCurrentReview,
-  clearReviews
+  clearReviews,
+  clearUserReviews,
 } = reviewsSlice.actions;
 
 export default reviewsSlice.reducer;

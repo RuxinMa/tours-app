@@ -22,11 +22,6 @@ export const useBookings = () => {
 
   // 📖 Load user's bookings (Profile Page)
   const loadUserBookings = useCallback(async () => {
-    // Avoid re-fetching if already loaded
-    if (bookingsState.userBookings.length > 0) {
-      console.log('📄 User bookings already loaded');
-      return { success: true };
-    }
 
     dispatch(setLoading(true));
     dispatch(clearError());
@@ -54,7 +49,7 @@ export const useBookings = () => {
       
       return { success: false, error: errorMessage };
     }
-  }, [dispatch, bookingsState.userBookings.length]);
+  }, [dispatch]);
 
   // 💳 Create checkout session (Tour Detail Page)
   const createCheckoutSession = useCallback(async (tourId: string) => {

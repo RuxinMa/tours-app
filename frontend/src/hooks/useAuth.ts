@@ -8,6 +8,8 @@
 import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from './redux';
 import { authService } from '../services/authService';
+import { clearUserBookings } from '../store/slices/bookingsSlice';
+import { clearUserReviews } from '../store/slices/reviewsSlice';
 import {
   setUser,
   clearUser,
@@ -84,6 +86,9 @@ export const useAuth = () => {
   const logout = useCallback(async () => {
     dispatch(setLoading(true));
     dispatch(clearError());
+
+    dispatch(clearUserBookings());
+    dispatch(clearUserReviews());
 
     try {
       console.log('🔐 useAuth: Starting logout process...');

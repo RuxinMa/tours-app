@@ -69,11 +69,6 @@ export const useReviews = () => {
 
   // 👤 Load user's own reviews (User Profile Page)
   const loadUserReviews = useCallback(async () => {
-    // Avoid re-fetching if already loaded
-    if (reviewsState.userReviews.length > 0) {
-      console.log('📄 User reviews already loaded');
-      return { success: true };
-    }
 
     dispatch(setLoading(true));
     dispatch(clearError());
@@ -101,7 +96,7 @@ export const useReviews = () => {
       
       return { success: false, error: errorMessage };
     }
-  }, [dispatch, reviewsState.userReviews.length]);
+  }, [dispatch]);
 
   // ✏️ Create a new review (WITH BOOKING COORDINATION)
   const createReview = useCallback(async (reviewData: CreateReviewData) => {

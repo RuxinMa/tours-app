@@ -72,6 +72,12 @@ const bookingSlice = createSlice({
     clearCurrentBooking: (state) => {
       state.currentBooking = null;
     },
+    
+    // 🧹 Clear User Bookings
+    clearUserBookings: (state) => {
+      state.userBookings = [];
+      state.error = null;
+    },
   },
 });
 
@@ -89,6 +95,7 @@ export const {
   // 🎯 Current Booking Management
   setCurrentBooking,
   clearCurrentBooking,
+  clearUserBookings,
 } = bookingSlice.actions;
 
 export default bookingSlice.reducer;
