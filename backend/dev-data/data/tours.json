@@ -10,9 +10,10 @@
     "ratingsQuantity": 6,
     "images": ["tour-2-1.jpg", "tour-2-2.jpg", "tour-2-3.jpg"],
     "startDates": [
-      "2021-06-19T09:00:00.000Z",
-      "2021-07-20T09:00:00.000Z",
-      "2021-08-18T09:00:00.000Z"
+      "2025-09-15T09:00:00.000Z",
+      "2025-11-10T09:00:00.000Z",
+      "2026-03-05T09:00:00.000Z",
+      "2026-05-05T09:00:00.000Z"
     ],
     "_id": "5c88fa8cf4afda39709c2955",
     "name": "The Sea Explorer",
@@ -22,7 +23,7 @@
     "guides": ["5c8a22c62f8fb814b56fa18b", "5c8a1f4e2f8fb814b56fa185"],
     "price": 497,
     "summary": "Exploring the jaw-dropping US east coast by foot and by boat",
-    "description": "Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\nIrure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "description": "The Sea Explorer is a 7-day journey that captures the magic of Florida’s coastline and the vibrant culture of Miami. Starting in the heart of the city, you’ll be introduced to the golden sands of Lummus Park Beach before heading south through the tropical paradise of the Florida Keys. With every stop, you’ll experience a different side of the sea: snorkeling in crystal-clear waters, spotting colorful marine life, and watching sunsets that paint the horizon with unforgettable colors. Beyond the beaches, this tour offers a deep connection to coastal living, from fresh seafood dining experiences to boat rides through charming islands.\nYou’ll have time to relax on hidden beaches, explore local communities, and take in the vibrant nightlife of Miami when you return. Perfect for adventurers who love the ocean but also appreciate culture, this tour combines water activities with city exploration, ensuring every day brings something new. By the end of the trip, you’ll carry not only stunning photos but also memories of sailing under endless blue skies and discovering some of the most picturesque locations in the US east coast.",
     "imageCover": "tour-2-cover.jpg",
     "locations": [
       {
@@ -66,9 +67,11 @@
     "ratingsQuantity": 9,
     "images": ["tour-1-1.jpg", "tour-1-2.jpg", "tour-1-3.jpg"],
     "startDates": [
-      "2021-04-25T09:00:00.000Z",
-      "2021-07-20T09:00:00.000Z",
-      "2021-10-05T09:00:00.000Z"
+      "2025-10-01T09:00:00.000Z",
+      "2026-05-15T09:00:00.000Z",
+      "2026-08-20T09:00:00.000Z",
+      "2026-10-05T09:00:00.000Z",
+      "2026-12-15T09:00:00.000Z"
     ],
     "_id": "5c88fa8cf4afda39709c2951",
     "name": "The Forest Hiker",
@@ -82,7 +85,7 @@
     ],
     "price": 397,
     "summary": "Breathtaking hike through the Canadian Banff National Park",
-    "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "description": "The Forest Hiker tour is a 5-day exploration through the pristine wilderness of Canada’s Banff National Park and its surrounding landscapes. Designed for nature lovers and casual hikers alike, this journey introduces you to towering peaks, crystal-clear alpine lakes, and dense evergreen forests that seem untouched by time. Beginning in the charming town of Banff, you’ll venture into breathtaking trails that reveal hidden waterfalls and valleys filled with wildlife. Along the way, you may encounter elk, mountain goats, or even the occasional bear from a safe distance, offering unforgettable moments of connection with nature.\nEach day presents a new highlight: walking through the rugged beauty of Jasper National Park, admiring glaciers that stretch endlessly across the horizon, or enjoying the peaceful silence of the Canadian Rockies under a star-filled sky. The pace is relaxed yet immersive, allowing plenty of time to rest, photograph, and soak in the tranquility of your surroundings. More than just a hike, this tour is an invitation to disconnect from the everyday and reconnect with the natural world, creating lasting memories in one of the planet’s most scenic landscapes.",
     "imageCover": "tour-1-cover.jpg",
     "locations": [
       {
@@ -119,9 +122,10 @@
     "ratingsQuantity": 6,
     "images": ["tour-3-1.jpg", "tour-3-2.jpg", "tour-3-3.jpg"],
     "startDates": [
-      "2022-01-05T10:00:00.000Z",
-      "2022-02-12T10:00:00.000Z",
-      "2023-01-06T10:00:00.000Z"
+      "2025-12-20T10:00:00.000Z",
+      "2026-01-15T10:00:00.000Z",
+      "2026-02-25T10:00:00.000Z",
+      "2026-05-15T10:00:00.000Z"
     ],
     "_id": "5c88fa8cf4afda39709c295a",
     "name": "The Snow Adventurer",
@@ -135,7 +139,7 @@
     ],
     "price": 997,
     "summary": "Exciting adventure in the snow with snowboarding and skiing",
-    "description": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum!\nDolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur, exercitation ullamco laboris nisi ut aliquip. Lorem ipsum dolor sit amet, consectetur adipisicing elit!",
+    "description": "The Snow Adventurer is an exhilarating 4-day winter journey through Aspen, one of the most famous ski destinations in the world. This tour is perfect for those who crave adrenaline and breathtaking snowy landscapes. From your first day at Aspen Highlands, you’ll glide down pristine slopes with views of snow-capped peaks stretching into the horizon. Each day offers new thrills: mastering fresh powder at Beaver Creek, exploring hidden trails for backcountry skiing, or enjoying snowboarding sessions guided by local experts. Evenings are equally memorable, spent around cozy fires in mountain lodges with warm drinks and hearty meals.\nBeyond skiing, you can explore Aspen’s charming downtown, filled with boutique shops and vibrant après-ski culture. Whether you’re an experienced skier or seeking a challenge, this tour provides both excitement and serenity. Between exhilarating runs, you’ll have quiet moments to admire sparkling forests and the crisp mountain air. The Snow Adventurer isn’t just a sporting trip—it’s a chance to experience winter at its most spectacular, creating lifelong memories in the heart of the Colorado Rockies.",
     "imageCover": "tour-3-cover.jpg",
     "locations": [
       {
@@ -165,9 +169,9 @@
     "ratingsQuantity": 7,
     "images": ["tour-5-1.jpg", "tour-5-2.jpg", "tour-5-3.jpg"],
     "startDates": [
-      "2021-08-05T09:00:00.000Z",
-      "2022-03-20T10:00:00.000Z",
-      "2022-08-12T09:00:00.000Z"
+      "2025-09-25T09:00:00.000Z",
+      "2026-04-12T09:00:00.000Z",
+      "2026-09-05T09:00:00.000Z"
     ],
     "_id": "5c88fa8cf4afda39709c2961",
     "name": "The Park Camper",
@@ -181,7 +185,7 @@
     ],
     "price": 1497,
     "summary": "Breathing in Nature in America's most spectacular National Parks",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum!",
+    "description": "The Park Camper is a 10-day adventure that takes you deep into America’s most iconic national parks, starting from the vibrant city of Las Vegas. This tour is designed for travelers who want to immerse themselves in nature while enjoying the excitement of camping under the stars. The journey begins in Zion National Park, where dramatic red cliffs and winding canyons create a landscape perfect for hiking and exploration. Next, you’ll be awed by the mesmerizing beauty of Antelope Canyon’s narrow sandstone walls and the grandeur of the Grand Canyon, one of the world’s greatest natural wonders.\nLater, the unique desert landscapes of Joshua Tree National Park offer serene stargazing opportunities and rugged terrain for adventurous hikes. Each day brings a new landscape, from colorful rock formations to expansive valleys. Nights are spent camping in the heart of the wilderness, sharing stories by the fire, and waking to the sounds of nature. This tour offers both tranquility and thrill, making it a perfect choice for anyone who loves exploring diverse natural wonders while embracing the authentic spirit of the American outdoors.",
     "imageCover": "tour-5-cover.jpg",
     "locations": [
       {
@@ -225,9 +229,10 @@
     "ratingsQuantity": 5,
     "images": ["tour-4-1.jpg", "tour-4-2.jpg", "tour-4-3.jpg"],
     "startDates": [
-      "2021-03-11T10:00:00.000Z",
-      "2021-05-02T09:00:00.000Z",
-      "2021-06-09T09:00:00.000Z"
+      "2025-11-15T09:00:00.000Z",
+      "2026-02-20T09:00:00.000Z",
+      "2026-07-10T09:00:00.000Z",
+      "2026-10-01T09:00:00.000Z"
     ],
     "_id": "5c88fa8cf4afda39709c295d",
     "name": "The City Wanderer",
@@ -236,8 +241,8 @@
     "difficulty": "easy",
     "guides": ["5c8a22c62f8fb814b56fa18b", "5c8a201e2f8fb814b56fa186"],
     "price": 1197,
-    "summary": "Living the life of Wanderlust in the US' most beatiful cities",
-    "description": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat lorem ipsum dolor sit amet.\nConsectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur, nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat!",
+    "summary": "Living the life of Wanderlust in the US' most beautiful cities",
+    "description": "The City Wanderer is a 9-day cultural journey across some of the United States’ most iconic and vibrant cities. Starting in New York City, you’ll dive into the energy of Times Square, Central Park, and Broadway, experiencing the unmatched pace and diversity of the Big Apple. From there, you’ll travel to Los Angeles, home to Hollywood glamour, sunny beaches, and a thriving arts scene. Strolling down Venice Beach or exploring the Walk of Fame offers glimpses of the city’s eclectic character. Finally, you’ll arrive in San Francisco, where the Golden Gate Bridge, historic cable cars, and vibrant neighborhoods create an unforgettable atmosphere.\nThis tour combines sightseeing, food, art, and local culture, giving you the freedom to explore bustling downtowns as well as quiet, hidden corners. Each city has its own story, and this journey allows you to experience the contrasts—from the fast-paced hustle of Manhattan to the laid-back vibes of California. Ideal for travelers who love urban exploration, the City Wanderer brings together history, culture, and modern lifestyle in a single unforgettable trip.",
     "imageCover": "tour-4-cover.jpg",
     "locations": [
       {
@@ -274,9 +279,10 @@
     "ratingsQuantity": 7,
     "images": ["tour-6-1.jpg", "tour-6-2.jpg", "tour-6-3.jpg"],
     "startDates": [
-      "2021-07-19T09:00:00.000Z",
-      "2021-09-06T09:00:00.000Z",
-      "2022-03-18T10:00:00.000Z"
+      "2025-12-10T09:00:00.000Z",
+      "2026-03-18T09:00:00.000Z",
+      "2026-08-22T09:00:00.000Z",
+      "2026-10-01T09:00:00.000Z"
     ],
     "_id": "5c88fa8cf4afda39709c2966",
     "name": "The Sports Lover",
@@ -290,7 +296,7 @@
     ],
     "price": 2997,
     "summary": "Surfing, skating, parajumping, rock climbing and more, all in one tour",
-    "description": "Nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\nVoluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur!",
+    "description": "The Sports Lover is a 14-day adventure crafted for thrill-seekers and adrenaline enthusiasts. Starting in Malibu, California, this journey takes you across the state’s most exciting outdoor destinations. You’ll begin at Point Dume Beach, where professional instructors guide you through surfing lessons on the Pacific’s powerful waves. In Venice, you’ll experience the lively skateboarding culture at its world-famous skate park before moving on to the skies for an unforgettable skydiving experience over San Diego. Whitewater rafting at Kern River and rock climbing at Yosemite National Park add to the excitement, offering diverse challenges across land, water, and air.\nEach day is designed to push limits while ensuring safety, with expert guides providing instruction and support. Beyond the adrenaline, this tour also allows for moments of calm—watching the sunset after a surf session, sharing campfires with fellow adventurers, or taking in Yosemite’s stunning landscapes. It’s the perfect combination of high-energy sports and natural beauty, making it an ideal trip for those who crave action, adventure, and the raw power of California’s great outdoors.",
     "imageCover": "tour-6-cover.jpg",
     "locations": [
       {
@@ -341,9 +347,10 @@
     "ratingsQuantity": 6,
     "images": ["tour-8-1.jpg", "tour-8-2.jpg", "tour-8-3.jpg"],
     "startDates": [
-      "2021-03-23T10:00:00.000Z",
-      "2021-10-25T09:00:00.000Z",
-      "2022-01-30T10:00:00.000Z"
+      "2025-12-18T09:00:00.000Z",
+      "2026-03-25T09:00:00.000Z",
+      "2026-09-08T09:00:00.000Z",
+      "2026-12-01T09:00:00.000Z"
     ],
     "_id": "5c88fa8cf4afda39709c2970",
     "name": "The Star Gazer",
@@ -353,7 +360,7 @@
     "guides": ["5c8a21d02f8fb814b56fa189", "5c8a1f292f8fb814b56fa184"],
     "price": 2997,
     "summary": "The most remote and stunningly beautiful places for seeing the night sky",
-    "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "description": "The Star Gazer is a 9-day expedition that brings you to some of the darkest and most beautiful skies in the United States. Beginning in Utah, this journey introduces you to remote landscapes far from city lights, where stargazing becomes a truly magical experience. You’ll visit Natural Bridges National Monument, the first certified International Dark Sky Park, where the Milky Way stretches across the horizon in dazzling clarity. As the tour continues, you’ll witness the dramatic curves of Horseshoe Bend and the surreal beauty of Death Valley National Park, both offering incredible night views alongside their breathtaking daytime landscapes.\nProfessional guides will provide telescopes and share their knowledge of constellations, planets, and astronomical wonders. Days are filled with light hikes through canyons and valleys, while evenings are reserved for celestial viewing and photography. This journey is perfect for travelers who love both adventure and quiet reflection, combining natural beauty with the awe-inspiring spectacle of the cosmos. By the end, you’ll carry not only memories of remarkable landscapes but also the unforgettable experience of gazing into a sky filled with endless stars.",
     "imageCover": "tour-8-cover.jpg",
     "locations": [
       {
@@ -390,9 +397,10 @@
     "ratingsQuantity": 7,
     "images": ["tour-9-1.jpg", "tour-9-2.jpg", "tour-9-3.jpg"],
     "startDates": [
-      "2021-12-16T10:00:00.000Z",
-      "2022-01-16T10:00:00.000Z",
-      "2022-12-12T10:00:00.000Z"
+      "2025-12-05T10:00:00.000Z",
+      "2026-01-20T10:00:00.000Z",
+      "2026-04-02T10:00:00.000Z",
+      "2026-08-15T10:00:00.000Z"
     ],
     "_id": "5c88fa8cf4afda39709c2974",
     "name": "The Northern Lights",
@@ -406,7 +414,7 @@
     ],
     "price": 1497,
     "summary": "Enjoy the Northern Lights in one of the best places in the world",
-    "description": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum!\nDolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur, exercitation ullamco laboris nisi ut aliquip. Lorem ipsum dolor sit amet, consectetur adipisicing elit!",
+    "description": "The Northern Lights tour is a 3-day winter escape to Yellowknife, one of the world’s premier destinations for viewing the aurora borealis. This short but magical journey is designed to maximize your chances of witnessing nature’s most spectacular light show. Each evening, you’ll venture out into the crisp night air, away from any artificial lights, to marvel at waves of green, purple, and pink dancing across the sky. Professional guides will share the science and stories behind this phenomenon, ensuring you fully appreciate the cultural and natural significance of the lights.\nDuring the day, you’ll explore the unique culture of Yellowknife, from indigenous traditions to local cuisine, and may even try dog sledding or snowshoeing across frozen landscapes. Warm lodges and campfires provide comfort after chilly nights of skywatching. Whether you’re photographing the aurora or simply taking in the wonder with your own eyes, this tour offers a once-in-a-lifetime experience. Compact yet unforgettable, The Northern Lights trip is perfect for travelers seeking both adventure and tranquility beneath one of the most dazzling skies on Earth.",
     "imageCover": "tour-9-cover.jpg",
     "locations": [
       {
@@ -429,9 +437,10 @@
     "ratingsQuantity": 7,
     "images": ["tour-7-1.jpg", "tour-7-2.jpg", "tour-7-3.jpg"],
     "startDates": [
-      "2021-02-12T10:00:00.000Z",
-      "2021-04-14T09:00:00.000Z",
-      "2021-09-01T09:00:00.000Z"
+      "2025-11-12T09:00:00.000Z",
+      "2026-04-08T09:00:00.000Z",
+      "2026-09-18T09:00:00.000Z",
+      "2026-12-01T09:00:00.000Z"
     ],
     "_id": "5c88fa8cf4afda39709c296c",
     "name": "The Wine Taster",
@@ -440,8 +449,8 @@
     "difficulty": "easy",
     "guides": ["5c8a22c62f8fb814b56fa18b", "5c8a23412f8fb814b56fa18c"],
     "price": 1997,
-    "summary": "Exquisite wines, scenic views, exclusive barrel tastings,  and much more",
-    "description": "Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\nIrure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "summary": "Exquisite wines, scenic views, exclusive barrel tastings, and much more",
+    "description": "The Wine Taster is a 5-day journey into the heart of California’s famous Napa Valley and surrounding wine country. Designed for lovers of fine wine and breathtaking scenery, this tour combines indulgence with education. You’ll visit world-renowned vineyards like Beringer, Clos Pegase, and Raymond, where expert sommeliers and winemakers guide you through tastings of exquisite wines paired with gourmet local dishes. Exclusive access to private cellars and barrel rooms allows you to experience the craft of winemaking up close, while scenic vineyard walks reveal the region’s stunning landscapes.\nEach day balances relaxation with discovery, from sipping a bold Cabernet Sauvignon under the California sun to learning the subtle differences between varietals during intimate tastings. Evenings are spent in charming accommodations surrounded by rolling hills, offering the perfect backdrop to unwind with a glass in hand. This tour is not only about savoring wine but also about immersing yourself in the culture, history, and beauty of Napa Valley. Ideal for couples, friends, or solo travelers, The Wine Taster delivers a luxurious yet approachable adventure for all who appreciate the art of fine wine.",
     "imageCover": "tour-7-cover.jpg",
     "locations": [
       {

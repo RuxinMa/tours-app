@@ -43,7 +43,7 @@ if (missingEnvVars.length > 0) {
 const app = require('./app');
 
 const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
+  '<db_password>',
   process.env.DATABASE_PASSWORD,
 );
 
