@@ -1,24 +1,30 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FiCheckCircle, FiClock, FiArrowRight } from 'react-icons/fi';
+import { useBookings } from '../hooks/useBookings';
 import Button from '../components/common/Button';
 
 const BookingSuccessPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
-  const [, setSessionId] = useState<string | null>(null);
+
+  // Custom hook to refresh user bookings
+  const { refreshUserBookings } = useBookings();
+
+  const success = searchParams.get('success');
+  const sessionId = searchParams.get('sessionId');
 
   useEffect(() => {
-    const sessionIdFromUrl = searchParams.get('session_id');
-    if (sessionIdFromUrl) {
-      setSessionId(sessionIdFromUrl);
-      setTimeout(() => setIsLoading(false), 2000);
+    if (success) {
+      refreshUserBookings().then(() => {
+        setTimeout(() => setIsLoading(false), 1500);
+      });
     } else {
-      // If no session ID, redirect to home
-      navigate('/');
+      navigate('/'); // Redirect to home if not successful
     }
-  }, [searchParams, navigate]);
+  }, [success, sessionId, refreshUserBookings, navigate]);
+
 
   if (isLoading) {
     return (
@@ -48,7 +54,7 @@ const BookingSuccessPage = () => {
         </h1>
         
         <p className="text-gray-600 mb-6">
-          Your booking has been confirmed. You will receive a confirmation email shortly.
+          {`Your booking has been confirmed. You will receive a confirmation email shortly.`}
         </p>
 
         {/* Next Steps */}

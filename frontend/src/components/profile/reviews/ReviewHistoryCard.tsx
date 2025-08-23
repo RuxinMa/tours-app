@@ -1,7 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiStar, FiEdit2, FiTrash2, FiCalendar } from 'react-icons/fi';
-import type { Review } from '../../../types/review';
+import type { Review as ReviewType } from '../../../types/review';
+
+type Tour = {
+  name: string;
+  slug: string;
+  imageCover: string;
+};
+
+type Review = Omit<ReviewType, 'tour'> & {
+  tour: Tour;
+};
 import Button from '../../common/Button';
 
 interface ReviewCardProps {
@@ -50,8 +61,7 @@ const ReviewCard = ({ reviews, onEdit, onDelete }: ReviewCardProps) => {
       navigate(`/tour/${tour.slug}`);
     }
   };
-
-  // 如果没有有效的 reviews，显示空状态
+  // If no valid reviews, show a message
   if (validReviews.length === 0) {
     return (
       <div className="text-center py-8">

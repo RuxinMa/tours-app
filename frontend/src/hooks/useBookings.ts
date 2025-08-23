@@ -8,7 +8,6 @@ import {
   clearError,
   setUserBookings,
   updateUserBookingStatus,
-  removeUserBooking,
   setCurrentBooking,
   clearCurrentBooking,
 } from '../store/slices/bookingsSlice';
@@ -152,37 +151,6 @@ export const useBookings = () => {
     }
   }, [dispatch, loadUserBookings]);
 
-  // 🗑️ Cancel booking
-  const cancelBooking = useCallback(async (bookingId: string) => {
-    dispatch(setSubmitting(true));
-    dispatch(clearError());
-
-    try {
-      console.log(`🗑️ useBookings: Cancelling booking ${bookingId}...`);
-      
-      await bookingsService.cancelBooking(bookingId);
-      
-      // Remove from local state
-      dispatch(removeUserBooking(bookingId));
-      dispatch(setSubmitting(false));
-      
-      console.log('✅ useBookings: Successfully cancelled booking');
-      return { success: true };
-      
-    } catch (error) {
-      console.error(`🚨 useBookings: Failed to cancel booking ${bookingId}:`, error);
-      
-      const errorMessage = error instanceof BookingsError 
-        ? error.message 
-        : 'Failed to cancel booking. Please try again.';
-        
-      dispatch(setError(errorMessage));
-      dispatch(setSubmitting(false));
-      
-      return { success: false, error: errorMessage };
-    }
-  }, [dispatch]);
-
   // 🔄 Refresh user bookings
   const refreshUserBookings = useCallback(async () => {
     console.log('🔄 useBookings: Refreshing user bookings...');
@@ -269,7 +237,6 @@ export const useBookings = () => {
     createCheckoutSession,     // Tour Detail Page
     createBooking,
     updateBookingStatus,
-    cancelBooking,
     
     // 🎯 Helper Functions
     findBookingByTourId,

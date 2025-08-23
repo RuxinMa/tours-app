@@ -11,7 +11,7 @@ const formatStartDate = (dateString: string): string => {
     month: 'long', 
     year: 'numeric' 
   };
-  return date.toLocaleDateString('en-US', options);
+  return date.toLocaleDateString('en-US', options); // e.g., "January 2026"
 };
 
 const TourCard = ({ tour }: { tour: Tour }) => {

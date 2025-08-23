@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /* 🎯 Business logic layer
-  - combines authService with Redux state management
+  ** combines authService with Redux state management
 */
 
 import { useCallback } from 'react';

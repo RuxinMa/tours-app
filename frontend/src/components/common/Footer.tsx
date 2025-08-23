@@ -1,4 +1,4 @@
-import { FiGithub, FiHeart } from 'react-icons/fi';
+import { FiGithub } from 'react-icons/fi';
 
 const Footer = () => {
   return (

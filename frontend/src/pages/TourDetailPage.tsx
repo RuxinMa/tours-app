@@ -28,7 +28,6 @@ const TourDetailPage = () => {
   // Load tour data when component mounts or slug changes
   useEffect(() => {
     if (slug) {
-      console.log(`🔄 TourDetailPage: Loading tour with slug: ${slug}`);
       loadTourDetail(slug);
     }
     

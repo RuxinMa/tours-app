@@ -9,8 +9,17 @@ import EmptyTours from './EmptyTours';
 import ToursFilter from './ToursFilter';
 
 const ToursList = () => {
-  // Custom hooks
-  const { tours, allTours, isLoading, error, loadAllTours, refreshTours, clearError, getFilterOptions } = useTours();
+  // Hooks
+  const { 
+    tours, 
+    allTours, 
+    isLoading, 
+    error, 
+    loadAllTours, 
+    refreshTours, 
+    clearError, 
+    getFilterOptions 
+  } = useTours();
   const { applyFiltersWithUrl, clearFiltersWithUrl, currentFilters } = useToursUrlSync();
 
   // Load tours on component mount

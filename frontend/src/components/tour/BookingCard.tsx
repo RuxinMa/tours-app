@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import type { Tour } from '../../types/tour.types';
 import type { User } from '../../types/user';
@@ -57,17 +58,11 @@ const BookingCard = ({ tour, user }: BookingCardProps) => {
     setIsSubmitting(true);
 
     try {
-      console.log(`🚀 BookingCard: Creating checkout session for tour ${tour.id}...`);
-      
-      const { sessionId, url } = await bookingsService.getCheckoutSession(tour.id);
-      
-      console.log('✅ BookingCard: Checkout session created successfully');
-      
+      const { url } = await bookingsService.getCheckoutSession(tour.id);
       // Redirect to Stripe checkout
       window.location.href = url;
       
     } catch (error: any) {
-      console.error('🚨 BookingCard: Failed to create checkout session:', error);
       setError(error.message || 'Failed to create checkout session. Please try again.');
     } finally {
       setIsSubmitting(false);
