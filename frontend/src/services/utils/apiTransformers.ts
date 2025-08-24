@@ -47,36 +47,46 @@ export const transformMultipleDocs = <T>(response: MultiDocsResponse<T>): T[] =>
  * Field mapper for backend _id to frontend id consistency
  * Handles the _id -> id transformation that you do in your services
  */
-export const mapDocumentFields = <T extends Record<string, any>>(doc: T): T => {
-  if (!doc) return doc;
+interface HasId {
+  id?: string;
+  _id?: string;
+  [key: string]: any;
+}
+
+export function mapDocumentFields<T extends HasId>(doc: T): T & { id: string } {
+  const result = { ...doc } as any;
   
-  // Create a new object to avoid mutation
-  const mapped = { ...doc };
-  
-  // If there's _id but no id, or _id is different from id, prefer _id
-  if (doc._id && !doc.id) {
-    mapped.id = doc._id;
+  // Map _id to id
+  if ('_id' in doc && doc._id) {
+    result.id = doc._id;
+    delete result._id;
+  } else if (!result.id) {
+    // Generate a random id
+    result.id = Math.random().toString(36).substr(2, 9);
   }
-  
-  // Handle nested objects (like user in reviews)
-  Object.keys(mapped).forEach(key => {
-    const value = mapped[key];
+
+  // Map nested objects
+  Object.keys(result).forEach(key => {
+    const value = result[key];
     
-    // Handle nested objects
-    if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
-      mapped[key] = mapDocumentFields(value);
-    }
-    
-    // Handle arrays of objects
-    if (Array.isArray(value)) {
-      mapped[key] = value.map(item => 
-        typeof item === 'object' && item !== null ? mapDocumentFields(item) : item
-      );
+    if (value && typeof value === 'object') {
+      if (Array.isArray(value)) {
+        // Map array of objects
+        result[key] = value.map(item => {
+          if (item && typeof item === 'object' && ('_id' in item || 'id' in item)) {
+            return mapDocumentFields(item);
+          }
+          return item;
+        });
+      } else if ('_id' in value || 'id' in value) {
+        // Map nested objects
+        result[key] = mapDocumentFields(value);
+      }
     }
   });
   
-  return mapped;
-};
+  return result as T & { id: string };
+}
 
 /**
  * Complete transformation pipeline for single document

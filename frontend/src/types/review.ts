@@ -1,10 +1,12 @@
+// import type { Tour } from './tour.types';
+
 export interface Review {
   id: string;
   review: string;   
   rating: number;
   createdAt: string;
   updatedAt?: string; // Optional, if not always returned
-  tour: string; // Tour ID
+  tour: string;
   user: {
     id: string;
     name: string;
@@ -25,8 +27,8 @@ export interface UpdateReviewData {
 }
 
 // Extended Review interface for Tour Details Page
-export interface ReviewWithTourInfo extends Review {
-  tourInfo: {
+export interface ReviewWithTourInfo extends Omit<Review, 'tour'> {
+  tour: {
     id: string;
     name: string;
     slug: string;

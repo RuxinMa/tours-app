@@ -1,28 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiStar, FiEdit2, FiTrash2, FiCalendar } from 'react-icons/fi';
-import type { Review as ReviewType } from '../../../types/review';
-
-type Tour = {
-  name: string;
-  slug: string;
-  imageCover: string;
-};
-
-type Review = Omit<ReviewType, 'tour'> & {
-  tour: Tour;
-};
+import type { ReviewWithTourInfo } from '../../../types/review';
 import Button from '../../common/Button';
 
 interface ReviewCardProps {
-  reviews: Review[];
-  onEdit: (review: Review) => void;
+  reviews: ReviewWithTourInfo[];
+  onEdit: (review: ReviewWithTourInfo) => void;
   onDelete: (reviewId: string) => void;
 }
 
 const ReviewCard = ({ reviews, onEdit, onDelete }: ReviewCardProps) => {
   const navigate = useNavigate();
+  
   // Filter out reviews without tour information
   const validReviews = reviews.filter(review => 
     review.tour && 
@@ -56,11 +45,12 @@ const ReviewCard = ({ reviews, onEdit, onDelete }: ReviewCardProps) => {
     });
   };
 
-  const handleTourClick = (tour: any) => {
+  const handleTourClick = (tour: ReviewWithTourInfo['tour']) => {
     if (tour?.slug) {
       navigate(`/tour/${tour.slug}`);
     }
   };
+  
   // If no valid reviews, show a message
   if (validReviews.length === 0) {
     return (

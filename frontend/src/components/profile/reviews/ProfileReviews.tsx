@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiStar } from 'react-icons/fi';
 import Empty from '../../../assets/profile-empty.svg';
-import type { Review } from '../../../types/review';
+import type { Review, ReviewWithTourInfo } from '../../../types/review';
 import type { ReviewSubmitData } from '../../common/ReviewModal';
 import { useReviews } from '../../../hooks/useReviews'; 
 import { useBookings } from '../../../hooks/useBookings'; 
@@ -43,7 +43,7 @@ const ProfileReviews = () => {
 
   // ✏️ State for editing review
   const [isEditingModalOpen, setIsEditingModalOpen] = useState(false);
-  const [selectedReviewForModal, setSelectedReviewForModal] = useState<Review | null>(null);
+  const [selectedReviewForModal, setSelectedReviewForModal] = useState<ReviewWithTourInfo | null>(null);
 
   // 🗑️ State for delete confirmation modal
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -61,10 +61,20 @@ const ProfileReviews = () => {
     };
   }, [clearError, clearSelectedReview]);
 
-  const handleEditReview = (review: Review) => {
+  const handleEditReview = (review: ReviewWithTourInfo) => {
     setSelectedReviewForModal(review);
     
-    selectReview(review);
+    const reviewForSelection: Review = {
+      id: review.id,
+      rating: review.rating,
+      review: review.review,
+      user: review.user,
+      createdAt: review.createdAt,
+      updatedAt: review.updatedAt,
+      tour: review.tour.id 
+    };
+    
+    selectReview(reviewForSelection);
     setIsEditingModalOpen(true);
   };
 
@@ -72,7 +82,18 @@ const ProfileReviews = () => {
     const review = reviews.find(r => r.id === reviewId);
     if (review) {
       setSelectedReviewForModal(review);
-      selectReview(review);
+      
+      const reviewForSelection: Review = {
+        id: review.id,
+        rating: review.rating,
+        review: review.review,
+        user: review.user,
+        createdAt: review.createdAt,
+        updatedAt: review.updatedAt,
+        tour: review.tour.id
+      };
+      
+      selectReview(reviewForSelection);
       setIsDeleteModalOpen(true);
     }
   };
@@ -114,8 +135,14 @@ const ProfileReviews = () => {
           // 3️⃣ Mark booking as pending review
           if (typeof currentReview.tour === 'string') {
             await markBookingAsPendingReview(currentReview.tour);
-          } else if (currentReview.tour && 'id' in currentReview.tour) {
-            await markBookingAsPendingReview((currentReview.tour as any).id);
+          } else if (
+            currentReview.tour &&
+            typeof currentReview.tour === 'object' &&
+            currentReview.tour !== null &&
+            'id' in currentReview.tour &&
+            typeof (currentReview.tour as { id?: string }).id === 'string'
+          ) {
+            await markBookingAsPendingReview((currentReview.tour as { id: string }).id);
           }
 
           // 4️⃣ Close modal and clear selection
@@ -150,15 +177,13 @@ const ProfileReviews = () => {
     );
   }
 
-  const getTourInfo = (review: Review | null) => {
+  // 修复 getTourInfo 函数的类型
+  const getTourInfo = (review: ReviewWithTourInfo | null) => {
     if (!review || !review.tour) {
       return { id: '', name: 'Unknown Tour', slug: '' };
     }
 
-    if (typeof review.tour === 'string') {
-      return { id: review.tour, name: 'Unknown Tour', slug: '' };
-    }
-
+    // 现在 review.tour 总是一个完整的对象
     return {
       id: review.tour.id || '',
       name: review.tour.name || 'Unknown Tour',

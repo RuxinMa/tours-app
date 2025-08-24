@@ -1,6 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Review } from '../../types/review';
-import type { clearUser } from './authSlice';
 
 interface ReviewState {
   // Data Layer

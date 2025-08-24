@@ -6,7 +6,6 @@ import type { FetchToursResponse } from '../types/tours-api';
 import type { Tour } from '../types/tour.types';
 import type { ToursFilters } from '../types/tours-store';
 import { filterTours } from './utils/toursFilters';
-import { generateMockTours } from '../dev-data/mockTours';
 
 import { transformSingle, transformMultiple } from './utils/apiTransformers';
 import type { SingleDocResponse, MultiDocsResponse } from './utils/apiTransformers'
@@ -22,7 +21,7 @@ const mockToursCall = async (): Promise<Tour[]> => {
   await new Promise(resolve => setTimeout(resolve, 1000));
   
   console.log('🎭 Mock: Fetching all tours');
-  return generateMockTours(); // Generate mock tours data
+  return []; // Return empty array for mock
 };
 
 // 🚨 Simple tours-specific error handling

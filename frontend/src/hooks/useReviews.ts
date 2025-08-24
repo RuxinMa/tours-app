@@ -296,7 +296,8 @@ export const useReviews = () => {
   const getTourReviews = useCallback((tourId: string): Review[] => {
     return reviewsState.tourReviews[tourId] || [];
   }, [reviewsState.tourReviews]);
-
+  
+  // Get user's reviews with tour info for profile display
   const getUserReviewsWithTourInfo = useCallback((): ReviewWithTourInfo[] => {
     return reviewsState.userReviews.map(review => {
       // Find tour info from tours state
@@ -305,7 +306,7 @@ export const useReviews = () => {
       if (tourInfo) {
         return {
           ...review,
-          tourInfo: {
+          tour: { 
             id: tourInfo.id,
             name: tourInfo.name,
             slug: tourInfo.slug,
@@ -314,10 +315,10 @@ export const useReviews = () => {
         };
       }
       
-      // If tour info not found, return review with undefined tourInfo
+      // If tour info not found, return review with default tour info
       return {
         ...review,
-        tourInfo: {
+        tour: {
           id: review.tour,
           name: 'Unknown Tour',
           slug: '',
