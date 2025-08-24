@@ -1,16 +1,19 @@
 // Simple function to get API base URL from environment
 export const getApiBaseURL = (): string => {
-  console.log('🔧 API URL ');
-  return '/api/v1';
-  // Use environment variable if available, otherwise fallback to defaults
-  // if (import.meta.env.VITE_API_URL) {
-  //   return import.meta.env.VITE_API_URL;
-  // }
+  console.log('🔧 Environment variables check:');
+  // Use environment variable if available
+  if (import.meta.env.VITE_API_URL) {
+    console.log('✅ Using VITE_API_URL:', import.meta.env.VITE_API_URL);
+    return import.meta.env.VITE_API_URL;
+  }
   
-  // // Environment-based fallbacks only when env var is not set
-  // return import.meta.env.MODE === 'production' 
-  //   ? 'https://toursapp-production.up.railway.app/api/v1'
-  //   : 'http://localhost:8000/api/v1';
+  // Environment-based fallbacks only when env var is not set
+  const fallbackUrl = import.meta.env.MODE === 'production' 
+    ? 'https://toursapp-production.up.railway.app/api/v1'
+    : 'http://localhost:8000/api/v1';
+    
+  console.log('⚠️ Using fallback URL:', fallbackUrl);
+  return fallbackUrl;
 };
 
 // Get timeout from environment or use default
@@ -35,12 +38,15 @@ export const getRetryConfig = () => ({
   baseDelay: Number(import.meta.env.VITE_RETRY_DELAY) || 1000,
 });
 
-// Log current configuration in development
-if (import.meta.env.MODE === 'development') {
-  console.log('🔧 Current API Configuration:', {
-    baseURL: getApiBaseURL(),
-    timeout: getApiTimeout(),
-    mockEnabled: isMockEnabled(),
-    environment: import.meta.env.MODE,
-  });
-}
+// Log current configuration in all environments for debugging
+console.log('🔧 Current API Configuration:', {
+  baseURL: getApiBaseURL(),
+  timeout: getApiTimeout(),
+  mockEnabled: isMockEnabled(),
+  environment: import.meta.env.MODE,
+  allEnvVars: {
+    VITE_API_URL: import.meta.env.VITE_API_URL,
+    VITE_API_TIMEOUT: import.meta.env.VITE_API_TIMEOUT,
+    VITE_USE_MOCK: import.meta.env.VITE_USE_MOCK,
+  }
+});
