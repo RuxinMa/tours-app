@@ -16,7 +16,7 @@ Use these pre-configured accounts to explore the application:
 
 | Role | Email | Password | Description |
 |------|-------|----------|-------------|
-| **User** | `rayray@mailsac.com` | `test1234` | User with booking history |
+| **User** | `laura@example.com` | `test1234` | User with booking history |
 | **User** | `max@example.com` | `test1234` | User without booking |
 | **Guide** | `leo@example.com` | `test1234` | Tour guide account |
 | **Admin** | `admin@tours.io` | `test1234` | Full admin access (API only) |
