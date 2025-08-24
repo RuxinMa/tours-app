@@ -46,14 +46,27 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 if (process.env.NODE_ENV === 'production') {
+  const allowedOrigins = [
+    'https://tours-app-omega.vercel.app', // Vercel Frontend Domain
+    process.env.CLIENT_URL, // Environment Variable (if set)
+    'http://localhost:8000', // Local Testing
+    'http://localhost:5173', // Local Testing
+  ].filter(Boolean); // Remove undefined values
+
+  console.log('🌍 Production CORS enabled for:', allowedOrigins);
+
   app.use(
     cors({
-      origin: [
-        process.env.CLIENT_URL,
-        'http://localhost:8000',
-        'http://localhost:5173',
-      ],
+      origin: allowedOrigins,
       credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'X-Requested-With',
+        'Accept',
+        'Origin',
+      ],
     }),
   );
 }
