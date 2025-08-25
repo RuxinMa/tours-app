@@ -23,9 +23,20 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 
   // 3️⃣ Create a checkout session using Stripe
-  const checkoutUrl = `${process.env.SERVER_URL}/api/v1/bookings/booking-success?session_id={CHECKOUT_SESSION_ID}&tour=${req.params.tourId}&user=${req.user.id}&price=${tour.price}&token=${token}`;
+  const serverUrl =
+    process.env.SERVER_URL ||
+    (process.env.NODE_ENV === 'production'
+      ? 'https://toursapp-production.up.railway.app'
+      : 'http://localhost:8000');
 
-  const cancelUrl = `${process.env.CLIENT_URL}/tour/${tour.slug}`;
+  const clientUrl =
+    process.env.CLIENT_URL ||
+    (process.env.NODE_ENV === 'production'
+      ? 'https://tours-app-omega.vercel.app'
+      : 'http://localhost:5173');
+
+  const checkoutUrl = `${serverUrl}/api/v1/bookings/booking-success?session_id={CHECKOUT_SESSION_ID}&tour=${req.params.tourId}&user=${req.user.id}&price=${tour.price}&token=${token}`;
+  const cancelUrl = `${clientUrl}/tour/${tour.slug}`;
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
