@@ -52,3 +52,4 @@ api.interceptors.response.use(
 );
 
 export default api;
+export type { ApiError } from './utils/errorHandler';
