@@ -17,25 +17,14 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     return next(new AppError('Tour not found', 404));
   }
 
-  // 2️⃣ Generate temporary token for authentication in callback
-  const token = jwt.sign({ userId: req.user.id }, process.env.JWT_SECRET, {
-    expiresIn: '1h',
-  });
-
   // 3️⃣ Create a checkout session using Stripe
-  const serverUrl =
-    process.env.SERVER_URL ||
-    (process.env.NODE_ENV === 'production'
-      ? 'https://toursapp-production.up.railway.app'
-      : 'http://localhost:8000');
-
   const clientUrl =
     process.env.CLIENT_URL ||
     (process.env.NODE_ENV === 'production'
       ? 'https://tours-app-omega.vercel.app'
       : 'http://localhost:5173');
 
-  const checkoutUrl = `${serverUrl}/api/v1/bookings/booking-success?session_id={CHECKOUT_SESSION_ID}&tour=${req.params.tourId}&user=${req.user.id}&price=${tour.price}&token=${token}`;
+  const checkoutUrl = `${clientUrl}/booking-success?session_id={CHECKOUT_SESSION_ID}&tour=${req.params.tourId}&user=${req.user.id}`;
   const cancelUrl = `${clientUrl}/tour/${tour.slug}`;
 
   const session = await stripe.checkout.sessions.create({

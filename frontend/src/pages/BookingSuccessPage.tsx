@@ -12,18 +12,19 @@ const BookingSuccessPage = () => {
   // Custom hook to refresh user bookings
   const { refreshUserBookings } = useBookings();
 
-  const success = searchParams.get('success');
-  const sessionId = searchParams.get('sessionId');
+  const sessionId = searchParams.get('session_id');
+  const tourId = searchParams.get('tour');
+  const userId = searchParams.get('user');
 
   useEffect(() => {
-    if (success) {
+    if (sessionId && tourId && userId) {
       refreshUserBookings().then(() => {
         setTimeout(() => setIsLoading(false), 1500);
       });
     } else {
       navigate('/'); // Redirect to home if not successful
     }
-  }, [success, sessionId, refreshUserBookings, navigate]);
+  }, [sessionId, tourId, userId, refreshUserBookings, navigate]);
 
 
   if (isLoading) {
