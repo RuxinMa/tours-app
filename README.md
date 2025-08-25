@@ -1,10 +1,10 @@
 # 🏔️ ToursApp - Tour Booking Platform
 
-A full-stack tour booking web application built with Node.js, Express, and MongoDB. Features user authentication, tour browsing, secure payments, and email notifications.
+A modern full-stack tour booking platform built with React, TypeScript, and Redux Toolkit for the frontend, powered by Express.js and MongoDB on the backend. Features comprehensive user authentication, tour browsing, secure payments, and real-time booking management.
 
 ## 🌐 Live Demo
 
-**🚀 [Experience the App](https://toursapp-production.up.railway.app/)**
+**🚀 [Experience the App](https://tours-app-omega.vercel.app/)**
 
 **📋 [API Documentation](https://documenter.getpostman.com/view/46845096/2sB3B8st5d)**
 
@@ -17,61 +17,68 @@ Use these pre-configured accounts to explore the application:
 | Role | Email | Password | Description |
 |------|-------|----------|-------------|
 | **User** | `laura@example.com` | `test1234` | User with booking history |
-| **User** | `max@example.com` | `test1234` | User without booking |
-| **Guide** | `leo@example.com` | `test1234` | Tour guide account |
+| **User** | `rachel@example.com` | `test1234` | User without booking & review |
 | **Admin** | `admin@tours.io` | `test1234` | Full admin access (API only) |
-
-> **Note**: User registration is not yet implemented in the frontend. Please use test accounts above.
 
 ## ✨ Key Features
 
-- **🔐 User Authentication** - Secure login with JWT
+- **🔐 User Authentication** - Secure login and registration with JWT
 - **🏞️ Tour Management** - Browse and view detailed tour information
 - **💳 Secure Payments** - Stripe integration for safe transactions
-- **📧 Email Notifications** - Automated booking confirmations
 - **👤 User Profiles** - Account management and booking history
 - **🗺️ Interactive Maps** - Mapbox integration for tour locations
-- **📱 Responsive Design** - Mobile-friendly interface
+- **⭐ Review Systems** - Add, edit, delete reviews for booked tours
+- **📱 Responsive Design** - Mobile-friendly interface with Tailwind CSS
+- **⚡ SPA Experience** - Fast navigation without page reloads
 
 ## 🛠️ Tech Stack
 
 | Category | Technology | Purpose |
 |----------|------------|---------|
+| **Frontend Framework** | React | Modern UI library with hooks |
+| **Type Safety** | TypeScript | Static type checking |
+| **State Management** | Redux Toolkit | Centralized state management |
+| **Routing** | React Router | Client-side routing |
+| **Styling** | Tailwind CSS | Utility-first CSS framework |
+| **HTTP Client** | Axios | API communication |
+| **Backend Framework** | Express.js | Web application framework |
 | **Runtime** | Node.js | Server-side JavaScript runtime |
-| **Framework** | Express.js | Web application framework |
 | **Database** | MongoDB + Mongoose | NoSQL database with ODM |
 | **Authentication** | JWT | Secure user authentication |
 | **Payment** | Stripe | Credit card processing |
 | **Email** | SendGrid | Automated email notifications |
-| **File Upload** | Multer + Sharp | Image processing and storage |
-| **Template Engine** | Pug | Server-side HTML rendering |
-| **Frontend JS** | Vanilla JavaScript + Axios | Client-side interactions |
 | **Maps** | Mapbox GL JS | Interactive tour location maps |
 | **Security** | Helmet + Rate Limiting | Security headers and DDoS protection |
-| **Development** | ESLint + Prettier + Nodemon | Code quality and development workflow |
-| **API Testing** | Postman | API documentation and testing |
-| **Deployment** | Railway + MongoDB Atlas | Cloud hosting and database |
+| **Frontend Deployment** | Vercel | Optimized React app hosting |
+| **Backend Deployment** | Railway | Backend API hosting |
+| **Database Hosting** | MongoDB Atlas | Cloud database service |
 
 ## 🏗️ Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Frontend      │    │   Backend API   │    │   Database      │
-│   (Pug + JS)    │◄──►│   (Express)     │◄──►│   (MongoDB)     │
+│ (React + TS +   │◄──►│   (Express)     │◄──►│   (MongoDB)     │
+│ Redux Toolkit)  │    │                 │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
-                              │
-                    ┌─────────┼─────────┐
-                    │         │         │
-            ┌───────▼───┐ ┌───▼────┐ ┌───▼────┐
-            │  Stripe   │ │SendGrid│ │ Mapbox │
-            │ (Payment) │ │(Email) │ │ (Maps) │
-            └───────────┘ └────────┘ └────────┘
+       │                        │
+  ┌────▼─────┐         ┌────────┼─────────────────────┐
+  │  Vercel  │         │        │          │          │
+  │ (Frontend│         │ ┌──────▼────┐ ┌───▼────┐ ┌───▼────┐
+  │Hosting)  │         │ │  Stripe   │ │SendGrid│ │ Mapbox │
+  └──────────┘         │ │ (Payment) │ │(Email) │ │ (Maps) │
+                       │ └───────────┘ └────────┘ └────────┘
+                ┌──────▼──────┐
+                │  Railway    │
+                │ (Backend    │
+                │ Hosting)    │
+                └─────────────┘
 ```
 
 ## 🚀 Version Roadmap
 
-### 🎯 Version 1.0 - Current
-**Status**: ✅ **Deployed** | **Tech**: Server-Side Rendering
+### ✅ Version 1.0 - Backend Basis
+**Status**: ✅ **Completed** | **Tech**: Server-Side Rendering
 
 - **Frontend**: Pug templates with vanilla JavaScript
 - **Backend**: Express.js API + SSR
@@ -80,11 +87,11 @@ Use these pre-configured accounts to explore the application:
 - **Deployment**: Single Railway deployment
 - **Architecture**: Traditional monolithic web application
 
-### ⚛️ Version 2.0 - React Migration (In Progress)
-**Status**: 🚧 **In Development** | **Tech**: Frontend-Backend Separation
+### ⚛️ Version 2.0 - React Migration (Current)
+**Status**: ✅ **Deployed** | **Tech**: Frontend-Backend Separation
 
-| Component | v1.0 (Current) | v2.0 (Target) |
-|-----------|----------------|---------------|
+| Component | v1.0 (Previous) | v2.0 (Current) |
+|-----------|-----------------|----------------|
 | **Frontend** | Pug + Vanilla JS | React + TypeScript |
 | **User Registration** | API only | Complete signup flow |
 | **State Management** | Server-side | Redux Toolkit |
@@ -93,44 +100,88 @@ Use these pre-configured accounts to explore the application:
 | **API Calls** | Form submissions | Axios + RTK Query |
 | **Deployment** | Railway (Monolith) | Vercel (Frontend) + Railway (Backend) |
 
-**New Features**:
-- ✨ **User Registration** - Complete signup flow with email verification
-- 🎨 **Modern UI/UX** - Enhanced user interface and interactions
-- ⚡️ **SPA Experience** - Faster navigation without page reloads
-
+**Current Features**:
+- ✨ **Complete User Registration** - Full signup flow with validation
+- 🎨 **Modern UI/UX** - Enhanced user interface with Tailwind CSS
+- ⚡️ **SPA Experience** - Fast navigation without page reloads
+- 🏪 **Advanced State Management** - Redux Toolkit for complex app state
+- ⭐ **Review System** - Users can add, edit, delete reviews
+- 📱 **Fully Responsive Design** - Optimized for all device sizes
 
 ### 🔧 Version 3.0 - Feature Enhancement (Future)
-**New Features**:
+**Planned Features**:
 - 👨‍💼 **Admin Dashboard** - Tour & user management interface
-- ⭐ **Review System** - Users can add, edit, delete reviews
-- 📊 **Content Management** - Admin can manage tours, users, bookings
+- 📧 **Password Recovery** - Forgot password email service
 - 🔍 **Advanced Search** - Filter tours by various criteria
+- 🌟 **Enhanced Reviews** - Photo uploads and rating analytics
+- 📊 **Analytics Dashboard** - Booking and revenue insights
 
-> **Note**: All admin APIs are already implemented in the backend!
+> **Note**: All admin and password recovery APIs are already implemented in the backend!
 
 ---
 
 ## 🔧 Local Development
 
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+- MongoDB (local or Atlas)
+
+### Backend Setup
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/tours-project.git
+git clone https://github.com/RuxinMa/tours-app.git
+cd tours-app/backend
 
 # Install dependencies
 npm install
 
 # Set up environment variables
 cp config.env.example config.env
-# Edit config.env with your API keys
+
+# Start development server
+npm run start:dev
+# Backend will run on http://localhost:8000
+```
+
+### Frontend Setup
+```bash
+# In a new terminal, navigate to frontend
+cd tours-app/frontend
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
 
 # Start development server
 npm run dev
+# Frontend will run on http://localhost:5173
+```
+
+### Build for Production
+```bash
+# Frontend build
+cd frontend
+npm run build
+
+# Backend (already production-ready)
+cd backend
+npm run start:prod
 ```
 
 ---
 
 ## 🤝 Contributing
 
-This project is part of a learning journey. Feel free to explore the code and suggest improvements!
+This project demonstrates modern full-stack development with React and Node.js. Feel free to explore the code, suggest improvements, or use it as a learning reference!
+
+### Key Learning Points
+- ⚛️ **React with TypeScript** - Modern frontend development
+- 🔄 **Redux Toolkit** - Advanced state management patterns
+- 🎨 **Tailwind CSS** - Utility-first styling approach
+- 📡 **RESTful API Design** - Backend architecture best practices
+- 🚀 **Modern Deployment** - Separate frontend/backend hosting
 
 **Built with ❤️ for learning modern web development**

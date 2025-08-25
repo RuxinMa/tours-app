@@ -6,7 +6,7 @@ import { handleApiError, handleAuthError, logError } from './utils/errorHandler'
 const api = axios.create({
   baseURL: getApiBaseURL(),
   timeout: getApiTimeout(),
-  withCredentials: true,
+  withCredentials: true, // Include cookies for cross-origin requests
 });
 
 // Request interceptor - clean logging
@@ -52,4 +52,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-export type { ApiError } from './utils/errorHandler';

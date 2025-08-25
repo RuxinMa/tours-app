@@ -66,6 +66,7 @@ if (process.env.NODE_ENV === 'production') {
         'X-Requested-With',
         'Accept',
         'Origin',
+        'cookie',
       ],
     }),
   );

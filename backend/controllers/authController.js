@@ -23,6 +23,8 @@ const createSendToken = (user, statusCode, res, message) => {
   const cookieOptions = {
     expires: expirationDate,
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   };
 
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true; // only https in production
