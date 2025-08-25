@@ -13,7 +13,7 @@ router.use(authController.protect);
 // ===== USER ROUTES =====
 router.get('/user/me', bookingController.getMyBookings);
 router.get('/checkout-session/:tourId', bookingController.getCheckoutSession);
-router.post('/user/create', bookingController.createUserBooking);
+router.post('/user/create', bookingController.createBooking);
 
 // ===== ADMIN/LEAD-GUIDE ROUTES =====
 router.use(authController.restrictTo('admin', 'lead-guide'));
