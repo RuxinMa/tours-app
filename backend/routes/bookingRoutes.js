@@ -4,8 +4,6 @@ const authController = require('../controllers/authController');
 
 const router = express.Router();
 
-router.get('/test', bookingController.testEndpoint);
-
 // ===== PUBLIC ROUTES (for Stripe callbacks) =====
 router.get('/booking-success', bookingController.handleBookingSuccess);
 
