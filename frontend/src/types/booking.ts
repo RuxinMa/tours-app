@@ -46,12 +46,6 @@ export interface BookingDisplayData {
 }
 
 // API request types
-export interface CreateBookingRequest {
-  tour: string;
-  user: string;
-  price: number;
-}
-
 export interface UpdateBookingStatusRequest {
   status: 'planned' | 'pending-review' | 'reviewed' | 'cancelled';
 }

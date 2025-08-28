@@ -7,7 +7,6 @@ import { getTourImageUrl } from './utils/imageUtils';
 import type { 
   Booking,
   BookingDisplayData,
-  CreateBookingRequest,
   UpdateBookingStatusRequest,
   CheckoutSessionResponse,
 } from '../types/booking';
@@ -69,7 +68,6 @@ export class BookingsError extends ApiError {
   
   originalError?: unknown;
 }
-
 
 // Transform booking with populated tour data for display
 const transformToDisplayFormat = (booking: any): BookingDisplayData => {
@@ -223,43 +221,6 @@ export const bookingsService = {
 
     } catch (error) {
       console.error(`🚨 BookingsService: Failed to update booking ${bookingId} status`);
-      throw transformBookingsError(error);
-    }
-  },
-
-  /**
-   * Create booking (typically called after successful payment)
-   * This might be handled by webhook in real implementation
-   */
-  async createBooking(bookingData: CreateBookingRequest): Promise<Booking> {
-    try {
-      console.log('🚀 BookingsService: Creating new booking...', bookingData);
-      
-      if (isMockEnabled()) {
-        console.log('🎭 BookingsService: Mock creating booking');
-        await new Promise(resolve => setTimeout(resolve, 1200));
-        
-        const newBooking: Booking = {
-          id: Math.random().toString(36).substr(2, 9),
-          tour: bookingData.tour,
-          user: bookingData.user,
-          price: bookingData.price,
-          createdAt: new Date().toISOString(),
-          paid: true,
-          status: 'planned'
-        };
-        
-        return newBooking;
-      }
-      
-      const response = await api.post<SingleDocResponse<Booking>>('/bookings', bookingData);
-      const booking = transformSingleDoc(response.data);
-      
-      console.log('✅ BookingsService: Successfully created booking');
-      return booking;
-      
-    } catch (error) {
-      console.error('🚨 BookingsService: Failed to create booking');
       throw transformBookingsError(error);
     }
   },

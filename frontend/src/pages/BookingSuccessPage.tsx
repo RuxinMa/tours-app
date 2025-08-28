@@ -1,33 +1,51 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { FiCheckCircle, FiClock, FiArrowRight } from 'react-icons/fi';
-import { useBookings } from '../hooks/useBookings';
+import { FiCheckCircle, FiClock, FiArrowRight, FiAlertCircle } from 'react-icons/fi';
 import Button from '../components/common/Button';
 
 const BookingSuccessPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [isLoading, setIsLoading] = useState(true);
+  const [showContent, setShowContent] = useState(false);
 
-  // Custom hook to refresh user bookings
-  const { refreshUserBookings } = useBookings();
-
-  const sessionId = searchParams.get('session_id');
-  const tourId = searchParams.get('tour');
-  const userId = searchParams.get('user');
+  const success = searchParams.get('success');
+  const warning = searchParams.get('warning');
+  const processed = searchParams.get('processed');
 
   useEffect(() => {
-    if (sessionId && tourId && userId) {
-      refreshUserBookings().then(() => {
-        setTimeout(() => setIsLoading(false), 1500);
-      });
-    } else {
-      navigate('/'); // Redirect to home if not successful
-    }
-  }, [sessionId, tourId, userId, refreshUserBookings, navigate]);
+    const timer = setTimeout(() => {
+      setShowContent(true);
+    }, 1500);
 
+    return () => clearTimeout(timer);
+  }, []);
 
-  if (isLoading) {
+  if (!success && !processed) {
+    return (
+      <div className="page-background-main flex items-center justify-center py-12">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
+            <FiAlertCircle className="h-8 w-8 text-red-500" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Invalid Access
+          </h1>
+          <p className="text-gray-600 mb-6">
+            This page can only be accessed after a successful payment.
+          </p>
+          <Button
+            variant="primary"
+            onClick={() => navigate('/')}
+            fullWidth={true}
+          >
+            Go to Homepage
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!showContent) {
     return (
       <div className="page-background-main flex items-center justify-center">
         <div className="text-center">
@@ -55,8 +73,22 @@ const BookingSuccessPage = () => {
         </h1>
         
         <p className="text-gray-600 mb-6">
-          {`Your booking has been confirmed. You will receive a confirmation email shortly.`}
+          Your booking has been confirmed. You will receive a confirmation email shortly.
         </p>
+
+        {/* Warning message if booking creation had issues */}
+        {warning && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center text-yellow-800 mb-2">
+              <FiAlertCircle className="mr-2" />
+              <span className="font-medium">Note</span>
+            </div>
+            <p className="text-sm text-yellow-700">
+              Your payment was successful, but there may have been a delay in processing your booking. 
+              Please check your bookings or contact support if you don't see your reservation.
+            </p>
+          </div>
+        )}
 
         {/* Next Steps */}
         <div className="bg-blue-50 rounded-lg p-4 mb-6">

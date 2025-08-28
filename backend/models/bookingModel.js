@@ -28,6 +28,17 @@ const bookingSchema = new mongoose.Schema({
     enum: ['planned', 'pending-review', 'reviewed', 'cancelled'],
     default: 'planned',
   },
+  stripeSessionId: {
+    type: String,
+    unique: true,
+    sparse: true,
+    select: false,
+  },
+  paymentDate: {
+    type: Date,
+    default: Date.now,
+    select: false,
+  },
 });
 
 // Query Middleware

@@ -11,7 +11,7 @@ import {
   setCurrentBooking,
   clearCurrentBooking,
 } from '../store/slices/bookingsSlice';
-import type { CreateBookingRequest, BookingDisplayData, Booking } from '../types/booking';
+import type { BookingDisplayData, Booking } from '../types/booking';
 
 export const useBookings = () => {
   const dispatch = useAppDispatch();
@@ -114,50 +114,6 @@ export const useBookings = () => {
     }
   }, [dispatch]);
 
-  // ➕ Create booking (usually called after payment success)
-  const createBooking = useCallback(async (bookingData: CreateBookingRequest) => {
-    dispatch(setSubmitting(true));
-    dispatch(clearError());
-
-    try {
-      console.log('➕ useBookings: Creating new booking...', bookingData);
-      
-      const newBooking = await bookingsService.createBooking(bookingData);
-      
-      // Note: We'll need to transform this to BookingDisplayData format
-      // This would typically include tour information
-      // For now, we'll need to fetch the latest bookings or add transformation logic
-      
-      dispatch(setSubmitting(false));
-      
-      console.log('✅ useBookings: Successfully created booking');
-      
-      // Refresh user bookings to get the new one with tour info
-      await loadUserBookings();
-      
-      return { success: true, booking: newBooking };
-      
-    } catch (error) {
-      console.error('🚨 useBookings: Failed to create booking:', error);
-      
-      const errorMessage = error instanceof BookingsError 
-        ? error.message 
-        : 'Failed to create booking. Please try again.';
-        
-      dispatch(setError(errorMessage));
-      dispatch(setSubmitting(false));
-      
-      return { success: false, error: errorMessage };
-    }
-  }, [dispatch, loadUserBookings]);
-
-  // 🔄 Refresh user bookings
-  const refreshUserBookings = useCallback(async () => {
-    console.log('🔄 useBookings: Refreshing user bookings...');
-    dispatch(setUserBookings([]));
-    return await loadUserBookings();
-  }, [dispatch, loadUserBookings]);
-
   // 🎯 Helper functions for cross-domain coordination
   
   // Find booking by tour ID (used for review-booking coordination)
@@ -231,11 +187,9 @@ export const useBookings = () => {
     
     // 📖 Data Loading
     loadUserBookings,          // Profile Page
-    refreshUserBookings,
     
     // 💳 Checkout & Booking Operations
     createCheckoutSession,     // Tour Detail Page
-    createBooking,
     updateBookingStatus,
     
     // 🎯 Helper Functions
