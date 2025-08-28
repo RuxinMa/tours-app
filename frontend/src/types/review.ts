@@ -1,5 +1,3 @@
-// import type { Tour } from './tour.types';
-
 export interface Review {
   id: string;
   review: string;   

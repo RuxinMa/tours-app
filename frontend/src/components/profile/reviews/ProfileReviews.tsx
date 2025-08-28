@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiStar } from 'react-icons/fi';
 import Empty from '../../../assets/profile-empty.svg';
-import type { Review, ReviewWithTourInfo } from '../../../types/review';
+import type { ReviewWithTourInfo } from '../../../types/review';
 import type { ReviewSubmitData } from '../../common/ReviewModal';
 import { useReviews } from '../../../hooks/useReviews'; 
-import { useBookings } from '../../../hooks/useBookings'; 
+import { useTours } from '../../../hooks/useTours';
 
 // Components
 import ReviewCard from './ReviewHistoryCard';
@@ -18,42 +18,40 @@ import ReviewModal from '../../common/ReviewModal';
 const ProfileReviews = () => {
   const navigate = useNavigate();
 
-  // 🎣 Use reviews hook
+  // 🎣 Use hooks
   const {
     getUserReviewsWithTourInfo,
     isLoading,
     error,
     loadUserReviews,
-    updateReview,
-    deleteReview,
+    handleEditReviewSubmit,
+    handleDeleteReview,
     clearError,
     selectReview,
     clearSelectedReview,
     currentReview
   } = useReviews();
   
-  // 📄 Use bookings hook for cross-domain coordination
-  const {
-    markBookingAsPendingReview,
-    loadUserBookings
-  } = useBookings();
+  const { loadAllTours, isLoading: toursLoading } = useTours();
 
   // Get reviews with tour info for display
   const reviews = getUserReviewsWithTourInfo();
 
-  // ✏️ State for editing review
+  // 🎨 Local UI state only
   const [isEditingModalOpen, setIsEditingModalOpen] = useState(false);
   const [selectedReviewForModal, setSelectedReviewForModal] = useState<ReviewWithTourInfo | null>(null);
-
-  // 🗑️ State for delete confirmation modal
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-   // 📄 Load user reviews on component mount
+  // 📄 Load data on component mount
   useEffect(() => {
-    loadUserReviews();
-  }, [loadUserReviews]);
+    const loadData = async () => {
+      await loadAllTours();
+      await loadUserReviews();
+    };
+    loadData();
+  }, [loadAllTours, loadUserReviews]);
 
-  // 🧹 Clear error when component unmounts
+  // 🧹 Cleanup on unmount
   useEffect(() => {
     return () => {
       clearError();
@@ -62,9 +60,12 @@ const ProfileReviews = () => {
   }, [clearError, clearSelectedReview]);
 
   const handleEditReview = (review: ReviewWithTourInfo) => {
+    console.log('🎯 Opening edit modal for review:', review.id);
+    
     setSelectedReviewForModal(review);
     
-    const reviewForSelection: Review = {
+    // Create Review object for hook
+    const reviewForSelection = {
       id: review.id,
       rating: review.rating,
       review: review.review,
@@ -78,94 +79,93 @@ const ProfileReviews = () => {
     setIsEditingModalOpen(true);
   };
 
-  const handleDeleteReview = (reviewId: string) => {
+  const handleDeleteClick = (reviewId: string) => {
+    console.log('🎯 Opening delete modal for review:', reviewId);
+    
     const review = reviews.find(r => r.id === reviewId);
-    if (review) {
-      setSelectedReviewForModal(review);
-      
-      const reviewForSelection: Review = {
-        id: review.id,
-        rating: review.rating,
-        review: review.review,
-        user: review.user,
-        createdAt: review.createdAt,
-        updatedAt: review.updatedAt,
-        tour: review.tour.id
-      };
-      
-      selectReview(reviewForSelection);
-      setIsDeleteModalOpen(true);
-    }
+    if (!review) return;
+
+    setSelectedReviewForModal(review);
+    
+    const reviewForSelection = {
+      id: review.id,
+      rating: review.rating,
+      review: review.review,
+      user: review.user,
+      createdAt: review.createdAt,
+      updatedAt: review.updatedAt,
+      tour: review.tour.id 
+    };
+    
+    selectReview(reviewForSelection);
+    setIsDeleteModalOpen(true);
   };
 
+  // 🔧 Modal handlers
   const handleEditSubmit = async (data: ReviewSubmitData) => {
-    if (currentReview && data.reviewId) {
-      // 🎯 Update Review
-      const result = await updateReview(data.reviewId, {
-        rating: data.rating,
-        review: data.review,
-        updatedAt: new Date().toISOString()
-      });
-      
-      if (result.success) {
-        setIsEditingModalOpen(false);
-        setSelectedReviewForModal(null);
-        clearSelectedReview();
-      }
+    console.log('📝 Submitting edit:', data);
+    
+    const result = await handleEditReviewSubmit(data);
+    
+    if (result.success) {
+      // ✅ Close modal on success
+      closeEditModal();
+    } else {
+      console.error('❌ Edit failed:', result.error);
+      // Keep modal open on error so user can see the error and try again
     }
   };
 
   const handleEditCancel = () => {
-    setIsEditingModalOpen(false);
-    setSelectedReviewForModal(null);
-    clearSelectedReview();
+    console.log('🚫 Edit cancelled');
+    closeEditModal();
   };
 
-  // 📄 Enhanced delete with cross-domain coordination
-  const confirmDeleteReview = async () => {
-    if (currentReview) {
-      try {
-        // 1️⃣ Delete the review (this will also handle booking status update in useReviews)
-        const deleteResult = await deleteReview(currentReview.id);
-        
-        if (deleteResult.success) {
-          // 2️⃣ Refresh bookings to show updated status
-          await loadUserBookings();
-
-          // 3️⃣ Mark booking as pending review
-          if (typeof currentReview.tour === 'string') {
-            await markBookingAsPendingReview(currentReview.tour);
-          } else if (
-            currentReview.tour &&
-            typeof currentReview.tour === 'object' &&
-            currentReview.tour !== null &&
-            'id' in currentReview.tour &&
-            typeof (currentReview.tour as { id?: string }).id === 'string'
-          ) {
-            await markBookingAsPendingReview((currentReview.tour as { id: string }).id);
-          }
-
-          // 4️⃣ Close modal and clear selection
-          setIsDeleteModalOpen(false);
-          setSelectedReviewForModal(null);
-          clearSelectedReview();
-        } else {
-          alert(deleteResult.error || 'Failed to delete review. Please try again.');
-        }
-      } catch {
-        alert('Something went wrong. Please try again.');
-      }
+  const confirmDelete = async () => {
+    if (!currentReview) return;
+    
+    const result = await handleDeleteReview(currentReview.id);
+    
+    if (result.success) {
+      // ✅ Close modal on success
+      closeDeleteModal();
+    } else {
+      console.error('❌ Delete failed:', result.error);
+      // Keep modal open on error
     }
   };
 
-  const cancelDeleteReview = () => {
+  const cancelDelete = () => {
+    closeDeleteModal();
+  };
+
+  // 🔧 Modal state helpers
+  const closeEditModal = () => {
+    setIsEditingModalOpen(false);
+    setSelectedReviewForModal(null);
+    clearSelectedReview();
+    clearError();
+  };
+
+  const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
     setSelectedReviewForModal(null);
     clearSelectedReview();
+    clearError();
   };
 
-  // 📄 Loading state
-  if (isLoading) {
+  const getTourInfo = (review: ReviewWithTourInfo | null) => {
+    if (!review || !review.tour) {
+      return { id: '', name: 'Unknown Tour', slug: '' };
+    }
+    return {
+      id: review.tour.id || '',
+      name: review.tour.name || 'Unknown Tour',
+      slug: review.tour.slug || ''
+    };
+  };
+
+  if (isLoading || toursLoading) {
     return (
       <div className="container p-6 md:p-8">
         <FormTitle title="My Reviews" icon={<FiStar />} />
@@ -176,20 +176,6 @@ const ProfileReviews = () => {
       </div>
     );
   }
-
-  // 修复 getTourInfo 函数的类型
-  const getTourInfo = (review: ReviewWithTourInfo | null) => {
-    if (!review || !review.tour) {
-      return { id: '', name: 'Unknown Tour', slug: '' };
-    }
-
-    // 现在 review.tour 总是一个完整的对象
-    return {
-      id: review.tour.id || '',
-      name: review.tour.name || 'Unknown Tour',
-      slug: review.tour.slug || ''
-    };
-  };
 
   return (
     <div className="container p-6 md:p-8">
@@ -204,6 +190,7 @@ const ProfileReviews = () => {
         />
       )}
 
+      {/* Content */}
       {reviews.length === 0 ? (
         <div className="text-center p-10">
           <div className="text-gray-400 mb-4 flex flex-col justify-center items-center gap-2">
@@ -214,14 +201,16 @@ const ProfileReviews = () => {
             />
             <h3 className="text-xl font-semibold text-gray-900">No reviews yet</h3>
             <p className="text-gray-600 mb-8">Book a tour to leave a review!</p>
-            <Button variant='primary' onClick={() => navigate('/')} fullWidth={true}>Browse Tours</Button>
+            <Button variant='primary' onClick={() => navigate('/')} fullWidth={true}>
+              Browse Tours
+            </Button>
           </div>
         </div>
       ) : (
         <ReviewCard 
           reviews={reviews}
           onEdit={handleEditReview}
-          onDelete={handleDeleteReview}
+          onDelete={handleDeleteClick}
         />
       )}
       
@@ -242,7 +231,7 @@ const ProfileReviews = () => {
       {/* Delete Confirmation Modal */}
       <Modal
         isOpen={isDeleteModalOpen}
-        onClose={cancelDeleteReview}
+        onClose={cancelDelete}
         title="Delete Review"
         size="md"
       >
@@ -258,8 +247,12 @@ const ProfileReviews = () => {
             This action cannot be undone.
           </p>
           <div className="flex justify-between w-full mt-6 space-x-16 px-4">
-            <Button variant="secondary" onClick={cancelDeleteReview} fullWidth={true}>Cancel</Button>
-            <Button variant="danger" onClick={confirmDeleteReview} fullWidth={true}>Delete</Button>
+            <Button variant="secondary" onClick={cancelDelete} fullWidth={true}>
+              Cancel
+            </Button>
+            <Button variant="danger" onClick={confirmDelete} fullWidth={true}>
+              Delete
+            </Button>
           </div>
         </div>
       </Modal>

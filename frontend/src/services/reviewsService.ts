@@ -118,19 +118,34 @@ export const reviewsService = {
       if (isMockEnabled()) {
         console.log('🎭 ReviewsService: Using mock user reviews data');
         await new Promise(resolve => setTimeout(resolve, 1000));
-        // Return mock reviews for two tours
         return [
           ...generateMockReviews('tour1').slice(0, 1),
           ...generateMockReviews('tour2').slice(0, 1)
         ];
       }
+
+      const transformReviewData = (review: any): Review => ({
+        id: review._id || review.id,
+        rating: review.rating,
+        review: review.review,
+        user: {
+          id: review.user._id || review.user.id,
+          name: review.user.name,
+          photo: review.user.photo
+        },
+        createdAt: review.createdAt,
+        updatedAt: review.updatedAt,
+        tour: review.tour._id || review.tour.id
+      });
       
       const response = await api.get('/reviews/user/me');
       const reviews = response.data?.data?.reviews || [];
 
-      console.log(`✅ ReviewsService: Successfully fetched ${reviews.length} user reviews`);
-      return reviews;
-      
+      const transformedReviews = reviews.map(transformReviewData);
+
+      console.log(`✅ ReviewsService: Successfully fetched ${transformedReviews.length} user reviews`);
+      return transformedReviews;
+
     } catch (error) {
       console.error('🚨 ReviewsService: Failed to fetch user reviews');
       throw transformReviewsError(error);

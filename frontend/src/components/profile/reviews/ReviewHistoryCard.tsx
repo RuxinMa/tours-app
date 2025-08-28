@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { FiStar, FiEdit2, FiTrash2, FiCalendar } from 'react-icons/fi';
 import type { ReviewWithTourInfo } from '../../../types/review';
+import Empty from '../../../assets/profile-empty.svg';
 import Button from '../../common/Button';
 
 interface ReviewCardProps {
@@ -13,11 +14,11 @@ const ReviewCard = ({ reviews, onEdit, onDelete }: ReviewCardProps) => {
   const navigate = useNavigate();
   
   // Filter out reviews without tour information
-  const validReviews = reviews.filter(review => 
-    review.tour && 
+  const validReviews = reviews.filter(review => {
+  return review.tour && 
     review.tour.name && 
-    review.tour.slug
-  );
+    review.tour.slug;
+});
 
   const renderStars = (rating: number) => {
     return (
@@ -54,8 +55,17 @@ const ReviewCard = ({ reviews, onEdit, onDelete }: ReviewCardProps) => {
   // If no valid reviews, show a message
   if (validReviews.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-gray-500">No reviews available for active tours.</p>
+      <div className="text-center p-10">
+        <div className="text-gray-400 mb-4 flex flex-col justify-center items-center gap-2">
+          <img 
+            src={Empty} 
+            alt="No Reviews" 
+            className="mx-auto w-64 md:w-96 h-auto mb-8" 
+          />
+          <h3 className="text-xl font-semibold text-gray-900">No reviews yet</h3>
+          <p className="text-gray-600 mb-8">Book a tour to leave a review!</p>
+          <Button variant='primary' onClick={() => navigate('/')} fullWidth={true}>Browse Tours</Button>
+        </div>
       </div>
     );
   }
