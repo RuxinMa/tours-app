@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState, Suspense, lazy } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import { useTours } from '../hooks/useTours';
 // Components
@@ -6,15 +6,20 @@ import MainLayout from "../components/layout/MainLayout";
 import TourHeader from "../components/tour/TourHeader";
 import TourOverview from "../components/tour/TourOverview";
 import TourGallery from "../components/tour/ui/TourGallery";
-import TourMap from "../components/tour/TourMap";
 import TourReviews from "../components/tour/TourReviews";
 import TourBooking from "../components/tour/TourBooking";
 import TourDetailError from "../components/tour/ui/TourDetailError";
 import TourDetailSkeleton from "../components/tour/ui/TourDetailSkeleton";
 
+const TourMap = lazy(() => import('../components/tour/TourMap'));
+
 const TourDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  
+  // Lazy load map only when needed
+  const [shouldLoadMap, setShouldLoadMap] = useState(false);
+  const mapTriggerRef = useRef(null);
 
   const { 
     selectedTour, 
@@ -30,12 +35,30 @@ const TourDetailPage = () => {
     if (slug) {
       loadTourDetail(slug);
     }
-    
     // Cleanup when component unmounts
     return () => {
       clearTourDetail();
     };
   }, [slug, loadTourDetail, clearTourDetail]);
+
+  // Set up Intersection Observer to lazy load the map
+  useEffect(() => {
+    if (!selectedTour) return; // Wait until tour is loaded
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setShouldLoadMap(true);
+        }
+      },
+      { threshold: 0.1 } // Trigger when 10% of the element is visible
+    );
+
+    if (mapTriggerRef.current) {
+      observer.observe(mapTriggerRef.current);
+    }
+    return () => observer.disconnect();
+  }, [selectedTour]);
 
   // Handle go back
   const handleGoBack = () => {
@@ -79,7 +102,19 @@ const TourDetailPage = () => {
       <TourHeader tour={selectedTour} />
       <TourOverview tour={selectedTour} />
       <TourGallery tour={selectedTour} />
-      <TourMap tour={selectedTour} />
+
+      <div ref={mapTriggerRef}>
+        {shouldLoadMap ? (
+          <Suspense fallback={<div className="h-96 bg-gray-200 flex items-center justify-center">Loading map...</div>}>
+            <TourMap tour={selectedTour} />
+          </Suspense>
+        ) : (
+          <div className="h-96 bg-gray-200 flex items-center justify-center">
+            <p>Scroll down to load map</p>
+          </div>
+        )}
+      </div>
+
       {selectedTour.reviews && <TourReviews tour={selectedTour} />}
       <TourBooking tour={selectedTour} />
     </MainLayout>
