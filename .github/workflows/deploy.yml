@@ -1,0 +1,56 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: EC2_HOST
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_KEY }}
+        timeout: 60s
+        script: |
+          echo "🚀 Starting deployment..."
+          
+          # Navigate to project directory
+          cd $HOME/tours-app
+          
+          # Pull latest code
+          echo "📥 Pulling latest code..."
+          git pull origin main
+          
+          # Install dependencies
+          cd backend
+          echo "📦 Installing dependencies..."
+          npm install --production --no-audit
+          
+          # Restart PM2 service
+          echo "🔄 Restarting service..."
+          pm2 restart toursapp-backend || pm2 start server.js --name toursapp-backend
+          
+          # Wait and check health
+          echo "⏳ Checking service health..."
+          sleep 10
+          
+          if curl -f -m 10 http://localhost:3000/api/v1/health > /dev/null 2>&1; then
+            echo "✅ Deployment successful!"
+            pm2 list
+          else
+            echo "❌ Health check failed!"
+            pm2 logs toursapp-backend --lines 10
+            exit 1
+          fi
