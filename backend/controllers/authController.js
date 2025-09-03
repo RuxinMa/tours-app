@@ -20,11 +20,14 @@ const createSendToken = (user, statusCode, res, message) => {
     Date.now() + cookieExpiresIn * 24 * 60 * 60 * 1000,
   ); // Set the cookie expiration date
 
+  const isProduction = process.env.NODE_ENV === 'production';
+  const hasHTTPS = process.env.HTTPS_ENABLED === 'true';
+
   const cookieOptions = {
     expires: expirationDate,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: isProduction && hasHTTPS,
+    sameSite: isProduction && hasHTTPS ? 'none' : 'lax',
   };
 
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true; // only https in production
