@@ -18,6 +18,7 @@ const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes'); // Import bookings routes if needed
 const viewRoutes = require('./routes/viewRoutes');
+const healthRoutes = require('./routes/healthRoutes');
 
 // Import custom error handling utility
 const AppError = require('./utils/appError');
@@ -26,11 +27,11 @@ const globalErrorHandler = require('./controllers/errorController'); // Import g
 // Initialize the Express application
 const app = express();
 
-// 1️⃣ Set the view engine to Pug 模板引擎配置
+// 1️⃣ Set the view engine to Pug
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views')); // join the views directory to the current directory
 
-// 2️⃣ Serving static files 静态文件配置（必须在路由前）
+// 2️⃣ Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 // app.use(express.static(`${__dirname}/public`));
 
@@ -191,6 +192,9 @@ app.use((req, res, next) => {
   }
   next();
 }); // Pass control to the next middleware or route handler
+
+// 4.4 Health Check Route
+app.use('/api/v1', healthRoutes); // Health check endpoint
 
 app.all('*', (req, res, next) => {
   // 404 Handler for undefined routes
