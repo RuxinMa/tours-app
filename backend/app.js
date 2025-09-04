@@ -13,7 +13,7 @@ const compression = require('compression');
 const cors = require('cors');
 
 const jwt = require('jsonwebtoken');
-// const { protect } = require('./controllers/authController');
+const authController = require('./controllers/authController');
 
 // Import sub-application routes
 const tourRouter = require('./routes/tourRoutes');
@@ -220,7 +220,7 @@ app.get('/api/v1/debug/request', (req, res) => {
 });
 
 // 3. 测试受保护的路由（会触发 protect 中间件）
-app.get('/api/v1/debug/protected', exports.protect, (req, res) => {
+app.get('/api/v1/debug/protected', authController.protect, (req, res) => {
   res.json({
     status: 'success',
     message: 'Protected route accessed successfully',
