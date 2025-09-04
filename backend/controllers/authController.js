@@ -20,14 +20,11 @@ const createSendToken = (user, statusCode, res, message) => {
     Date.now() + cookieExpiresIn * 24 * 60 * 60 * 1000,
   ); // Set the cookie expiration date
 
-  const isProduction = process.env.NODE_ENV === 'production';
-  const hasHTTPS = process.env.HTTPS_ENABLED === 'true';
-
   const cookieOptions = {
     expires: expirationDate,
     httpOnly: true,
-    secure: isProduction && hasHTTPS,
-    sameSite: isProduction && hasHTTPS ? 'none' : 'lax',
+    secure: false, // temporarily false
+    sameSite: 'lax',
   };
 
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true; // only https in production
@@ -92,6 +89,8 @@ exports.logout = catchAsync(async (req, res, next) => {
   res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 * 1000), // Set cookie to expire in 10 seconds
     httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
   }); // cookieOptions
 
   res.status(200).json({
