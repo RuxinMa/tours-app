@@ -13,24 +13,23 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
-const createSendToken = (user, statusCode, res, message) => {
+const createSendToken = (user, statusCode, req, res, message) => {
   const token = signToken(user.id); // Generate a JWT token for the user
   const cookieExpiresIn = parseInt(process.env.JWT_COOKIE_EXPIRES_IN, 10) || 90;
   const expirationDate = new Date(
     Date.now() + cookieExpiresIn * 24 * 60 * 60 * 1000,
   ); // Set the cookie expiration date
 
+  const isHTTPS = req.secure || req.get('x-forwarded-proto') === 'https';
+
   const cookieOptions = {
     expires: expirationDate,
     httpOnly: true,
-    secure: false, // temporarily false
+    secure: isHTTPS,
     sameSite: 'lax',
   };
 
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true; // only https in production
-
   res.cookie('jwt', token, cookieOptions); // Set the JWT token in a cookie
-
   user.password = undefined; // Remove the password from the response
 
   res.status(statusCode).json({

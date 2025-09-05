@@ -54,6 +54,8 @@ if (process.env.NODE_ENV === 'production') {
     'https://tours-app-omega.vercel.app', // Vercel Frontend Domain
     'http://toursapp-frontend-ruxin.s3-website-ap-southeast-2.amazonaws.com', // AWS S3 Frontend Domain
     process.env.CLIENT_URL, // Environment Variable (if set)
+    'http://13.211.205.235',
+    'http://13.211.205.235:3000',
     'http://localhost:8000', // Local Testing
     'http://localhost:5173', // Local Testing
   ].filter(Boolean); // Remove undefined values
@@ -62,7 +64,16 @@ if (process.env.NODE_ENV === 'production') {
 
   app.use(
     cors({
-      origin: allowedOrigins,
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+
+        console.warn('🚫 CORS blocked origin:', origin);
+        return callback(new Error('Not allowed by CORS'), false);
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       allowedHeaders: [
@@ -71,7 +82,7 @@ if (process.env.NODE_ENV === 'production') {
         'X-Requested-With',
         'Accept',
         'Origin',
-        'cookie',
+        'Cookie',
       ],
     }),
   );
