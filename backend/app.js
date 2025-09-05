@@ -53,9 +53,10 @@ if (process.env.NODE_ENV === 'production') {
   const allowedOrigins = [
     'https://tours-app-omega.vercel.app', // Vercel Frontend Domain
     'http://toursapp-frontend-ruxin.s3-website-ap-southeast-2.amazonaws.com', // AWS S3 Frontend Domain
+    'https://toursapp-frontend-ruxin.s3-website-ap-southeast-2.amazonaws.com', // AWS S3 Frontend Domain
     process.env.CLIENT_URL, // Environment Variable (if set)
-    'http://13.211.205.235',
-    'http://13.211.205.235:3000',
+    'https://13.211.205.235',
+    'http://13.211.205.235', // AWS EC2 Public IP
     'http://localhost:8000', // Local Testing
     'http://localhost:5173', // Local Testing
   ].filter(Boolean); // Remove undefined values
