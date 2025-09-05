@@ -9,7 +9,7 @@ export const getApiBaseURL = (): string => {
   
   // Environment-based fallbacks only when env var is not set
   const fallbackUrl = import.meta.env.MODE === 'production' 
-    ? 'http://13.211.205.235:3000/api/v1'
+    ? 'https://13.211.205.235:3000/api/v1'
     : 'http://localhost:3000/api/v1';
 
   console.log('⚠️ Using fallback URL:', fallbackUrl);
