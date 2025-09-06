@@ -12,9 +12,6 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const cors = require('cors');
 
-const jwt = require('jsonwebtoken');
-const authController = require('./controllers/authController');
-
 // Import sub-application routes
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -22,6 +19,7 @@ const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes'); // Import bookings routes if needed
 const viewRoutes = require('./routes/viewRoutes');
 const healthRoutes = require('./routes/healthRoutes');
+const debugRoutes = require('./routes/debugRoutes'); // Import debug routes
 
 // Import custom error handling utility
 const AppError = require('./utils/appError');
@@ -55,10 +53,8 @@ if (process.env.NODE_ENV === 'production') {
     'http://toursapp-frontend-ruxin.s3-website-ap-southeast-2.amazonaws.com', // AWS S3 Frontend Domain
     'https://toursapp-frontend-ruxin.s3-website-ap-southeast-2.amazonaws.com', // AWS S3 Frontend Domain
     process.env.CLIENT_URL, // Environment Variable (if set)
-    'https://13.211.205.235',
+    'https://toursapp.duckdns.org/api/v1',
     'http://13.211.205.235', // AWS EC2 Public IP
-    'http://localhost:8000', // Local Testing
-    'http://localhost:5173', // Local Testing
   ].filter(Boolean); // Remove undefined values
 
   console.log('🌍 Production CORS enabled for:', allowedOrigins);
@@ -80,7 +76,6 @@ if (process.env.NODE_ENV === 'production') {
       allowedHeaders: [
         'Content-Type',
         'Authorization',
-        'X-Requested-With',
         'Accept',
         'Origin',
         'Cookie',
@@ -186,6 +181,31 @@ app.use((req, res, next) => {
 // 4.1 🌐 View Routes
 app.use('/', viewRoutes); // Use the view routes for rendering Pug templates
 
+// 在你的 app.js 中，在现有路由之前添加这个测试路由
+app.get('/api/v1/test-cookie-debug', (req, res) => {
+  console.log('=== Cookie Debug Test ===');
+  console.log('Express version:', require('express').version);
+  console.log('res.cookie type:', typeof res.cookie);
+  console.log('res object methods:', Object.getOwnPropertyNames(res).filter(prop => typeof res[prop] === 'function').slice(0, 10));
+  
+  if (typeof res.cookie === 'function') {
+    res.cookie('test', 'value');
+    res.json({ 
+      success: true, 
+      message: 'res.cookie works',
+      expressVersion: require('express').version
+    });
+  } else {
+    res.json({ 
+      success: false, 
+      message: 'res.cookie not available',
+      expressVersion: require('express').version,
+      resType: res.constructor.name
+    });
+  }
+});
+
+
 // 4.2 📊 API Routes
 app.use('/api/v1/tours', tourRouter); // middleware for tour routes
 app.use('/api/v1/users', userRouter); // middleware for user routes
@@ -193,126 +213,7 @@ app.use('/api/v1/reviews', reviewRouter); // middleware for review routes
 app.use('/api/v1/bookings', bookingRouter); // middleware for bookings routes if needed
 
 // 🔱 Custom Debugging and Testing Routes
-
-// 1. 检查服务器环境和配置
-app.get('/api/v1/debug/server', (req, res) => {
-  res.json({
-    status: 'success',
-    data: {
-      nodeEnv: process.env.NODE_ENV,
-      port: process.env.PORT,
-      jwtSecretSet: !!process.env.JWT_SECRET,
-      jwtSecretLength: process.env.JWT_SECRET
-        ? process.env.JWT_SECRET.length
-        : 0,
-      jwtExpiresIn: process.env.JWT_EXPIRES_IN,
-      jwtCookieExpiresIn: process.env.JWT_COOKIE_EXPIRES_IN,
-      httpsEnabled: process.env.HTTPS_ENABLED,
-      timestamp: new Date().toISOString(),
-    },
-  });
-});
-
-// 2. 检查请求头和 cookies
-app.get('/api/v1/debug/request', (req, res) => {
-  res.json({
-    status: 'success',
-    data: {
-      url: req.originalUrl,
-      method: req.method,
-      headers: req.headers,
-      cookies: req.cookies,
-      protocol: req.protocol,
-      secure: req.secure,
-      host: req.get('host'),
-      userAgent: req.get('user-agent'),
-      timestamp: new Date().toISOString(),
-    },
-  });
-});
-
-// 3. 测试受保护的路由（会触发 protect 中间件）
-app.get('/api/v1/debug/protected', authController.protect, (req, res) => {
-  res.json({
-    status: 'success',
-    message: 'Protected route accessed successfully',
-    data: {
-      user: {
-        id: req.user.id,
-        name: req.user.name,
-        email: req.user.email,
-        role: req.user.role,
-      },
-      timestamp: new Date().toISOString(),
-    },
-  });
-});
-
-// 4. 检查认证状态（不需要登录）
-app.get('/api/v1/debug/auth-status', (req, res) => {
-  let token = null;
-  let tokenSource = 'none';
-
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    token = req.headers.authorization.split(' ')[1];
-    tokenSource = 'authorization-header';
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
-    tokenSource = 'cookie';
-  }
-
-  res.json({
-    status: 'success',
-    data: {
-      hasToken: !!token,
-      tokenSource,
-      tokenPreview: token ? `${token.substring(0, 20)}...` : null,
-      cookieJwt: req.cookies.jwt,
-      isLoggedOutToken: req.cookies.jwt === 'loggedout',
-      allCookies: req.cookies,
-      authHeader: req.headers.authorization,
-      timestamp: new Date().toISOString(),
-    },
-  });
-});
-
-// 5. 模拟登录（测试 cookie 设置）
-app.post('/api/v1/debug/test-login', async (req, res) => {
-  try {
-    // 创建一个测试 token
-    const testToken = jwt.sign({ id: 'test-user-id' }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
-
-    const cookieOptions = {
-      expires: new Date(Date.now() + 60 * 60 * 1000), // 1小时
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-    };
-
-    res.cookie('jwt', testToken, cookieOptions);
-
-    res.json({
-      status: 'success',
-      message: 'Test cookie set',
-      data: {
-        token: testToken,
-        cookieOptions,
-        expires: cookieOptions.expires.toISOString(),
-        timestamp: new Date().toISOString(),
-      },
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      message: error.message,
-    });
-  }
-});
+app.use('/api/v1/debug', debugRoutes); // Import and use the debug routes
 
 // 4.3 ⛔️ Catch-all Route for undefined routes
 app.use((req, res, next) => {
