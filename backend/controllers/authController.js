@@ -62,7 +62,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   new Email(newUser, url).sendWelcome(); // Send a welcome email to the new user
 
   // JWT TOKEN
-  createSendToken(newUser, 201, res, 'User created successfully');
+  createSendToken(newUser, 201, req, res, 'User created successfully');
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -81,7 +81,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 3️⃣ If everything is ok, send token to client
-  createSendToken(user, 200, res, 'User logged in successfully');
+  createSendToken(user, 200, req, res, 'User logged in successfully');
 });
 
 exports.logout = catchAsync(async (req, res, next) => {
@@ -256,7 +256,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   // 3️⃣ Update changedPasswordAt property for the user (middleware handles this)
   // 4️⃣ Log the user in, send JWT
-  createSendToken(user, 200, res, 'Password reset successfully');
+  createSendToken(user, 200, req, res, 'Password reset successfully');
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -275,5 +275,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   // cannot use User.findByIdAndUpdate, because not trigger pre-save middleware for password hashing
 
   // 4️⃣ Log user in, send JWT
-  createSendToken(user, 200, res, 'Password updated successfully'); // Send the token and user data in the response
+  createSendToken(user, 200, req, res, 'Password updated successfully'); // Send the token and user data in the response
 });
