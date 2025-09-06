@@ -27,6 +27,7 @@ const globalErrorHandler = require('./controllers/errorController'); // Import g
 
 // Initialize the Express application
 const app = express();
+app.set('trust proxy', 1);
 
 // 1️⃣ Set the view engine to Pug
 app.set('view engine', 'pug');
