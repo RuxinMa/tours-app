@@ -32,12 +32,12 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     const clientUrl =
       process.env.CLIENT_URL ||
       (process.env.NODE_ENV === 'production'
-        ? 'https://tours-app-omega.vercel.app'
+        ? 'https://d3ifoimvo7j4hw.cloudfront.net' // CloudFront Distribution Domain
         : 'http://localhost:5173');
 
     const backendUrl =
       process.env.NODE_ENV === 'production'
-        ? 'https://toursapp-production.up.railway.app'
+        ? 'https://toursapp.duckdns.org' // EC2 Instance Domain
         : 'http://localhost:8000';
 
     console.log('Client URL:', clientUrl);
