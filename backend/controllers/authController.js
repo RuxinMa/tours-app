@@ -26,7 +26,7 @@ const createSendToken = (user, statusCode, req, res, message) => {
     expires: expirationDate,
     httpOnly: true,
     secure: isHTTPS,
-    sameSite: 'lax',
+    sameSite: 'none', // fixe cross-site cookie issues
   };
 
   res.cookie('jwt', token, cookieOptions); // Set the JWT token in a cookie
