@@ -52,9 +52,8 @@ if (process.env.NODE_ENV === 'production') {
     'https://tours-app-omega.vercel.app', // Vercel Frontend Domain
     'http://toursapp-frontend-ruxin.s3-website-ap-southeast-2.amazonaws.com', // AWS S3 Frontend Domain
     'https://toursapp-frontend-ruxin.s3-website-ap-southeast-2.amazonaws.com', // AWS S3 Frontend Domain
+    'https://d3ifoimvo7j4hw.cloudfront.net', // CloudFront Distribution Domain
     process.env.CLIENT_URL, // Environment Variable (if set)
-    'https://toursapp.duckdns.org/api/v1',
-    'http://13.211.205.235', // AWS EC2 Public IP
   ].filter(Boolean); // Remove undefined values
 
   console.log('🌍 Production CORS enabled for:', allowedOrigins);
