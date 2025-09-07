@@ -85,11 +85,13 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.logout = catchAsync(async (req, res, next) => {
+  const isHTTPS = req.secure || req.get('x-forwarded-proto') === 'https';
+
   res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 * 1000), // Set cookie to expire in 10 seconds
     httpOnly: true,
-    secure: false,
-    sameSite: 'lax',
+    secure: isHTTPS,
+    sameSite: 'none',
   }); // cookieOptions
 
   res.status(200).json({
