@@ -181,31 +181,6 @@ app.use((req, res, next) => {
 // 4.1 🌐 View Routes
 app.use('/', viewRoutes); // Use the view routes for rendering Pug templates
 
-// 在你的 app.js 中，在现有路由之前添加这个测试路由
-app.get('/api/v1/test-cookie-debug', (req, res) => {
-  console.log('=== Cookie Debug Test ===');
-  console.log('Express version:', require('express').version);
-  console.log('res.cookie type:', typeof res.cookie);
-  console.log('res object methods:', Object.getOwnPropertyNames(res).filter(prop => typeof res[prop] === 'function').slice(0, 10));
-  
-  if (typeof res.cookie === 'function') {
-    res.cookie('test', 'value');
-    res.json({ 
-      success: true, 
-      message: 'res.cookie works',
-      expressVersion: require('express').version
-    });
-  } else {
-    res.json({ 
-      success: false, 
-      message: 'res.cookie not available',
-      expressVersion: require('express').version,
-      resType: res.constructor.name
-    });
-  }
-});
-
-
 // 4.2 📊 API Routes
 app.use('/api/v1/tours', tourRouter); // middleware for tour routes
 app.use('/api/v1/users', userRouter); // middleware for user routes

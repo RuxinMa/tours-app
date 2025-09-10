@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTours } from '../../hooks/useTours';
 import { useToursUrlSync } from '../../hooks/useToursUrlSync';
 //  Components
@@ -9,6 +9,8 @@ import EmptyTours from './EmptyTours';
 import ToursFilter from './ToursFilter';
 
 const ToursList = () => {
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+
   // Hooks
   const { 
     tours, 
@@ -24,7 +26,10 @@ const ToursList = () => {
 
   // Load tours on component mount
   useEffect(() => {
-    loadAllTours();
+    setIsInitialLoading(true);
+    loadAllTours().finally(() => {
+      setIsInitialLoading(false);
+    });
   }, [loadAllTours]);
 
   // Handle retry
@@ -34,7 +39,7 @@ const ToursList = () => {
   };
 
   // Loading state
-  if (isLoading) {
+  if (isInitialLoading || isLoading) {
     return (
       <div className="tour-container">
         <div className="tour-grid">

@@ -16,6 +16,7 @@ const TourMap = lazy(() => import('../components/tour/TourMap'));
 const TourDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   
   // Lazy load map only when needed
   const [shouldLoadMap, setShouldLoadMap] = useState(false);
@@ -33,7 +34,10 @@ const TourDetailPage = () => {
   // Load tour data when component mounts or slug changes
   useEffect(() => {
     if (slug) {
-      loadTourDetail(slug);
+      setIsInitialLoading(true); 
+       loadTourDetail(slug).finally(() => {
+        setIsInitialLoading(false);
+      });
     }
     // Cleanup when component unmounts
     return () => {
@@ -67,7 +71,7 @@ const TourDetailPage = () => {
   };
 
   // Loading state
-  if (isLoading) {
+  if (isInitialLoading || isLoading) {
     return (
       <MainLayout>
         <TourDetailSkeleton />

@@ -21,12 +21,13 @@ const createSendToken = (user, statusCode, req, res, message) => {
   ); // Set the cookie expiration date
 
   const isHTTPS = req.secure || req.get('x-forwarded-proto') === 'https';
+  const isDevelopment = process.env.NODE_ENV === 'development';
 
   const cookieOptions = {
     expires: expirationDate,
     httpOnly: true,
-    secure: isHTTPS,
-    sameSite: 'none', // fixe cross-site cookie issues
+    secure: isDevelopment ? false : isHTTPS,
+    sameSite: isDevelopment ? 'lax' : 'none', // fixe cross-site cookie issues
   };
 
   res.cookie('jwt', token, cookieOptions); // Set the JWT token in a cookie
@@ -86,12 +87,13 @@ exports.login = catchAsync(async (req, res, next) => {
 
 exports.logout = catchAsync(async (req, res, next) => {
   const isHTTPS = req.secure || req.get('x-forwarded-proto') === 'https';
+  const isDevelopment = process.env.NODE_ENV === 'development';
 
   res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 * 1000), // Set cookie to expire in 10 seconds
     httpOnly: true,
-    secure: isHTTPS,
-    sameSite: 'none',
+    secure: isDevelopment ? false : isHTTPS,
+    sameSite: isDevelopment ? 'lax' : 'none',
   }); // cookieOptions
 
   res.status(200).json({
