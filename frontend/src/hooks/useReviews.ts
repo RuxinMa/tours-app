@@ -100,6 +100,7 @@ export const useReviews = () => {
 
   // ✏️ Create a new review (WITH BOOKING COORDINATION)
   const createReview = useCallback(async (reviewData: CreateReviewData) => {
+
     dispatch(setSubmitting(true));
     dispatch(clearError());
 
@@ -112,7 +113,7 @@ export const useReviews = () => {
       // 2️⃣ Update local review state
       dispatch(addUserReview(newReview));
       
-      // 3️⃣ 📄 Cross-domain coordination: Update booking status to 'reviewed'
+      // 3️⃣ Cross-domain coordination: Update booking status to 'reviewed'
       const booking = findBookingByTourId(reviewData.tour);
       if (booking && booking.status === 'pending-review') {
         console.log(`📄 useReviews: Updating booking ${booking.id} status to 'reviewed'`);
@@ -120,8 +121,8 @@ export const useReviews = () => {
           bookingId: booking.id, 
           status: 'reviewed' 
         }));
-        
-        // 📄 Also update backend booking status
+
+        // Also update backend booking status
         try {
           const { bookingsService } = await import('../services/bookingsService');
           await bookingsService.updateBookingStatus(booking.id, 'reviewed');
@@ -133,9 +134,11 @@ export const useReviews = () => {
       
       // 4️⃣ If tour reviews are loaded, refresh them to show the new review
       if (reviewsState.tourReviews[reviewData.tour]) {
-        console.log('🔄 Refreshing tour reviews to include new review');
-        dispatch(clearTourReviews(reviewData.tour));
-        await loadTourReviews(reviewData.tour);
+        const currentTourReviews = reviewsState.tourReviews[reviewData.tour];
+        dispatch(setTourReviews({ 
+          tourId: reviewData.tour, 
+          reviews: [...currentTourReviews, newReview] 
+        }));
       }
       
       dispatch(setSubmitting(false));
@@ -155,7 +158,7 @@ export const useReviews = () => {
       
       return { success: false, error: errorMessage };
     }
-  }, [dispatch, reviewsState.tourReviews, loadTourReviews, findBookingByTourId]);
+  }, [reviewsState.tourReviews, dispatch, findBookingByTourId]);
 
   // 📝 Update an existing review - ENHANCED VERSION
   const updateReview = useCallback(async (reviewId: string, updateData: UpdateReviewData) => {
@@ -177,9 +180,14 @@ export const useReviews = () => {
       
       // Refresh tour reviews if they're loaded
       if (reviewsState.tourReviews[updatedReview.tour]) {
-        console.log('🔄 Refreshing tour reviews after update');
-        dispatch(clearTourReviews(updatedReview.tour));
-        await loadTourReviews(updatedReview.tour);
+        const currentTourReviews = reviewsState.tourReviews[updatedReview.tour];
+        const updatedTourReviews = currentTourReviews.map(review => 
+          review.id === reviewId ? updatedReview : review
+        );
+        dispatch(setTourReviews({ 
+          tourId: updatedReview.tour, 
+          reviews: updatedTourReviews 
+        }));
       }
       
       dispatch(setSubmitting(false));
@@ -199,7 +207,7 @@ export const useReviews = () => {
       
       return { success: false, error: errorMessage };
     }
-  }, [dispatch, reviewsState.currentReview, reviewsState.tourReviews, loadTourReviews]);
+  }, [dispatch, reviewsState.currentReview, reviewsState.tourReviews]);
 
   // 🔧 Enhanced update review with UI coordination
   const updateReviewAndRefresh = useCallback(async (reviewId: string, updateData: UpdateReviewData) => {

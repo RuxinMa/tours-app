@@ -46,7 +46,6 @@ const ProfileBookings = () => {
     setSelectedBooking(booking);
     setIsReviewModalOpen(true);
     
-    // Clear any previous review errors
     if (reviewError) {
       clearReviewError();
     }
@@ -72,9 +71,8 @@ const ProfileBookings = () => {
         setIsReviewModalOpen(false);
         setSelectedBooking(null);
         
-        // Refresh bookings to show updated status
-        await loadUserBookings();
-        
+        loadUserBookings();
+
         // Show success message
         alert('Review added successfully!');
       } else {

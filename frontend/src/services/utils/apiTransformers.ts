@@ -9,6 +9,7 @@
 export interface SingleDocResponse<T> {
   status: string;
   data: {
+    data: import("/Users/chenjingwen/Desktop/tours-app/frontend/src/types/review").CreateReviewData;
     doc: T;
   };
 }

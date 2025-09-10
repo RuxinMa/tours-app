@@ -2,8 +2,8 @@
 import api from './api';
 import { isMockEnabled } from './utils/config';
 import { handleApiError, ApiError } from './utils/errorHandler';
-import { transformSingle, transformMultiple } from './utils/apiTransformers';
-import type { SingleDocResponse, MultiDocsResponse } from './utils/apiTransformers';
+import { transformMultiple } from './utils/apiTransformers';
+import { SingleDocResponse, MultiDocsResponse } from './utils/apiTransformers';
 import type { 
   Review, 
   CreateReviewData, 
@@ -29,7 +29,7 @@ const generateMockReviews = (tourId?: string): Review[] => {
     {
       id: '2',
       review: 'Great experience overall. The tour was well organized and the locations were stunning.',
-      rating: 4,
+      rating: 4, 
       createdAt: '2024-01-10T14:30:00Z',
       tour: tourId || '2',
       user: {
@@ -72,8 +72,17 @@ const transformReviewsError = (error: unknown): ReviewsError => {
   
   const baseError = handleApiError(error as any);
   
-  if (baseError.statusCode === 409) {
-    return new ReviewsError('You have already reviewed this tour', 409, error);
+  // Extract all possible error messages
+  const errorObj = error && typeof error === 'object' ? error as any : {};
+  const messages = [
+    errorObj.response?.data?.message,
+    errorObj.message,
+    baseError.message
+  ].filter(Boolean).join(' ');
+  
+  // Check for duplicate key error in any message
+  if (messages.includes('E11000') || messages.includes('duplicate key') || baseError.statusCode === 409) {
+    return new ReviewsError('You have already reviewed this tour. You can edit your existing review instead.', 409, error);
   }
   
   return new ReviewsError(baseError.message, baseError.statusCode, error);
@@ -185,8 +194,26 @@ export const reviewsService = {
         rating: reviewData.rating
       });
 
-      return transformSingle(response.data);
-      
+       if (response.status === 201 || response.status === 200) {
+
+        reviewData = response.data.data.data;
+        console.log('📦 Extracted review data:', reviewData);
+
+        const transformedReview: Review = {
+          id: reviewData._id  || reviewData.id,
+          rating: reviewData.rating,
+          review: reviewData.review,
+          tour: reviewData.tour,
+          user: reviewData.user,
+          createdAt: reviewData.createdAt,
+          updatedAt: reviewData.updatedAt
+        };
+        
+        console.log('✅ ReviewsService: Successfully created review');
+        return transformedReview;
+      }
+
+      throw new ReviewsError('Invalid response structure or non-success status');
     } catch (error) {
       console.error('🚨 ReviewsService: Failed to create review');
       throw transformReviewsError(error);
@@ -217,13 +244,33 @@ export const reviewsService = {
           updatedAt: new Date().toISOString()
         };
       }
+
+      const response = await api.patch(`/reviews/${reviewId}`, updateData);
       
-      const response = await api.patch<SingleDocResponse<Review>>(`/reviews/${reviewId}`, updateData);
-      const review = transformSingle(response.data);
-      
-      console.log('✅ ReviewsService: Successfully updated review');
-      return review;
-      
+      if (response.data?.status === 'success') {
+        if (response.data.data?.data) {
+          const reviewData = response.data.data.data;
+          
+          const transformedReview: Review = {
+            id: reviewData._id || reviewData.id,
+            rating: reviewData.rating,
+            review: reviewData.review,
+            tour: reviewData.tour,
+            user: reviewData.user,
+            createdAt: reviewData.createdAt,
+            updatedAt: reviewData.updatedAt
+          };
+          
+          console.log('✅ ReviewsService: Successfully updated review');
+          return transformedReview;
+        } else {
+          console.error('❌ Missing nested data structure');
+          throw new ReviewsError('Missing data.data in response');
+        }
+      } else {
+        console.error('❌ Non-success status:', response.data?.status);
+        throw new ReviewsError('API returned non-success status: ' + response.data?.status);
+      }
     } catch (error) {
       console.error(`🚨 ReviewsService: Failed to update review ${reviewId}`);
       throw transformReviewsError(error);
