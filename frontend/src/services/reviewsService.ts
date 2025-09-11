@@ -194,19 +194,18 @@ export const reviewsService = {
         rating: reviewData.rating
       });
 
-       if (response.status === 201 || response.status === 200) {
-
-        reviewData = response.data.data.data;
-        console.log('📦 Extracted review data:', reviewData);
+      if (response.status === 201 || response.status === 200) {
+        const apiData = response.data.data.data;
+        console.log('📦 Extracted review data:', apiData);
 
         const transformedReview: Review = {
-          id: reviewData._id  || reviewData.id,
-          rating: reviewData.rating,
-          review: reviewData.review,
-          tour: reviewData.tour,
-          user: reviewData.user,
-          createdAt: reviewData.createdAt,
-          updatedAt: reviewData.updatedAt
+          id: apiData._id || apiData.id,
+          rating: apiData.rating,
+          review: apiData.review,
+          tour: apiData.tour,
+          user: apiData.user,
+          createdAt: apiData.createdAt,
+          updatedAt: apiData.updatedAt
         };
         
         console.log('✅ ReviewsService: Successfully created review');
@@ -249,16 +248,16 @@ export const reviewsService = {
       
       if (response.data?.status === 'success') {
         if (response.data.data?.data) {
-          const reviewData = response.data.data.data;
-          
+          const apiData = response.data.data.data;
+    
           const transformedReview: Review = {
-            id: reviewData._id || reviewData.id,
-            rating: reviewData.rating,
-            review: reviewData.review,
-            tour: reviewData.tour,
-            user: reviewData.user,
-            createdAt: reviewData.createdAt,
-            updatedAt: reviewData.updatedAt
+            id: apiData._id || apiData.id,
+            rating: apiData.rating,
+            review: apiData.review,
+            tour: apiData.tour,
+            user: apiData.user,
+            createdAt: apiData.createdAt,
+            updatedAt: apiData.updatedAt
           };
           
           console.log('✅ ReviewsService: Successfully updated review');

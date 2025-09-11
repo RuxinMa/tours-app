@@ -70,7 +70,6 @@ const ProfileBookings = () => {
         // Close modal
         setIsReviewModalOpen(false);
         setSelectedBooking(null);
-        
         loadUserBookings();
 
         // Show success message
