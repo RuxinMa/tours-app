@@ -199,7 +199,7 @@ export const reviewsService = {
         console.log('📦 Extracted review data:', apiData);
 
         const transformedReview: Review = {
-          id: apiData._id || apiData.id,
+          id: apiData.id,
           rating: apiData.rating,
           review: apiData.review,
           tour: apiData.tour,
@@ -251,7 +251,7 @@ export const reviewsService = {
           const apiData = response.data.data.data;
     
           const transformedReview: Review = {
-            id: apiData._id || apiData.id,
+            id: apiData.id,
             rating: apiData.rating,
             review: apiData.review,
             tour: apiData.tour,

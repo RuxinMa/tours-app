@@ -13,14 +13,9 @@ export interface Review {
 }
 
 export interface CreateReviewData {
-  _id: string;
-  id: string;
-  user: { id: string; name: string; photo: string; };
-  createdAt: string;
-  updatedAt: string | undefined;
   review: string;
   rating: number;
-  tour: string;  // Tour ID
+  tour: string;
 }
 
 export interface UpdateReviewData {
