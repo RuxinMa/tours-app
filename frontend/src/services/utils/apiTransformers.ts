@@ -1,11 +1,7 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-/**
- * 🔧 Unified API Response Transformers
- * Handles the different response formats from backend factory controllers
- */
-
-// Generic API response interfaces
+// GET
 export interface SingleDocResponse<T> {
   status: string;
   data: {
@@ -21,6 +17,14 @@ export interface MultiDocsResponse<T> {
   };
 }
 
+// CREATE
+export interface CreateResponse<T> {
+  status: string;
+  data: {
+    data: T;
+  };
+}
+
 export interface ErrorResponse {
   status: 'fail' | 'error';
   message: string;
@@ -28,24 +32,31 @@ export interface ErrorResponse {
 }
 
 /**
- * Transform single document response
+ * Transform single document response (GET operations)
  * Handles: { status, data: { doc: T } }
  */
-export const transformSingleDoc = <T>(response: SingleDocResponse<T>): T => {
+export const transformSingle = <T>(response: SingleDocResponse<T>): T => {
   return response.data.doc;
 };
 
 /**
- * Transform multiple documents response  
+ * Transform multiple documents response (GET operations)
  * Handles: { status, results, data: { docs: T[] } }
  */
-export const transformMultipleDocs = <T>(response: MultiDocsResponse<T>): T[] => {
+export const transformMultiple = <T>(response: MultiDocsResponse<T>): T[] => {
   return response.data.docs;
 };
 
 /**
+ * Transform create operation response (POST operations)
+ * Handles: { status, data: { data: T } }
+ */
+export const transformCreate = <T>(response: CreateResponse<T>): T => {
+  return response.data.data;
+};
+
+/**
  * Field mapper for backend _id to frontend id consistency
- * Handles the _id -> id transformation that you do in your services
  */
 interface HasId {
   id?: string;
@@ -61,7 +72,7 @@ export function mapDocumentFields<T extends HasId>(doc: T): T & { id: string } {
     result.id = doc._id;
     delete result._id;
   } else if (!result.id) {
-    // Generate a random id
+    // Generate a random id if neither exists
     result.id = Math.random().toString(36).substr(2, 9);
   }
 
@@ -89,45 +100,38 @@ export function mapDocumentFields<T extends HasId>(doc: T): T & { id: string } {
 }
 
 /**
- * Complete transformation pipeline for single document
- * Combines response extraction + field mapping
+ * Complete transformation pipeline for single document (GET)
  */
-export const transformSingle = <T extends Record<string, any>>(
+export const transformSingleWithMapping = <T extends Record<string, any>>(
   response: SingleDocResponse<T>
 ): T => {
-  const doc = transformSingleDoc(response);
+  const doc = transformSingle(response);
   return mapDocumentFields(doc);
 };
 
 /**
- * Complete transformation pipeline for multiple documents
- * Combines response extraction + field mapping for arrays
+ * Complete transformation pipeline for multiple documents (GET)
  */
-export const transformMultiple = <T extends Record<string, any>>(
+export const transformMultipleWithMapping = <T extends Record<string, any>>(
   response: MultiDocsResponse<T>
 ): T[] => {
-  const docs = transformMultipleDocs(response);
+  const docs = transformMultiple(response);
   return docs.map(doc => mapDocumentFields(doc));
 };
 
 /**
- * Smart transformer that detects response type automatically
- * Use this when you're not sure if the response contains single or multiple docs
+ * Complete transformation pipeline for create operations (POST)
  */
-export const transformResponse = <T extends Record<string, any>>(
-  response: SingleDocResponse<T> | MultiDocsResponse<T>
-): T | T[] => {
-  // Check if it's a multiple docs response
-  if ('data' in response && 'docs' in response.data) {
-    return transformMultiple(response as MultiDocsResponse<T>);
-  }
-  
-  // Check if it's a single doc response
-  if ('data' in response && 'doc' in response.data) {
-    return transformSingle(response as SingleDocResponse<T>);
-  }
-  
-  // Fallback - return as is
-  console.warn('⚠️ Unknown response format, returning as-is:', response);
-  return response as any;
+export const transformCreateWithMapping = <T extends Record<string, any>>(
+  response: CreateResponse<T>
+): T => {
+  const doc = transformCreate(response);
+  return mapDocumentFields(doc);
+};
+
+// Legacy exports for backward compatibility
+export {
+  transformSingle as transformSingleDoc,
+  transformMultiple as transformMultipleDocs,
+  transformCreate as transformCreateDoc
 };

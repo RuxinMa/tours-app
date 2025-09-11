@@ -2,15 +2,19 @@
 import api from './api';
 import { isMockEnabled } from './utils/config';
 import { handleApiError, ApiError } from './utils/errorHandler';
-import { transformMultiple } from './utils/apiTransformers';
-import { SingleDocResponse, MultiDocsResponse } from './utils/apiTransformers';
+import { 
+  transformMultiple, 
+  transformCreate, 
+  MultiDocsResponse,
+  CreateResponse
+} from './utils/apiTransformers';
 import type { 
   Review, 
   CreateReviewData, 
   UpdateReviewData,
 } from '../types/review';
 
-// 🎭 Mock data
+// Mock data generator
 const generateMockReviews = (tourId?: string): Review[] => {
   const mockReviews: Review[] = [
     {
@@ -55,7 +59,7 @@ const generateMockReviews = (tourId?: string): Review[] => {
   return tourId ? mockReviews.filter(review => review.tour === tourId) : mockReviews;
 };
 
-// 🚨 Reviews-specific error class
+// Reviews-specific error class
 export class ReviewsError extends ApiError {
   constructor(message: string, statusCode?: number, originalError?: unknown) {
     super(message, statusCode);
@@ -66,13 +70,12 @@ export class ReviewsError extends ApiError {
   originalError?: unknown;
 }
 
-// 🔧 Error transformer
+// Error transformer
 const transformReviewsError = (error: unknown): ReviewsError => {
-  console.error('🚨 ReviewsService: Error occurred:', error);
+  console.error('ReviewsService: Error occurred:', error);
   
   const baseError = handleApiError(error as any);
   
-  // Extract all possible error messages
   const errorObj = error && typeof error === 'object' ? error as any : {};
   const messages = [
     errorObj.response?.data?.message,
@@ -80,7 +83,6 @@ const transformReviewsError = (error: unknown): ReviewsError => {
     baseError.message
   ].filter(Boolean).join(' ');
   
-  // Check for duplicate key error in any message
   if (messages.includes('E11000') || messages.includes('duplicate key') || baseError.statusCode === 409) {
     return new ReviewsError('You have already reviewed this tour. You can edit your existing review instead.', 409, error);
   }
@@ -88,88 +90,88 @@ const transformReviewsError = (error: unknown): ReviewsError => {
   return new ReviewsError(baseError.message, baseError.statusCode, error);
 };
 
-// 🗝️ Reviews Service - Review CRUD
+// Data transformation utility
+const transformApiResponseToReview = (apiData: any): Review => ({
+  id: apiData._id || apiData.id,
+  review: apiData.review,
+  rating: apiData.rating,
+  createdAt: apiData.createdAt,
+  updatedAt: apiData.updatedAt,
+  tour: typeof apiData.tour === 'object' ? (apiData.tour._id || apiData.tour.id) : apiData.tour,
+  user: {
+    id: typeof apiData.user === 'object' ? (apiData.user._id || apiData.user.id) : apiData.user,
+    name: typeof apiData.user === 'object' ? apiData.user.name : 'Unknown User',
+    photo: typeof apiData.user === 'object' ? apiData.user.photo : 'default-user.jpg'
+  }
+});
+
+// Reviews Service
 export const reviewsService = {
   /**
-   * Fetch all reviews for a specific tour
-   ** Tour Detail Page
+   * Fetch all reviews for a specific tour (GET operation)
    */
   async fetchTourReviews(tourId: string): Promise<Review[]> {
     try {
-      console.log(`🚀 ReviewsService: Fetching reviews for tour ${tourId}...`);
+      console.log(`ReviewsService: Fetching reviews for tour ${tourId}...`);
       
       if (isMockEnabled()) {
-        console.log('🎭 ReviewsService: Using mock reviews data');
+        console.log('ReviewsService: Using mock reviews data');
         await new Promise(resolve => setTimeout(resolve, 800));
         return generateMockReviews(tourId);
       }
       
-      const response = await api.get<MultiDocsResponse<Review>>(`/tours/${tourId}/reviews`);
-      const reviews = transformMultiple(response.data);
+      // GET 操作使用 MultiDocsResponse
+      const response = await api.get<MultiDocsResponse<any>>(`/tours/${tourId}/reviews`);
+      const reviewsData = transformMultiple(response.data);
+      const reviews = reviewsData.map(transformApiResponseToReview);
       
-      console.log(`✅ ReviewsService: Successfully fetched ${reviews.length} reviews for tour ${tourId}`);
+      console.log(`ReviewsService: Successfully fetched ${reviews.length} reviews for tour ${tourId}`);
       return reviews;
       
     } catch (error) {
-      console.error(`🚨 ReviewsService: Failed to fetch reviews for tour ${tourId}`);
+      console.error(`ReviewsService: Failed to fetch reviews for tour ${tourId}`);
       throw transformReviewsError(error);
     }
   },
 
   /**
-   * Fetch current user's reviews
-   ** User Profile Page  
+   * Fetch current user's reviews (GET operation)  
    */
   async fetchUserReviews(): Promise<Review[]> {
     try {
-      console.log('🚀 ReviewsService: Fetching user reviews...');
+      console.log('ReviewsService: Fetching user reviews...');
       
       if (isMockEnabled()) {
-        console.log('🎭 ReviewsService: Using mock user reviews data');
+        console.log('ReviewsService: Using mock user reviews data');
         await new Promise(resolve => setTimeout(resolve, 1000));
         return [
           ...generateMockReviews('tour1').slice(0, 1),
           ...generateMockReviews('tour2').slice(0, 1)
         ];
       }
-
-      const transformReviewData = (review: any): Review => ({
-        id: review._id || review.id,
-        rating: review.rating,
-        review: review.review,
-        user: {
-          id: review.user._id || review.user.id,
-          name: review.user.name,
-          photo: review.user.photo
-        },
-        createdAt: review.createdAt,
-        updatedAt: review.updatedAt,
-        tour: review.tour._id || review.tour.id
-      });
-      
       const response = await api.get('/reviews/user/me');
-      const reviews = response.data?.data?.reviews || [];
+      
+      const reviews = response.data?.data?.reviews || response.data?.reviews || [];
+      const transformedReviews = reviews.map(transformApiResponseToReview);
 
-      const transformedReviews = reviews.map(transformReviewData);
-
-      console.log(`✅ ReviewsService: Successfully fetched ${transformedReviews.length} user reviews`);
+      console.log(`ReviewsService: Successfully fetched ${transformedReviews.length} user reviews`);
       return transformedReviews;
 
     } catch (error) {
-      console.error('🚨 ReviewsService: Failed to fetch user reviews');
+      console.error('ReviewsService: Failed to fetch user reviews');
       throw transformReviewsError(error);
     }
   },
 
   /**
-   * Create a new review
+   * Create a new review (POST operation - CreateResponse)
    */
   async createReview(reviewData: CreateReviewData): Promise<Review> {
     try {
-      console.log('🚀 ReviewsService: Creating new review...', reviewData);
+      console.log('ReviewsService: Creating new review...', reviewData);
       
       if (isMockEnabled()) {
-        console.log('🎭 ReviewsService: Mock creating review');
+        console.log('ReviewsService: Mock creating review');
         await new Promise(resolve => setTimeout(resolve, 1200));
         
         const newReview: Review = {
@@ -189,45 +191,37 @@ export const reviewsService = {
         return newReview;
       }
       
-      const response = await api.post<SingleDocResponse<Review>>(`/tours/${reviewData.tour}/reviews`, {
+      const response = await api.post<CreateResponse<any>>(`/tours/${reviewData.tour}/reviews`, {
         review: reviewData.review,
         rating: reviewData.rating
       });
 
       if (response.status === 201 || response.status === 200) {
-        const apiData = response.data.data.data;
-        console.log('📦 Extracted review data:', apiData);
+        const apiData = transformCreate(response.data);
+        console.log('Extracted review data:', apiData);
 
-        const transformedReview: Review = {
-          id: apiData.id,
-          rating: apiData.rating,
-          review: apiData.review,
-          tour: apiData.tour,
-          user: apiData.user,
-          createdAt: apiData.createdAt,
-          updatedAt: apiData.updatedAt
-        };
+        const transformedReview = transformApiResponseToReview(apiData);
         
-        console.log('✅ ReviewsService: Successfully created review');
+        console.log('ReviewsService: Successfully created review');
         return transformedReview;
       }
 
       throw new ReviewsError('Invalid response structure or non-success status');
     } catch (error) {
-      console.error('🚨 ReviewsService: Failed to create review');
+      console.error('ReviewsService: Failed to create review');
       throw transformReviewsError(error);
     }
   },
 
   /**
-   * Update an existing review
+   * Update an existing review (PATCH operation)
    */
   async updateReview(reviewId: string, updateData: UpdateReviewData): Promise<Review> {
     try {
-      console.log(`🚀 ReviewsService: Updating review ${reviewId}...`, updateData);
+      console.log(`ReviewsService: Updating review ${reviewId}...`, updateData);
       
       if (isMockEnabled()) {
-        console.log('🎭 ReviewsService: Mock updating review');
+        console.log('ReviewsService: Mock updating review');
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         const mockReviews = generateMockReviews();
@@ -243,58 +237,52 @@ export const reviewsService = {
           updatedAt: new Date().toISOString()
         };
       }
-
       const response = await api.patch(`/reviews/${reviewId}`, updateData);
       
       if (response.data?.status === 'success') {
+        let apiData: any;
+        
         if (response.data.data?.data) {
-          const apiData = response.data.data.data;
-    
-          const transformedReview: Review = {
-            id: apiData.id,
-            rating: apiData.rating,
-            review: apiData.review,
-            tour: apiData.tour,
-            user: apiData.user,
-            createdAt: apiData.createdAt,
-            updatedAt: apiData.updatedAt
-          };
-          
-          console.log('✅ ReviewsService: Successfully updated review');
-          return transformedReview;
+          apiData = response.data.data.data;
+        } else if (response.data.data?.doc) {
+          apiData = response.data.data.doc;
         } else {
-          console.error('❌ Missing nested data structure');
-          throw new ReviewsError('Missing data.data in response');
+          throw new ReviewsError('Unknown response format');
         }
+
+        const transformedReview = transformApiResponseToReview(apiData);
+        
+        console.log('ReviewsService: Successfully updated review');
+        return transformedReview;
       } else {
-        console.error('❌ Non-success status:', response.data?.status);
+        console.error('Non-success status:', response.data?.status);
         throw new ReviewsError('API returned non-success status: ' + response.data?.status);
       }
     } catch (error) {
-      console.error(`🚨 ReviewsService: Failed to update review ${reviewId}`);
+      console.error(`ReviewsService: Failed to update review ${reviewId}`);
       throw transformReviewsError(error);
     }
   },
 
   /**
-   * Delete a review
+   * Delete a review (DELETE operation)
    */
   async deleteReview(reviewId: string): Promise<void> {
     try {
-      console.log(`🚀 ReviewsService: Deleting review ${reviewId}...`);
+      console.log(`ReviewsService: Deleting review ${reviewId}...`);
       
       if (isMockEnabled()) {
-        console.log('🎭 ReviewsService: Mock deleting review');
+        console.log('ReviewsService: Mock deleting review');
         await new Promise(resolve => setTimeout(resolve, 800));
         return;
       }
       
       await api.delete(`/reviews/${reviewId}`);
       
-      console.log('✅ ReviewsService: Successfully deleted review');
+      console.log('ReviewsService: Successfully deleted review');
       
     } catch (error) {
-      console.error(`🚨 ReviewsService: Failed to delete review ${reviewId}`);
+      console.error(`ReviewsService: Failed to delete review ${reviewId}`);
       throw transformReviewsError(error);
     }
   }
