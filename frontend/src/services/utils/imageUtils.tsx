@@ -1,74 +1,95 @@
 /* eslint-disable react-refresh/only-export-components */
 /**
- * 🖼️ Image URL utilities
+ * Image URL utilities
  * Handles image path resolution for tours, users, etc.
  */
 
-// 图片基础路径配置
+// Image base path configuration
 const getImageBaseUrl = (): string => {
-  // 开发环境：使用后端的静态文件路径
+  // Development environment: use backend static file path
   if (import.meta.env.DEV) {
     return 'http://localhost:8000/img';
   }
   
-  // 生产环境：使用部署的后端路径
-  return 'https://toursapp-production.up.railway.app/img';
+  // Production environment: use environment variable or fallback
+  // For Vercel+Railway: VITE_API_BASE_URL=https://tours-app-backend-production.up.railway.app
+  // For AWS: VITE_API_BASE_URL=https://toursapp.duckdns.org
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://toursapp.duckdns.org';
+  
+  // Remove /api/v1 suffix if present, then add /img
+  const baseUrl = apiBaseUrl.replace('/api/v1', '');
+  return `${baseUrl}/img`;
 };
 
 /**
- * 获取 Tour 封面图片的完整 URL
+ * Get full URL for Tour cover image
  */
 export const getTourImageUrl = (imageName: string): string => {
-  if (!imageName) return './pub'; // 默认图片
+  if (!imageName) return './pub'; // Default image
   
-  // 如果已经是完整 URL，直接返回
+  // If already a complete URL, return directly
   if (imageName.startsWith('http')) {
     return imageName;
   }
   
-  // 构建完整的图片 URL
+  // Build complete image URL
   return `${getImageBaseUrl()}/tours/${imageName}`;
 };
 
 /**
- * 获取用户头像的完整 URL
+ * Get full URL for user avatar
  */
-export const getUserImageUrl = (imageName: string): string => {
+export const getUserImageUrl = (imageName: string | null | undefined): string => {
+  // Handle null/undefined/empty cases
   if (!imageName || imageName === 'default.jpg') {
-    return '/img/users/default.jpg'; // 🔧 修改为正确的路径
+    return `${getImageBaseUrl()}/users/default.jpg`;
   }
   
-  // 如果已经是完整 URL，直接返回
-  if (imageName.startsWith('http') || imageName.startsWith('/img/')) {
+  // If already a complete URL, return directly
+  if (imageName.startsWith('http')) {
     return imageName;
   }
   
-  // 构建完整的图片 URL
-  return `${getImageBaseUrl()}/users/${imageName}`;
+  // If already has /img/ prefix, construct full URL
+  if (imageName.startsWith('/img/')) {
+    const baseUrl = import.meta.env.DEV ? 'http://localhost:8000' : 'https://toursapp-production.up.railway.app';
+    return `${baseUrl}${imageName}`;
+  }
+  
+  // If it's just a filename (newly uploaded format), build complete URL
+  if (!imageName.includes('/')) {
+    return `${getImageBaseUrl()}/users/${imageName}`;
+  }
+  
+  // For other path formats, try to normalize
+  const normalizedPath = imageName.startsWith('/') ? imageName : `/${imageName}`;
+  const baseUrl = import.meta.env.DEV ? 'http://localhost:8000' : 'https://toursapp-production.up.railway.app';
+  return `${baseUrl}${normalizedPath}`;
 };
+
 /**
- * 获取 Tour 图片集的完整 URL 数组
+ * Get full URL array for Tour image collection
  */
 export const getTourImagesUrls = (imageNames: string[]): string[] => {
   return imageNames.map(imageName => getTourImageUrl(imageName));
 };
 
 /**
- * 图片加载错误处理
+ * Image loading error handler
  */
 export const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
   const img = event.currentTarget;
   
-  // 设置默认图片
+  // Set default image based on context
   if (img.src.includes('/tours/')) {
     img.src = '/images/default-tour.jpg';
   } else if (img.src.includes('/users/')) {
-    img.src = '/images/default-user.jpg';
+    img.src = `${getImageBaseUrl()}/users/default.jpg`;
   }
 };
 
 /**
- * 图片组件的 props 接口
+ * Image component props interface
  */
 export interface ImageProps {
   src: string;
@@ -78,7 +99,7 @@ export interface ImageProps {
 }
 
 /**
- * 通用图片组件
+ * Universal image component with error handling
  */
 export const SafeImage: React.FC<ImageProps> = ({ 
   src, 

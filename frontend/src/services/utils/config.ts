@@ -10,7 +10,7 @@ export const getApiBaseURL = (): string => {
   // Environment-based fallbacks only when env var is not set
   const fallbackUrl = import.meta.env.MODE === 'production' 
     ? 'https://toursapp.duckdns.org/api/v1'
-    : 'http://localhost:3000/api/v1';
+    : 'http://localhost:8000/api/v1';
 
   console.log('⚠️ Using fallback URL:', fallbackUrl);
   return fallbackUrl;
