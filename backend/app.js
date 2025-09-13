@@ -83,6 +83,21 @@ if (process.env.NODE_ENV === 'production') {
     }),
   );
 }
+// Serve images with appropriate CORS headers
+app.use(
+  '/img',
+  express.static(path.join(__dirname, 'public/img'), {
+    setHeaders: (res) => {
+      res.set('Access-Control-Allow-Origin', '*');
+      res.set('Access-Control-Allow-Methods', 'GET');
+      res.set(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept',
+      );
+      res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+    },
+  }),
+);
 
 // Set security HTTP headers
 app.use(
