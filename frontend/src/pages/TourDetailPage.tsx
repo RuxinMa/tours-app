@@ -20,7 +20,9 @@ const TourDetailPage = () => {
   
   // Lazy load map only when needed
   const [shouldLoadMap, setShouldLoadMap] = useState(false);
-  const mapTriggerRef = useRef(null);
+  const [mapTriggered, setMapTriggered] = useState(false); // To prevent multiple triggers
+  const mapTriggerRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   const { 
     selectedTour, 
@@ -35,7 +37,10 @@ const TourDetailPage = () => {
   useEffect(() => {
     if (slug) {
       setIsInitialLoading(true); 
-       loadTourDetail(slug).finally(() => {
+      setShouldLoadMap(false);
+      setMapTriggered(false);
+      
+      loadTourDetail(slug).finally(() => {
         setIsInitialLoading(false);
       });
     }
@@ -47,22 +52,51 @@ const TourDetailPage = () => {
 
   // Set up Intersection Observer to lazy load the map
   useEffect(() => {
-    if (!selectedTour) return; // Wait until tour is loaded
+    if (!selectedTour || mapTriggered || !mapTriggerRef.current) return;
+
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          setShouldLoadMap(true);
-        }
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !mapTriggered) {
+            setShouldLoadMap(true);
+            setMapTriggered(true);
+            // Stop observing to prevent duplicate triggers
+            observer.disconnect();
+          }
+        });
       },
-      { threshold: 0.1 } // Trigger when 10% of the element is visible
+      { 
+        threshold: 0.1,
+        rootMargin: '50px'
+      }
     );
 
-    if (mapTriggerRef.current) {
-      observer.observe(mapTriggerRef.current);
+    observerRef.current = observer;
+    observer.observe(mapTriggerRef.current);
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [selectedTour, mapTriggered]);
+
+  // Fallback to load map after 5 seconds if not triggered
+  useEffect(() => {
+    if (selectedTour && !shouldLoadMap && !mapTriggered) {
+      // Fallback to load map after 5 seconds if not triggered
+      const fallbackTimer = setTimeout(() => {
+        setShouldLoadMap(true);
+        setMapTriggered(true);
+      }, 5000);
+
+      return () => clearTimeout(fallbackTimer);
     }
-    return () => observer.disconnect();
-  }, [selectedTour]);
+  }, [selectedTour, shouldLoadMap, mapTriggered]);
 
   // Handle go back
   const handleGoBack = () => {
@@ -107,14 +141,25 @@ const TourDetailPage = () => {
       <TourOverview tour={selectedTour} />
       <TourGallery tour={selectedTour} />
 
-      <div ref={mapTriggerRef}>
+      <div ref={mapTriggerRef} className="min-h-[24rem]">
         {shouldLoadMap ? (
-          <Suspense fallback={<div className="h-96 bg-gray-200 flex items-center justify-center">Loading map...</div>}>
+          <Suspense 
+            fallback={
+              <div className="h-96 bg-gray-200 animate-pulse flex items-center justify-center">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-2"></div>
+                  <p className="text-gray-600">Loading interactive map...</p>
+                </div>
+              </div>
+            }
+          >
             <TourMap tour={selectedTour} />
           </Suspense>
         ) : (
-          <div className="h-96 bg-gray-200 flex items-center justify-center">
-            <p>Scroll down to load map</p>
+          <div className="h-96 bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+            <div className="text-center">
+              <p className="text-gray-600">Loading interactive map...</p>
+            </div>
           </div>
         )}
       </div>
