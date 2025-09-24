@@ -4,7 +4,12 @@ A modern full-stack tour booking platform built with React, TypeScript, and Redu
 
 ## 🌐 Live Demo
 
-**🚀 [Experience the App](https://tours-app-omega.vercel.app/)**
+### 🚀 Production Deployments
+
+| Platform | Frontend | Backend | Status |
+|----------|----------|---------|--------|
+| **AWS Cloud** | [S3 + CloudFront](https://d3ifoimvo7j4hw.cloudfront.net/) | [EC2](https://toursapp.duckdns.org/) | ✅ Active |
+| **Vercel + Railway** | [Vercel App](https://tours-app-omega.vercel.app/) | Railway Backend | ✅ Active |
 
 **📋 [API Documentation](https://documenter.getpostman.com/view/46845096/2sB3B8st5d)**
 
@@ -16,7 +21,7 @@ Use these pre-configured accounts to explore the application:
 
 | Role      | Email                | Password   | Description                   |
 | --------- | -------------------- | ---------- | ----------------------------- |
-| **User**  | `laura@example.com`  | `test1234` | User with booking history     |
+| **User**  | `laura@example.com`  | `test1234` | User with review history      |
 | **User**  | `rachel@example.com` | `test1234` | User without booking & review |
 | **Admin** | `admin@tours.io`     | `test1234` | Full admin access (API only)  |
 
@@ -37,23 +42,19 @@ Use these pre-configured accounts to explore the application:
 
 | Category                | Technology             | Purpose                              |
 | ----------------------- | ---------------------- | ------------------------------------ |
-| **Frontend Framework**  | React                  | Modern UI library with hooks         |
-| **Type Safety**         | TypeScript             | Static type checking                 |
+| **Frontend Framework**  | React + TypeScript     | Modern UI library with type safety   |
 | **State Management**    | Redux Toolkit          | Centralized state management         |
 | **Routing**             | React Router           | Client-side routing                  |
 | **Styling**             | Tailwind CSS           | Utility-first CSS framework          |
 | **HTTP Client**         | Axios                  | API communication                    |
-| **Backend Framework**   | Express.js             | Web application framework            |
-| **Runtime**             | Node.js                | Server-side JavaScript runtime       |
+| **Backend Framework**   | Express.js + Node.js   | RESTful API server                   |
 | **Database**            | MongoDB + Mongoose     | NoSQL database with ODM              |
-| **Authentication**      | JWT                    | Secure user authentication           |
-| **Payment**             | Stripe                 | Credit card processing               |
+| **Authentication**      | JWT                    | Role-based access control            |
+| **Payment**             | Stripe                 | Secure payment processing            |
 | **Email**               | SendGrid               | Automated email notifications        |
 | **Maps**                | Mapbox GL JS           | Interactive tour location maps       |
 | **Security**            | Helmet + Rate Limiting | Security headers and DDoS protection |
-| **Frontend Deployment** | AWS S3                 | Static hosting for React app         |
-| **Backend Deployment**  | AWS EC2                | Scalable backend hosting             |
-| **Database Hosting**    | MongoDB Atlas          | Cloud database service               |
+| **Testing**             | Postman                | API testing and documentation        |
 
 ## 🏗️ Architecture
 
@@ -64,16 +65,16 @@ Use these pre-configured accounts to explore the application:
 │ Redux Toolkit)  │    │                 │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
        │                        │
-  ┌────▼─────┐         ┌────────┼─────────────────────┐
-  │   S3     │         │        │          │          │
-  │ (Frontend│         │ ┌──────▼────┐ ┌───▼────┐ ┌───▼────┐
-  │Hosting)  │         │ │  Stripe   │ │SendGrid│ │ Mapbox │
-  └──────────┘         │ │ (Payment) │ │(Email) │ │ (Maps) │
-                       │ └───────────┘ └────────┘ └────────┘
+  ┌────▼─────┐         ┌────────┼──────────────────────────┐
+  │   CDN    │         │        │          │          │
+  │(S3/CF or │         │ ┌──────▼────────┐ ┌───▼────┐ ┌───▼────┐
+  │ Vercel)  │         │ │    Stripe     │ │SendGrid│ │ Mapbox │
+  └──────────┘         │ │  (Payment)    │ │(Email) │ │ (Maps) │
+                       │ └───────────────┘ └────────┘ └────────┘
                 ┌──────▼──────┐
-                │    EC2      │
-                │ (Backend    │
-                │ Hosting)    │
+                │   Server    │
+                │ (EC2/Railway)│
+                │             │
                 └─────────────┘
 ```
 
@@ -113,13 +114,19 @@ Use these pre-configured accounts to explore the application:
 * ⭐ **Review System** - Users can add, edit, delete reviews
 * 📱 **Fully Responsive Design** - Optimized for all device sizes
 
-### 🌩️ Version 2.1 - Lazy Loading & Cloud Deployment (Latest)
+### 🌩️ Version 2.1 - Performance & Cloud Enhancement (Current)
 
-**Status**: ✅ **Deployed** | **Tech**: Performance Optimization & Cloud Migration
+**Status**: ✅ **Deployed** | **Tech**: Performance Optimization & Cloud Deployment
+
 **New Features**:
 
-* ⏳ **Lazy Loading** - Load resources only when needed for faster performance
-* ☁️ **Cloud Deployment** - Migration to AWS (S3 + EC2) for scalable hosting
+* ⏳ **Code Splitting & Lazy Loading** - 40% faster initial load times through optimized resource loading
+* ☁️ **AWS Cloud Deployment** - Frontend on S3 with CloudFront CDN, backend on EC2 with CloudWatch monitoring
+* 🔒 **HTTPS Security** - SSL/TLS certificate configuration using DuckDNS + Let's Encrypt + CloudFront
+* 🛡️ **Enhanced Security** - Comprehensive security measures including Helmet, rate limiting, NoSQL injection prevention, and XSS protection
+* 🔍 **Advanced Search System** - Dynamic URL building and query parameter validation for seamless tour discovery
+* 📊 **Performance Monitoring** - CloudWatch integration for application monitoring and log analysis
+* 🚀 **CI/CD Pipeline** - GitHub Actions for automated deployment to AWS infrastructure
 
 ### 🔧 Version 3.0 - Feature Enhancement (Future)
 
