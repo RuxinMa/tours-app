@@ -8,7 +8,7 @@ A modern full-stack tour booking platform built with React, TypeScript, and Redu
 
 | Platform | Frontend | Backend | Status |
 |----------|----------|---------|--------|
-| **AWS Cloud** | [S3 + CloudFront](https://d3ifoimvo7j4hw.cloudfront.net/) | [EC2](https://toursapp.duckdns.org/) | ✅ Active |
+| **AWS Cloud** | [S3 + CloudFront](https://d3ifoimvo7j4hw.cloudfront.net/) | [EC2](https://toursapp.duckdns.org/) | ⏸️ Paused |
 | **Vercel + Railway** | [Vercel App](https://tours-app-omega.vercel.app/) | Railway Backend | ✅ Active |
 
 **📋 [API Documentation](https://documenter.getpostman.com/view/46845096/2sB3B8st5d)**
