@@ -12,9 +12,9 @@ const getImageBaseUrl = (): string => {
   }
   
   // Production environment: use environment variable or fallback
-  // For Vercel+Railway: VITE_API_BASE_URL=https://tours-app-backend-production.up.railway.app
+  // For Vercel+Railway: VITE_API_BASE_URL=https://toursapp-production.up.railway.app
   // For AWS: VITE_API_BASE_URL=https://toursapp.duckdns.org
-  const apiBaseUrl = import.meta.env.SERVER_URL || 'https://toursapp.duckdns.org';
+  const apiBaseUrl = import.meta.env.SERVER_URL || 'https://toursapp-production.up.railway.app';
 
   // Remove /api/v1 suffix if present, then add /img
   const baseUrl = apiBaseUrl.replace('/api/v1', '');
